@@ -1,4 +1,8 @@
-This repository contains the compile-able[fn:1] source code of my PhD thesis.
+This repository contains the compile-able source code of my PhD thesis at the University of Tuebingen. You can find a more minimal template [[https://github.com/f-dangel/phd-thesis-template][here]].
+
+* Build instructions
+
+/(Tested on Ubuntu 22.04.01 LTS with Latexmk 4.76, GNU Make 4.3, pdfTeX 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian))/
 
 To compile the document, clone the repository
 
@@ -19,5 +23,3 @@ and run
 #+end_src
 
 Make sure you have =latexmk= installed on your system.
-
-[fn:1] Tested on Ubuntu 22.04.01 LTS with Latexmk 4.76, GNU Make 4.3, pdfTeX 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian)
