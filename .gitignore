@@ -295,6 +295,7 @@ TSWLatexianTemp*
 !repos/vivit-paper/tex/paper/fig/exp13_plots/gammas_lambdas/cifar100_allcnnc_adam_gammas.pdf
 !repos/vivit-paper/tex/paper/fig/exp13_plots/gammas_lambdas/cifar100_allcnnc_sgd_lambdas.pdf
 !repos/vivit-paper/tex/paper/fig/exp13_plots/gammas_lambdas/cifar100_allcnnc_adam_lambdas.pdf
+!repos/vivit-paper/tex/paper/fig/visual_abstract/vivit_quantities.pdf
 
 # Python IDE files
 .idea
