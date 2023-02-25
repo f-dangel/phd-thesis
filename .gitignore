@@ -288,6 +288,9 @@ TSWLatexianTemp*
 !repos/hbp-paper/doc/aistats_talk/logo/hbp_logo.pdf
 !repos/hbp-paper/doc/aistats_talk/logo/hbp_logo_splitting.pdf
 !repos/backpack-paper/tex/logo/backpack_logo_github.pdf
+!repos/backpack-paper/tex/paper/figs/backprop-modules/vanilla_backprop.pdf
+!repos/backpack-paper/tex/paper/figs/backprop-modules/indiv_grad.pdf
+!repos/backpack-paper/tex/paper/figs/backprop-modules/second_order.pdf
 !repos/backpack-paper/code/animations/differential-privacy/dp_frame_0.pdf
 !repos/backpack-paper/code/animations/differential-privacy/dp_frame_4.pdf
 !repos/vivit/docs/rtd/assets/vivit_logo.pdf
