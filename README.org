@@ -1,4 +1,4 @@
-This repository contains the compile-able source code of my PhD thesis at the University of Tuebingen. You can find a more minimal template [[https://github.com/f-dangel/phd-thesis-template][here]].
+This repository contains the compile-able source code of my PhD thesis at the University of Tuebingen ([[file:thesis/thesis.pdf][pdf file]]). You can find a more minimal template [[https://github.com/f-dangel/phd-thesis-template][here]].
 
 * Build instructions
 
