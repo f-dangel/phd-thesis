@@ -1,0 +1,96 @@
+% This file was created by tikzplotlib v0.9.7.
+\begin{tikzpicture}
+
+\begin{axis}[
+tick align=outside,
+tick pos=left,
+title={CIFAR100 on All-CNN-C, B=16},
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=8.5,
+xtick style={color=black},
+xtick={0,1,2,3,4,5,6,7,8},
+xticklabels={
+Grad (ref.),2nd Moment,
+Batch L2,DiagGGN-MC,
+KFAC,Indiv. Grad,
+Variance,KFLR,
+DiagGGN},
+y grid style={white!69.0196078431373!black},
+ylabel={Time [ms]},
+ymajorgrids,
+ymin=0, ymax=396.199168879476,
+ytick style={color=black},
+zmystyle
+]
+\draw[draw=none,fill=white!80!black] (axis cs:-0.25,0) rectangle (axis cs:0.25,10.6404150000117);
+\draw[draw=none,fill=white!80!black] (axis cs:0.75,0) rectangle (axis cs:1.25,15.614299000049);
+\draw[draw=none,fill=white!80!black] (axis cs:1.75,0) rectangle (axis cs:2.25,20.5042349999189);
+\draw[draw=none,fill=white!80!black] (axis cs:2.75,0) rectangle (axis cs:3.25,16.9321719999971);
+\draw[draw=none,fill=white!80!black] (axis cs:3.75,0) rectangle (axis cs:4.25,21.9831315000079);
+\draw[draw=none,fill=white!80!black] (axis cs:4.75,0) rectangle (axis cs:5.25,29.4275924999852);
+\draw[draw=none,fill=white!80!black] (axis cs:5.75,0) rectangle (axis cs:6.25,33.0175950000466);
+\draw[draw=none,fill=white!80!black] (axis cs:6.75,0) rectangle (axis cs:7.25,245.259722000014);
+\draw[draw=none,fill=white!80!black] (axis cs:7.75,0) rectangle (axis cs:8.25,374.177160499983);
+\path [draw=black]
+(axis cs:0,10.5087382099845)
+--(axis cs:0,10.768611370035);
+
+\path [draw=black]
+(axis cs:1,13.7685239999882)
+--(axis cs:1,17.4527360000866);
+
+\path [draw=black]
+(axis cs:2,20.4103945925041)
+--(axis cs:2,20.5949782223442);
+
+\path [draw=black]
+(axis cs:3,16.7874805750074)
+--(axis cs:3,17.0743782749895);
+
+\path [draw=black]
+(axis cs:4,21.8817708700126)
+--(axis cs:4,22.0835303899983);
+
+\path [draw=black]
+(axis cs:5,29.2194357674305)
+--(axis cs:5,29.6297776975223);
+
+\path [draw=black]
+(axis cs:6,32.7443037674664)
+--(axis cs:6,33.2814666976208);
+
+\path [draw=black]
+(axis cs:7,242.111124464981)
+--(axis cs:7,248.373806605052);
+
+\path [draw=black]
+(axis cs:8,370.971561069995)
+--(axis cs:8,377.332541789978);
+
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+0 10.5087382099845
+1 13.7685239999882
+2 20.4103945925041
+3 16.7874805750074
+4 21.8817708700126
+5 29.2194357674305
+6 32.7443037674664
+7 242.111124464981
+8 370.971561069995
+};
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+0 10.768611370035
+1 17.4527360000866
+2 20.5949782223442
+3 17.0743782749895
+4 22.0835303899983
+5 29.6297776975223
+6 33.2814666976208
+7 248.373806605052
+8 377.332541789978
+};
+\end{axis}
+
+\end{tikzpicture}

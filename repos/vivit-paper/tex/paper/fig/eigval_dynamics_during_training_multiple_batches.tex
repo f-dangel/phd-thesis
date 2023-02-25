@@ -1,0 +1,264 @@
+\begin{figure*}[!b]
+  \centering
+
+  % pgfplots style "spectrumdefault"
+  \pgfkeys{/pgfplots/spectrumdefault/.style={
+      width=1.15\linewidth,
+      height=0.18\textheight,
+      every axis plot/.append style={line width = 1.2pt},
+      tick pos = left,
+      xmajorticks = true,
+      ymajorticks = true,
+      ylabel near ticks,
+      xlabel near ticks,
+      xtick align = inside,
+      ytick align = inside,
+      legend cell align = left,
+      legend columns = 1,
+      legend pos = south east,
+      % legend style = {
+      %   fill opacity = 0.9,
+      %   text opacity = 1,
+      %   font = \small,
+      % },
+      xticklabel style = {font = \small, inner xsep = -5ex},
+      xlabel style = {font = \small},
+      axis line style = {black},
+      yticklabel style = {font = \small, inner ysep = -4ex},
+      ylabel style = {font = \small, inner ysep = -4ex},
+      title style = {font = \small, inner ysep = -3ex},
+      grid = major,
+      grid style = {dashed}
+    }
+  }
+
+  % pgfplots style for first few rows "spectrumdefaultfirst"
+  \pgfkeys{/pgfplots/spectrumdefaultfirst/.style={
+      spectrumdefault,
+      xlabel=\empty,
+      title=\empty,
+      xticklabels=\empty,
+  }}
+
+  % pgfplots style for first last row "spectrumdefaultfirst"
+  \pgfkeys{/pgfplots/spectrumdefaultlast/.style={
+      spectrumdefault,
+      title=\empty,
+    }}
+
+  \begin{flushleft}
+    \vspace{1ex}
+    (a)
+  \end{flushleft}
+  \vspace{-2\baselineskip}
+
+  \hfill
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+        title = {Gradient covariance},
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000000/CenteredGradientCovariance.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+        title = {Gradient covariance},
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000000/GradientCovariance.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+        title = {\ggn},
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000000/GGN.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+        title = {\ggn \mc}
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000000/GGNMC.tex}
+  \end{minipage}
+  \hfill
+
+  \vspace{-1.8\baselineskip}
+
+  \begin{flushleft}
+    \vspace{1ex}
+    (b)
+  \end{flushleft}
+  \vspace{-2\baselineskip}
+
+  \hfill
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000010/CenteredGradientCovariance.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000010/GradientCovariance.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000010/GGN.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000010/GGNMC.tex}
+  \end{minipage}
+  \hfill
+
+  \vspace{-1.8\baselineskip}
+
+  \begin{flushleft}
+    \vspace{1ex}
+    (c)
+  \end{flushleft}
+  \vspace{-2\baselineskip}
+
+  \hfill
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000020/CenteredGradientCovariance.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000020/GradientCovariance.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000020/GGN.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000020/GGNMC.tex}
+  \end{minipage}
+  \hfill
+
+  \vspace{-1.8\baselineskip}
+
+  \begin{flushleft}
+    \vspace{1ex}
+    (d)
+  \end{flushleft}
+  \vspace{-2\baselineskip}
+
+  \hfill
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000100/CenteredGradientCovariance.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000100/GradientCovariance.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000100/GGN.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultfirst,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000100/GGNMC.tex}
+  \end{minipage}
+  \hfill
+
+  \vspace{-1.8\baselineskip}
+
+  \begin{flushleft}
+    \vspace{1ex}
+    (e)
+  \end{flushleft}
+  \vspace{-2\baselineskip}
+
+  \hfill
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={
+        spectrumdefaultlast,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000200/CenteredGradientCovariance.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={
+        spectrumdefaultlast,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000200/GradientCovariance.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultlast,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000200/GGN.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.245\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultlast,
+      }}
+    \input{../../fig/exp01_mnist_cnn_spectra/fig_multiple_batches/spectra_global_step_000200/GGNMC.tex}
+  \end{minipage}
+  \hfill
+
+  \caption{\textbf{Gradient noise and curvature spectral dynamics during
+      training for multiple batches:} We show the exact eigenvalue distribution
+    of gradient covariance, \ggn, and the \mc-approximated \ggn using one
+    sample, on the same (held-out) mini-batches. The network (a simple, but deep
+    convolutional neural net on \mnist) is trained with \sgd ($N=128$). Rows
+    show the distributions at \textbf{(a)} initialization of training,
+    \textbf{(b)} the early phase (step 10), \textbf{(c)} mid-stage (step 20),
+    \textbf{(d)} close to the end (step 100) and \textbf{(e)} the end of
+    training (step 200). The parameter has $D = 400 000$ and information
+    contained in a mini-batch is restricted to a subspace that grows with $N$.}
+  \label{fig:eigval-dynamics-during-training-multiple-batches}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

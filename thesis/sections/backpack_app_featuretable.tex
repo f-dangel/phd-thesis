@@ -1,0 +1,125 @@
+\begin{itemize}
+\item Assumptions
+  \begin{itemize}
+  \item Sequential feedforward network
+    \[
+      \textstyle \vz_n^{(0)}
+      \stackrel{f^{(1)}_{\vtheta^{(1)}}(\vz_n^{(0)})}{\verylongrightarrow}
+      \vz_n^{(1)}
+      \stackrel{f^{(2)}_{\vtheta^{(2)}}(\vz_n^{(1)})}{\verylongrightarrow}
+      \ldots
+      \stackrel{f^{(L)}_{\vtheta^{(L)}}(\vz_n^{(L-1)})}{\verylongrightarrow}
+      \vz^{(L)} \stackrel{\ell(\vz_n^{(L)}, \vy)}{\verylongrightarrow}
+      \ell(\vtheta)
+    \]
+  \item $d^{(l)}:$ Dimension of parameter $\vtheta^{(l)}$
+  \item Empirical risk
+    \begin{equation*}
+      \Loss(\vtheta) = \frac{1}{N} \sum_{n=1}^N \ell(f_{\vtheta}(\vx_n), \vy_n)
+    \end{equation*}
+  \end{itemize}
+\item Shorthands
+  \begin{align*}
+    \ell_n(\vtheta)
+    &:=
+      \ell(f_{\vtheta}(\vx_n), \vy_n)\equationPunctuation{,}
+      \qquad
+      n = 1,\dots, N\equationPunctuation{,}
+    \\
+    \vf_n
+    &:=
+      f_{\vtheta}(\vx_n) = \vz_n^{(L)}(\vtheta)\equationPunctuation{,}
+      \qquad n = 1,\dots, N
+  \end{align*}
+\item Generalized Gauss-Newton matrix
+  \begin{align*}
+    \mG(\vtheta)
+    =
+    \dfrac{1}{N}
+    \sum_{n=1}^N
+    \left(\jac_{\vtheta} \vf_n\right)^\top
+    \nabla_{\vf_n}^2 \ell_n(\vtheta)
+    \left(\jac_{\vtheta} \vf_n\right)
+  \end{align*}
+\item Approximative \GGN via \MC sampling
+  \begin{align*}
+    \mGtilde(\vtheta)
+    =
+    \dfrac{1}{N}
+    \sum_{n=1}^N
+    \left(\jac_{\vtheta} \vf_n\right)^\top
+    \left[
+    \left(
+    \nabla_{\vf_n} \ell(\vf_n, \vyhat)
+    \right)
+    \left(
+    \nabla_{\vf_n} \ell(\vf_n, \vyhat_n)
+    \right)^\top
+    \right]_{\vyhat_n \sim q(\giventhat{\cdot}{\vf_n})}
+    \left(\jac_{\vtheta} \vf_n\right)
+  \end{align*}
+\end{itemize}
+
+\begin{table*}[!hbtp]
+  \centering
+  \caption{\textbf{Overview of the features supported in the first release of
+      \BackPACK.} The quantities are computed separately for all module
+    parameters, \ie $l =1,\dots, L$.}
+  \vspace{1ex}
+  \begin{footnotesize}
+    \begin{tabular}{llll}
+      \toprule
+      & \textbf{Feature} & \textbf{Details}
+      \\
+      \midrule
+      & Individual gradients
+                         & $\frac{1}{N} \nabla_{\vtheta^{(l)}}\ell_n(\vtheta), \quad n=1,\dots, N$
+      &
+      \\
+      & Batch variance
+                         & $\frac{1}{N}\sum_{n=1}^{N}
+                           \left[\nabla_{\vtheta^{(l)}}\ell_n(\vtheta)\right]_j^2 -
+                           \left[\nabla_{\vtheta^{(l)}}\mathcal{L} (\vtheta) \right]_j^2 , \qquad j = 1,\dots,d^{(l)}$
+      &
+      \\
+      & 2\textsuperscript{nd} moment
+                         & $\frac{1}{N} \sum_{n=1}^{N}\left[\nabla_{\vtheta^{(l)}}\ell_n(\vtheta)\right]_j^2, \quad j = 1,\dots,d^{(l)}$.
+      &
+      \\
+      & Individual gradient $L_2$ norms
+                         & $\left\lVert \frac{1}{N}  \nabla_{\vtheta^{(l)}}\ell_n(\vtheta) \right\rVert_2^2,\quad n=1,\dots,N$
+      &
+      \\
+      & \DiagGGN
+                         & $\diag\left(\mG(\vtheta^{(l)})\right)$
+      &
+      \\
+      & \DiagGGNMC
+                         & $\diag\left(\mGtilde(\vtheta^{(l)})\right)$
+      &
+      \\
+      & Hessian diagonal
+                         & $\diag\left(\nabla_{\vtheta^{(l)}}^2\mathcal{L}(\vtheta) \right)$
+      &
+      \\
+      & \KFAC
+                         & $\mGtilde(\vtheta^{(l)}) \approx \mA^{(l)} \otimes \mB^{(l)}_\text{\KFAC}$
+      &
+      \\
+      & \KFLR
+                         & $\mG(\vtheta^{(l)}) \approx \mA^{(l)} \otimes \mB^{(l)}_\text{\KFLR}$
+      &
+      \\
+      & \KFRA
+                         & $\mG(\vtheta^{(l)}) \approx \mA^{(l)} \otimes \mB^{(l)}_\text{\KFRA}$
+      &
+      \\
+      \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+\end{table*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

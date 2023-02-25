@@ -1,0 +1,406 @@
+% ===================================================================
+% MATH
+% ===================================================================
+\newcommand{\verylongrightarrow}{\xrightarrow{\hspace*{1.5cm}}}
+\newcommand{\explainmath}[1]{\ensuremath{&&{\footnotesize\text{#1}}}} % Only works in align environments
+
+% punctuation of equations, see for example the first answer in
+% https://www.reddit.com/r/LaTeX/comments/5xnzg7/correct_grammar_for_putting_an_equation/
+\newcommand{\equationPunctuation}[1]{\,{#1}}
+
+% ===================================================================
+% REFERENCES
+% ===================================================================
+\makeatletter
+% TODO Allow arbitrary number of arguments in \subfigref
+% https://davidyat.es/2016/07/27/writing-a-latex-macro-that-takes-a-variable-number-of-arguments/
+% \newcommand{\subfigref}[1]{\textbf{(\subref{#1}\subfigrefchecknextarg)}}
+% \newcommand{\subfigrefchecknextarg}{\@ifnextchar\bgroup{\subfigrefgobblenextarg}{}}
+% \newcommand{\subfigrefgobblenextarg}[1]{, \subref{#1}\@ifnextchar\bgroup{\subfigrefgobblenextarg}{}}
+
+\newcommand{\subfigref}[1]{\textbf{(\subref{#1})}}
+
+% ===================================================================
+% COMMON ABBREVIATONS
+
+\newcommand{\PhD}{Ph.D.\@\xspace}
+\newcommand*{\citeeg}{\textit{e.\nobreak\hairsp{}g.},}		% Special \eg command used in citations (doesn't result in weird space)
+%\newcommand*{\ie}{i.e.\@\xspace}
+\newcommand*{\cf}{cf.\@\xspace}
+%\newcommand*{\etal}{et. al.\@\xspace}
+%\makeatletter\newcommand*{\etc}{%
+%	\@ifnextchar{.}%
+%	{etc}%
+%	{etc.\@\xspace}%
+%}
+\makeatother
+
+\newcommand{\hl}[1]{\textbf{#1}}			% Highlight something. Alternative to \emph
+
+\usepackage[super]{nth}						% For things like 2nd, 3rd, etc.
+
+% ===================================================================
+% SHORTHAND
+
+\newcommand{\ai}{artificial intelligence\xspace}
+\newcommand{\AI}{Artificial intelligence\xspace}
+\newcommand{\ml}{machine learning\xspace}
+\newcommand{\ML}{Machine learning\xspace}
+\newcommand{\MLabbr}{ML\xspace}
+\newcommand{\dl}{deep learning\xspace}
+\newcommand{\DL}{Deep learning\xspace}
+\newcommand{\DLabbr}{DL\xspace}
+\newcommand{\dataset}{data set\xspace}
+\newcommand{\datasets}{data sets\xspace}
+\newcommand{\runtime}{runtime\xspace}
+\newcommand{\mvp}{matrix-vector product\xspace}
+\newcommand{\mvps}{matrix-vector products\xspace}
+\newcommand{\earlystopping}{early stopping\xspace}
+\newcommand{\Earlystopping}{Early stopping\xspace}
+
+
+% ===================================================================
+% COLORED ITEMS
+
+% Coloured dots
+\DeclareRobustCommand{\colordot}[1]{%
+	\begin{tikzpicture}[baseline=(a.south)]
+			\node[circle, scale=0.75,color=white, fill=#1] (a) {};
+	\end{tikzpicture}%
+}
+
+% Coloured square
+\DeclareRobustCommand{\colorsquare}[1]{%
+	\begin{tikzpicture}[baseline=(a.south)]
+			\node[rectangle, scale=0.9,color=white, fill=#1] (a) {};
+	\end{tikzpicture}%
+}
+
+% Coloured line
+\DeclareRobustCommand{\colorline}[1]{%
+	\begin{tikzpicture}
+		\raisebox{1.5pt}{
+			\draw[#1,solid,line width=1.5pt] (0,0) -- (1em,0);
+		}
+	\end{tikzpicture}%
+}
+
+% Coloured arrow
+\DeclareRobustCommand{\colorarrow}[1]{%
+	\begin{tikzpicture}
+		\raisebox{2.5pt}{
+			\draw[#1, thick, -stealth] (0,0) -- (1em,0);
+		}
+	\end{tikzpicture}%
+}
+
+% Coloured shade
+\newcommand{\colorshade}[1]{\textcolor{#1}{\ding{122}}}
+
+
+% ===================================================================
+% NUMBERS
+
+\newcommand{\nopts}{$15$\xspace}					% Number of benchmarked optimizer
+\newcommand{\noptstext}{fifteen\xspace}				% -"- in words
+\newcommand{\nruns}{\mbox{$53$,$760$}\xspace}		% Number of total benchmark runs
+\newcommand{\nrunsapprox}{\mbox{$50$,$000$}\xspace}	% Rounded number of total benchmark runs
+\newcommand{\nrunsapproxbold}{\mbox{$\mathbf{50}$,$\mathbf{000}$}\xspace}	% -"- + bold (for titles)
+\newcommand{\nconfigs}{\mbox{$1$,$920$}\xspace}		% Number of benchmarked configurations
+\newcommand{\ntests}{\mbox{$128$}\xspace}			% Number of benchmarked test per optimizer
+\newcommand{\nreruns}{\mbox{ten}\xspace}			% Number of re-runs with different seeds.
+
+
+% ===================================================================
+% PACKAGES
+
+% Personal Packages
+\newcommand{\cockpit}{Cockpit\xspace}
+\newcommand{\deepobs}{DeepOBS\xspace}
+\newcommand{\DeepOBS}{\deepobs}
+% title versions
+\newcommand{\cockpittitle}{Cockpit\xspace}
+\newcommand{\deepobstitle}{DeepOBS\xspace}
+
+% Group Packages
+\newcommand{\backpack}{BackPACK\xspace}
+\newcommand{\BackPACK}{\backpack}
+\newcommand{\backpacktitle}{BackPACK\xspace}
+\newcommand{\vivit}{ViViT\xspace}
+\newcommand{\bfvivit}{\textbf{ViViT}\xspace}
+\newcommand{\vivittitle}{ViViT\xspace} % Special command for the title
+
+% General Tools & Packages
+\newcommand{\python}{Python\xspace}
+\newcommand{\matplotlib}{matplotlib\xspace}
+\newcommand{\numpy}{NumPy\xspace}
+\newcommand{\pytorch}{PyTorch\xspace}
+\newcommand{\PyTorch}{\pytorch}
+\newcommand{\pytorchtitle}{PyTorch\xspace}
+\newcommand{\pyhessian}{PyHessian\xspace}
+\newcommand{\taskset}{TaskSet\xspace}
+\newcommand{\tensorboard}{TensorBoard\xspace}
+\newcommand{\tensorflowdataset}{TensorFlow Datasets\xspace}
+\newcommand{\tensorflow}{TensorFlow\xspace}
+\newcommand{\TensorFlow}{\tensorflow}
+\newcommand{\jax}{JAX\xspace}
+\newcommand{\torchvision}{torchvision\xspace}
+\newcommand{\wandb}{Weights \& Biases\xspace}
+\newcommand{\pgfplots}{pgfplots\xspace}
+\newcommand{\caffe}{Caffe\xspace}
+\newcommand{\chainer}{Chainer\xspace}
+\newcommand{\Chainer}{\chainer}
+\newcommand{\MXNet}{\textsc{MXNet}\xspace}
+\newcommand{\theano}{Theano\xspace}
+\newcommand{\lasagne}{Lasagne\xspace}
+\newcommand{\cuda}{CUDA\xspace}
+
+
+% ===================================================================
+% URLs
+
+\newcommand{\deepobsurl}{\url{https://github.com/fsschneider/deepobs}\xspace}
+\newcommand{\deepobsdocs}{\url{https://deepobs.readthedocs.io/}\xspace}
+\newcommand{\benchmarkurl}{\url{https://github.com/SirRob1997/Crowded-Valley---Results}\xspace}
+\newcommand{\cockpiturl}{\url{https://github.com/f-dangel/cockpit}\xspace}
+\newcommand{\cockpitexpurl}{\url{https://github.com/fsschneider/cockpit-experiments}\xspace}
+\newcommand{\cockpitdocurl}{\url{https://cockpit.readthedocs.io/en/latest/}\xspace}
+\newcommand{\viviturl}{\url{https://github.com/jbzrE7bp/vivit}\xspace}
+
+
+% ===================================================================
+% OPTIMIZERS
+
+\newcommand{\adabelief}{AdaBelief\xspace}
+\newcommand{\adabound}{AdaBound\xspace}
+\newcommand{\adadelta}{Adadelta\xspace}
+\newcommand{\adagrad}{AdaGrad\xspace}
+\newcommand{\adam}{Adam\xspace}
+\newcommand{\amsbound}{AMSBound\xspace}
+\newcommand{\amsgrad}{AMSGrad\xspace}
+\newcommand{\lamom}{LA(Mom.)\xspace}
+\newcommand{\laradam}{LA(RAdam)\xspace}
+\newcommand{\ranger}{Ranger\xspace}
+\newcommand{\lookaheadopt}{Lookahead\xspace}
+\newcommand{\momentum}{Momentum\xspace}
+\newcommand{\nadam}{Nadam\xspace}
+\newcommand{\nag}{NAG\xspace}
+\newcommand{\nagfull}{Nesterov Accelerated Gradient\xspace}
+\newcommand{\otheropt}{Other\xspace}
+\newcommand{\radam}{RAdam\xspace}
+\newcommand{\rmsprop}{RMSProp\xspace}
+\newcommand{\sgd}{SGD\xspace}
+\newcommand{\SGD}{\sgd}
+\newcommand{\sgdfull}{Stochastic Gradient Descent\xspace}
+
+\newcommand{\gd}{GD\xspace}
+\newcommand{\gdfull}{Gradient Descent\xspace}
+\newcommand{\newtonsmethod}{Newton's method\xspace}
+
+\newcommand{\lars}{LARS\xspace}
+\newcommand{\lamb}{LAMB\xspace}
+\newcommand{\adamw}{AdamW\xspace}
+
+\newcommand{\cg}{CG\xspace}
+\newcommand{\cgfull}{conjugate gradient\xspace}
+
+\newcommand{\ggn}{GGN\xspace}
+\newcommand{\GGN}{\ggn}
+\newcommand{\ggnfull}{generalized Gauss-Newton\xspace}
+
+\newcommand{\lbfgs}{L-BFGS\xspace}
+\newcommand{\kbfgs}{K-BFGS\xspace}
+\newcommand{\kfac}{K-FAC\xspace}
+\newcommand{\kfra}{KFRA\xspace}
+\newcommand{\shampoo}{Shampoo\xspace}
+\newcommand{\adahessian}{ADAHESSIAN\xspace}
+
+\newcommand{\sam}{SAM\xspace}
+\newcommand{\samfull}{Sharpness-Aware Minimization\xspace}
+\newcommand{\entropysgd}{Entropy-SGD\xspace}
+
+
+% ===================================================================
+% DATA SETS
+
+\newcommand{\fmnist}{Fashion-MNIST\xspace}
+\newcommand{\fmnistshort}{F-MNIST\xspace}
+\newcommand{\imagenet}{ImageNet\xspace}
+\newcommand{\mnist}{MNIST\xspace}
+\newcommand{\svhn}{SVHN\xspace}
+\newcommand{\tolstoi}{Tolstoi\xspace}
+\newcommand{\warandpeace}{War and Peace\xspace}
+\newcommand{\squad}{SQuAD\xspace}
+\newcommand{\wmt}{WMT 2016\xspace}
+\newcommand{\afhq}{AFHQ\xspace}
+\newcommand{\CIFAR}[1]{CIFAR-#1\xspace}
+\newcommand{\CIFARTEN}{\CIFAR{10}}
+\newcommand{\cifarten}{\CIFARTEN}
+\newcommand{\CIFARHUN}{\CIFAR{100}}
+\newcommand{\cifarhun}{\CIFAR{100}}
+\newcommand{\cifartenhun}{\CIFAR{10/100}}
+\newcommand{\MNIST}{\mnist}
+\newcommand{\FMNIST}{\fmnist}
+
+
+% ===================================================================
+% MODELS
+
+\newcommand{\MNISTNET}{LogReg\xspace}
+\newcommand{\allcnnc}{All-CNN-C\xspace}
+\newcommand{\ALLCNNC}{\allcnnc}
+\newcommand{\lstm}{LSTM\xspace}
+\newcommand{\LSTM}{\lstm}
+\newcommand{\gru}{GRU\xspace}
+\newcommand{\mlp}{MLP\xspace}
+\newcommand{\resnet}{ResNet\xspace}
+\newcommand{\resnetthirtytwo}{ResNet-32\xspace}
+\newcommand{\resnetfifty}{ResNet-50\xspace}
+\newcommand{\resnetfiftysix}{ResNet-56\xspace}
+\newcommand{\resnethundred}{ResNet-101\xspace}
+\newcommand{\resnethundredfifty}{ResNet-152\xspace}
+\newcommand{\wrn}{Wide ResNet 16-4\xspace}
+\newcommand{\threecthreed}{3c3d\xspace}
+\newcommand{\CIFARTENNET}{\threecthreed}
+\newcommand{\twoctwod}{2c2d\xspace}
+\newcommand{\FMNISTNET}{\twoctwod}
+\newcommand{\vggsixteen}{VGG16\xspace}
+\newcommand{\vgg}{\vggsixteen}
+\newcommand{\vggnineteen}{VGG19\xspace}
+\newcommand{\rnn}{RNN\xspace}
+\newcommand{\rnns}{RNNs\xspace}
+\newcommand{\rnnfull}{recurrent neural network\xspace}
+\newcommand{\rnnsfull}{recurrent neural networks\xspace}
+\newcommand{\Rnnsfull}{Recurrent neural networks\xspace}
+
+\newcommand{\cnn}{CNN\xspace}
+\newcommand{\cnns}{CNNs\xspace}
+\newcommand{\cnnsfull}{convolutional neural networks\xspace}
+\newcommand{\Cnnsfull}{Convolutional neural networks\xspace}
+
+\newcommand{\gptthree}{GPT-3\xspace}
+\newcommand{\bert}{BERT\xspace}
+\newcommand{\mobilenet}{MobileNet\xspace}
+
+\newcommand{\gan}{GAN\xspace}
+\newcommand{\gans}{GANs\xspace}
+\newcommand{\gansfull}{generative adversarial networks\xspace}
+
+\newcommand{\gnn}{GNN\xspace}
+\newcommand{\gnns}{GNNs\xspace}
+\newcommand{\gnnsfull}{graph neural networks\xspace}
+
+\newcommand{\transformer}{transformer\xspace}
+\newcommand{\transformers}{transformers\xspace}
+
+\newcommand{\vae}{VAE\xspace}
+\newcommand{\vaes}{VAEs\xspace}
+\newcommand{\vaesfull}{variational autoencoder\xspace}
+\newcommand{\Vaesfull}{Variational autoencoder\xspace}
+
+
+% ===================================================================
+% BACKPACK QUANTITIES
+
+\newcommand{\MC}{MC\xspace}
+\newcommand{\mc}{\MC}
+\newcommand{\DiagGGN}{DiagGGN\xspace}
+\newcommand{\DiagGGNMC}{DiagGGN-MC\xspace}
+\newcommand{\KFAC}{KFAC\xspace}
+\newcommand{\KFLR}{KFLR\xspace}
+\newcommand{\KFRA}{KFRA\xspace}
+
+% ===================================================================
+% QUANTITIES
+
+\newcommand{\qalpha}{\texttt{\mbox{Alpha}}\xspace}
+
+\newcommand{\qcabs}{\texttt{\mbox{CABS}}\xspace}
+\newcommand{\cabs}{\textsc{\mbox{CABS}}\xspace}
+
+\newcommand{\qearlystopping}{\texttt{\mbox{EarlyStopping}}\xspace}
+
+\newcommand{\qgradhistoned}{\texttt{\mbox{GradHist1d}}\xspace}
+\newcommand{\qgradhisttwod}{\texttt{\mbox{GradHist2d}}\xspace}
+
+\newcommand{\qnormtest}{\texttt{\mbox{NormTest}}\xspace}
+\newcommand{\qinnertest}{\texttt{\mbox{InnerTest}}\xspace}
+\newcommand{\qorthotest}{\texttt{\mbox{OrthoTest}}\xspace}
+
+\newcommand{\qhessmaxev}{\texttt{\mbox{HessMaxEV}}\xspace}
+\newcommand{\qhesstrace}{\texttt{\mbox{HessTrace}}\xspace}
+
+\newcommand{\qtictrace}{\texttt{\mbox{TICTrace}}\xspace}
+\newcommand{\qticdiag}{\texttt{\mbox{TICDiag}}\xspace}
+\newcommand{\tic}{\textsc{\mbox{TIC}}\xspace}
+
+\newcommand{\qmeangsnr}{\texttt{\mbox{MeanGSNR}}\xspace}
+\newcommand{\gsnr}{\textsc{\mbox{GSNR}}\xspace}
+
+\newcommand{\qloss}{\texttt{\mbox{Loss}}\xspace}
+\newcommand{\qparams}{\texttt{\mbox{Parameters}}\xspace}
+\newcommand{\qdistance}{\texttt{\mbox{Distance}}\xspace}
+\newcommand{\qupdatesize}{\texttt{\mbox{UpdateSize}}\xspace}
+\newcommand{\qgradnorm}{\texttt{\mbox{GradNorm}}\xspace}
+\newcommand{\qtime}{\texttt{\mbox{Time}}\xspace}
+
+
+% ===================================================================
+% ACTIVIATONS
+
+\newcommand{\relu}{ReLU\xspace}
+
+% ===================================================================
+% OTHER
+
+\newcommand{\refGPU}{\textsc{\mbox{Tesla K80}} GPU\xspace}
+\newcommand{\github}{\textsc{\mbox{GitHub}}\xspace}
+\newcommand{\arxiv}{\mbox{\normalfont\textsc{arXiv}}\xspace}
+\newcommand{\arxivtitle}{\textsc{\mbox{arXiv}}\xspace}
+\newcommand{\coursera}{\mbox{\normalfont\textsc{Coursera}}\xspace}
+
+\newcommand{\fid}{\textsc{\mbox{FID}}\xspace}
+\newcommand{\fidfull}{\textsc{\mbox{Fréchet inception distance}}\xspace}
+
+\newcommand{\alphafold}{\textsc{\mbox{AlphaFold}}\xspace}
+\newcommand{\lasso}{\textsc{\mbox{Lasso}}\xspace}
+\newcommand{\tikhonov}{\textsc{\mbox{Tikhonov}}\xspace}
+
+\newcommand{\klfull}{\textsc{\mbox{Kullback}-\mbox{Leibler}}\xspace}
+\newcommand{\kl}{\textsc{\mbox{KL}}\xspace}
+
+\newcommand{\smac}{\textsc{\mbox{SMAC}}\xspace}
+\newcommand{\bohb}{\textsc{\mbox{BOHB}}\xspace}
+\newcommand{\tpe}{\textsc{\mbox{TPE}}\xspace}
+\newcommand{\spearmint}{\textsc{\mbox{Spearmint}}\xspace}
+
+\newcommand{\mlcommons}{\textsc{\mbox{MLCommons}}\xspace}
+
+\newcommand{\nnsvg}{\textsc{\mbox{NN-SVG}}\xspace}
+
+% Draw letter i with slightly smiling face as dot
+\newcommand{\TikzLowercaseSlightlySmilingFaceI}{%
+  {\tikz[baseline=-0.5ex]{% make aligned with text
+      \node[draw=none,inner sep=0pt] (i) {\i};% letter i without dot
+      \node[draw=none,inner sep=0pt] at ($(i.north)+(-0.088ex,0.412ex)$) {
+        \resizebox{0.315ex}{!}{
+          \TikzSlightlySmilingFace
+        }
+      };
+      % for double-checking: overlay a read transparent i
+      % \node[inner sep=0pt,draw=none,red,anchor=south,text opacity=0.5]
+      % at (i.south) {i};
+    }}}
+
+% Draw a black slightly smiling face
+\newcommand{\TikzSlightlySmilingFace}{\tikz{% https://tex.stackexchange.com/q/244759
+    \draw[draw=none,fill=black] circle (2mm);
+    \node[fill=white,circle,inner sep=0.5pt] (left eye) at (135:0.8mm) {};
+    \node[fill=white,circle,inner sep=0.5pt] (right eye) at (45:0.8mm) {};
+    \draw[white] (-145:0.9mm) arc (-120:-60:1.5mm);
+  }}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

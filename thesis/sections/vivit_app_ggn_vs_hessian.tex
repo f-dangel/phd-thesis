@@ -1,0 +1,71 @@
+\subsubsection{Checkpoints}
+
+During training of the neural networks (see
+\Cref{vivit::sec:training_of_nns}), we store a copy of the model (\ie the network's
+current parameters) at specific checkpoints. This grid defines the temporal
+resolution for all subsequent computations. Since training progresses much
+faster in the early training stages, we use a log-grid with $100$ grid points
+between $1$ and the number of training epochs and shift this grid by $-1$.
+
+\subsubsection{Overlap}
+
+Recall from \Cref{vivit::subsec:approx_quality}: for the set of orthonormal
+eigenvectors $\{ \ve_c^\mU \}_{c=1}^C$ to the $C$ largest eigenvalues of some
+symmetric matrix $\mU$, let $\mP^\mU = (\ve_1^\mU, \dots, \ve_C^\mU) (\ve_1^\mU,
+\dots, \ve_C^\mU)^\top$. As in \cite{gurari2018gradient}, the overlap between two
+subspaces $\mathcal{E}^\mU = \vecspan{}(\ve_1^\mU, \dots, \ve_C^\mU)$ and
+$\mathcal{E}^\mV = \vecspan{}(\ve_1^\mV, \dots, \ve_C^\mV)$ of the matrices $\mU$
+and $\mV$ is defined by
+\begin{equation*}
+  \text{overlap}(\mathcal{E}^\mU, \mathcal{E}^\mV)
+  = \frac{\Tr{}(\mP^\mU \mP^\mV)}
+  {\sqrt{\Tr{}(\mP^\mU) \Tr{}(\mP^\mV)}}
+  \in [0, 1]\, .
+\end{equation*}
+%
+The overlap can be computed efficiently by using the trace's cyclic property: it
+holds $\Tr{}(\mP^\mU \mP^\mV) = \Tr{}(\mW^\top \mW)$ with $\mW = (\ve_1^\mU, \dots,
+\ve_C^\mU)^\top (\ve_1^\mV, \dots, \ve_C^\mV) \in \mathbb{R}^{C \times C}$. Note
+that this is a small $C \times C$ matrix, whereas $\mP^\mU, \mP^\mV \in
+\mathbb{R}^{D \times D}$. Since
+\begin{align*}
+  \Tr{}(\mP^\mU)
+  & = \Tr{}((\ve_1^\mU, \dots, \ve_C^\mU) (\ve_1^\mU, \dots, \ve_C^\mU)^\top) \\
+  & = \Tr{}((\ve_1^\mU, \dots, \ve_C^\mU)^\top (\ve_1^\mU, \dots, \ve_C^\mU))
+    \explainmath{(Cyclic property of trace)}                                 \\
+  & = \Tr{}(\mI_C)
+    \explainmath{(Orthonormality of the eigenvectors)}                       \\
+  & = C
+\end{align*}
+(and analogous $\Tr{}(\mP^\mV) = C$), the denominator simplifies to $C$.
+
+\subsubsection{Procedure}
+
+For each checkpoint, we compute the top-$C$ eigenvalues and associated
+eigenvectors of the full-batch \ggn and Hessian (\ie \ggn and Hessian are both
+evaluated on the entire training set) using an iterative matrix-free approach.
+We then compute the overlap between the top-$C$ eigenspaces as described above.
+The eigspaces (\ie the top-$C$ eigenvalues and associated eigenvectors) are
+stored on disk such that they can be used as a reference by subsequent
+experiments.
+
+\subsubsection{Results}
+
+The results for all test problems are presented in
+\Cref{vivit::fig:ggn_vs_hessian}. Except for a short phase at the beginning of
+the optimization procedure (note the log scale for the epoch-axis), a strong
+agreement (note the different limits for the overlap-axis) between the top-$C$
+eigenspaces is observed. We make similar observations for all test problems, yet
+to a slightly lesser extent for \cifarhun{}. A possible explanation for this
+would be that the $100$-dimensional eigenspaces differ in the eigenvectors
+associated with relatively small curvature. The corresponding eigenvalues
+already transition into the bulk of the spectrum, where the "sharpness of
+separation" decreases. However, since all directions are equally weighted in the
+overlap, overall slightly lower values are obtained.
+%
+\input{figures/vivit/eigspace_overlaps}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

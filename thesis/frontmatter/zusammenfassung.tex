@@ -1,0 +1,87 @@
+% ===================================================================
+% GERMAN SUMMARY
+% ===================================================================
+
+\begin{otherlanguage}{german}
+  \chapter{Zusammenfassung}
+
+  Automatisches Differenzieren stellt eine wesentliche Komponente f\"ur Deep
+  Learning dar: Zuvor waren Anwender auf Modelle beschr\"ankt, deren Ableitungen
+  sich manual berechnen lie\ss{}en. Jetzt k\"onnen sie komplexe Modelle mit fast
+  beliebiger Struktur entwerfen und diese mit Gradienteninformation trainieren.
+  Software-Bibliotheken wie PyTorch~\cite{paszke2019pytorch} und
+  TensorFlow~\cite{abadi2016tensorflow} berechnen den Gradienten effizient und
+  automatisch in einer Codezeile. Im Hintergrund geschieht dies per
+  automatischer Differenzierung im R\"uckw\"artsmodus, genannt Backpropagation.
+  Das Design dieser Bibliotheken basiert auf Backpropagation.
+
+  Solche Bibliotheken sind besonders auf eine spezielle Funktion -- das
+  Berechnen des gemittelten Gradienten \"uber einen Mini-Batch -- ausgerichtet.
+  Diese Spezialisierung erschwert oft die Berechnung anderer Gr\"o\ss{}en, wie
+  höhere statistische Momente des Gradienten oder Ableitungen höherer Ordnung,
+  etwa der Hesse-Matrix. Sie beschr\"ankt Anwender und Forscher auf
+  gradientenbasierte Methoden und hindert die Erforschung des Potenzials
+  h\"oherer Ableitungen und statistischer Momente. Es gibt Anzeichen, dass
+  dieser Fokus auf den Gradienten keine signifikanten Fortschritte in der
+  Optimierung neuronaler Netze erlaubt hat~\cite{schmidt2021descending}.
+
+  Um die algorithmische Forschung voranzutreiben und neue Ideen zu inspirieren
+  müssen andere Gr\"o\ss{}en, die über den gemittelten Gradienten eines
+  Mini-Batches hinausgehen, genauso einfach -- das hei\ss{}t automatisiert und
+  effizient -- zug\"anglich gemacht werden.
+
+  Diese Arbeit stellt Ans\"atze vor, die das Experimentieren mit diversen
+  Gr\"o\ss{}en jenseits des Gradienten erleichtern, indem sie diese leichter
+  zug\"anglich machen. Wir implementieren diese Ideen durch Erweiterung der
+  bestehenden Backpropagation in \pytorch. Mit diesen neu zug\"anglichen
+  Gr\"o\ss{}en demonstrieren wir Anwendungsszenarien indem wir zeigen wie diese
+  (i) anhand eines Diagnosetools zum besseren Verst\"andnis des Trainings
+  neuronaler Netze f\"uhren und (ii) neue Methoden f\"ur effiziente und
+  approximative Berechnung von Kr\"ummungsinformation erm\"oglichen.
+
+  Zun\"achst erweitern wir Gradient Backpropagation f\"ur sequenzielle neuronale
+  Netze auf Backpropagation von Hesse-Matrizen, welche die Berechnung von
+  Kr\"ummung innerhalb einer Schicht erm\"oglicht. Diese Formulierung
+  vereinheitlicht k\"urzlich vorgeschlagene N\"aherungsverfahren f\"ur
+  Kr\"ummung durch blockdiagonale Matrizen. Wie Gradient Backpropagation ist
+  dieses Verfahren f\"ur Ableitungen zweiter Ordnung zwischen Schichten
+  entkoppelt und daher einfach zu automatisieren und zu erweitern.
+
+  Basierend auf der Erkenntnis, dass reichhaltige Information jenseits des
+  Gradienten gleichzeitig mit diesem berechnet werden kann, erweitern wir die
+  Standard-Backpropagation von \pytorch mit der \backpack-Bibliothek. Diese
+  bietet effizienten Zugriff auf statistische Gradientenmomente und
+  approximative Krümmungsinformation. Im Vergleich zur Gradientenberechnung
+  ist der Mehraufwand oft gering.
+
+  Danach demonstrieren wir den Nutzen solcher Information zum besseren
+  Verst\"andnis des Trainings neuronaler Netze. Wir entwickeln die
+  \cockpit-Bibliothek, die w\"ahrend des Trainings anhand verschiedener
+  Instrumente -- basierend auf \backpack{}s Gr\"o\ss{}en -- visualisiert, was
+  innerhalb des Modells geschieht. Wir zeigen, wie \cockpit Ingenieuren hilft,
+  Fehler in deren Pipeline zu identifizieren, Hyperparameter zu w\"ahlen und
+  Deep Learning Ph\"anomene zu untersuchen.
+
+  Zuletzt verwenden wir \backpack{}s Funktionalit\"at zur Entwicklung von
+  \vivit, einem Verfahren zur effizienten Berechnung von Kr\"ummungsinformation,
+  insbesondere deren Rauschen. \vivit basiert auf dem \"au\ss{}eren Produkt in
+  der verallgemeinerten Gau\ss{}-Newton-Matrix und behebt Probleme bestehender
+  Methoden. Durch Beobachtung von Kr\"ummungsrauschen zeigen wir, wie \vivit{}s
+  Gr\"o\ss{}en dabei helfen, Herausforderungen f\"ur die erfolgreiche
+  Realisierung kr\"ummungsbasierter Optimierer zu verstehen.
+
+  Diese Arbeit entwickelt neue Tools zum vereinfachten Experimentieren mit
+  Information höherer Ordnung in komplizierten tiefen Netzen. Diese Tools haben
+  Arbeiten zu bayesschen Anwendungen mit
+  Laplace-Approximationen~\cite{daxberger2021laplace}, Out-of-Distribution
+  Generalisierung~\cite{gulrajani2021in,rame2022fishr}, Differential
+  Privacy~\cite{yousefpour2021opacus}, sowie das Design von Deep Learning
+  Bibliotheken beeinflusst. Sie stellen einen wichtigen Schritt zur Entwicklung
+  und Etablierung effizienterer Algorithmen f\"ur Deep Learning dar.
+
+\end{otherlanguage}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

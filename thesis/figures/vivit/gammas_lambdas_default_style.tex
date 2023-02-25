@@ -1,0 +1,33 @@
+% defines the pgfplots style "gammaslambdasdefault"
+\pgfkeys{/pgfplots/gammaslambdasdefault/.style={
+    width=1.0\linewidth,
+    height=0.6\linewidth,
+    every axis plot/.append style={line width = 1.5pt},
+    mark size = 0.6,
+    tick pos = left,
+    ylabel near ticks,
+    xlabel near ticks,
+    xtick align = inside,
+    ytick align = inside,
+    legend cell align = left,
+    legend columns = 1,
+    legend pos = south east,
+    legend style = {
+      fill opacity = 0.7,
+      text opacity = 1,
+      font = \footnotesize,
+    },
+    xticklabel style = {font = \footnotesize},
+    xlabel style = {font = \footnotesize},
+    axis line style = {black},
+    yticklabel style = {font = \footnotesize},
+    ylabel style = {font = \footnotesize},
+    title style = {font = \footnotesize},
+    grid = major,
+    grid style = {dashed}
+  }
+}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

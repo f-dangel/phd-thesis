@@ -1,0 +1,37 @@
+\begin{table}
+  \centering
+  \caption{\textbf{Hyperparameter settings for training runs to analyze noise.}
+    For both \sgd and \adam, we report their learning rates $\alpha$ (taken from
+    the baselines in \cite{dangel2020backpack}) and link to their visualization.
+    Momentum for \sgd was fixed to $0.9$, and \adam uses the default parameters
+    $(\beta_1, \beta_2) = (0.99, 0.999)$.}
+  \label{tab:noise-hyperparameters}
+  \vspace{1ex}
+  \begin{normalsize}
+    \begin{tabular}{lll}
+      \toprule
+      Problem
+      & \sgd
+      & \adam \\
+      \midrule
+      \cifarten \threecthreed
+      & $\alpha \approx 3.79 \cdot 10^{-3}$ (\Cref{fig:noise-cifar10-3c3d-sgd})
+      & $\alpha \approx 2.98 \cdot 10^{-4}$ (\Cref{fig:noise-cifar10-3c3d-adam})
+      \\
+      \fmnist \twoctwod
+      & $\alpha \approx 2.07 \cdot 10^{-2}$ (\Cref{fig:noise-fmnist-2c2d-sgd})
+      & $\alpha \approx 1.27\cdot 10^{-4}$ (\Cref{fig:noise-fmnist-2c2d-adam})
+      \\
+      \cifarhun \allcnnc
+      & $\alpha \approx 4.83\cdot 10^{-1}$ (\Cref{fig:noise-cifar100-allcnnc-sgd})
+      & $\alpha \approx 6.95\cdot 10^{-4}$ (\Cref{fig:noise-cifar100-allcnnc-adam})
+      \\
+      \bottomrule
+    \end{tabular}
+  \end{normalsize}
+\end{table}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

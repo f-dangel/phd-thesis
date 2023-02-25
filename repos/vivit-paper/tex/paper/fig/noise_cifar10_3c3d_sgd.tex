@@ -1,0 +1,266 @@
+
+\begin{figure}[tb]
+  \centering
+
+  % pgfplots style "noisedefault"
+  \pgfkeys{/pgfplots/noisedefault/.style={
+      width=1.23\linewidth,
+      height=0.165\textheight,
+      every axis plot/.append style={line width = 1.2pt},
+      every axis plot post/.append style={
+        mark size=0.9, mark options={opacity=0.25}
+      },
+      tick pos = left,
+      xmajorticks = true,
+      ymajorticks = true,
+      ylabel near ticks,
+      xlabel near ticks,
+      xtick align = inside,
+      ytick align = inside,
+      legend cell align = left,
+      legend columns = 1,
+      legend pos = north west,
+      legend style = {
+        fill opacity = 0.9,
+        text opacity = 1,
+        font = \small,
+      },
+      xticklabel style = {font = \small, inner xsep = 0ex},
+      xlabel style = {font = \small},
+      axis line style = {black},
+      yticklabel style = {font = \small, inner ysep = 0ex},
+      ylabel style = {font = \small, inner ysep = -0.1ex},
+      title style = {font = \small, inner ysep = 0ex, yshift = -0.75ex},
+      grid = major,
+      grid style = {dashed}
+    }
+  }
+
+  \pgfkeys{/pgfplots/overwritecolor0blue/.style={
+      % overwrite color0 with blue
+      execute at begin picture={\definecolor{color0}{RGB}{55,126,184}},
+      }}
+
+    \pgfkeys{/pgfplots/overwritecolor0orange/.style={
+        % overwrite color0 with orange
+        execute at begin picture={\definecolor{color0}{RGB}{255,127,0}},
+      }}
+
+    \pgfkeys{/pgfplots/overwritecolor0green/.style={
+        % overwrite color0 with green
+        execute at begin picture={\definecolor{color0}{RGB}{77,175,74}},
+      }}
+
+    \pgfkeys{/pgfplots/overwritecolor0purple/.style={
+        % overwrite color0 with purple
+        execute at begin picture={\definecolor{color0}{RGB}{152,78,163}},
+      }}
+
+  \begin{flushleft}
+    (a)
+  \end{flushleft}
+  \vspace{-1\baselineskip}
+
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={noisedefault,
+        xlabel=\empty,
+        xticklabels=\empty,
+        overwritecolor0blue,
+      }}
+    \input{../../fig/exp11_noise_monitoring/fig/lambdas_gammas_mean/cifar10_3c3d_SGD_epoch_00000_batch_00000.tex}
+  \end{minipage}
+  \hspace{2ex}
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={noisedefault,
+        ylabel=\empty,
+        yticklabels=\empty,
+        xlabel=\empty,
+        xticklabels=\empty,
+        overwritecolor0blue,
+      }}
+    \input{../../fig/exp11_noise_monitoring/fig/lambdas_gammas_mean/cifar10_3c3d_SGD_epoch_00004_batch_00000.tex}
+  \end{minipage}
+  \hspace{-3.5ex}
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={noisedefault,
+        ylabel=\empty,
+        yticklabels=\empty,
+        xlabel=\empty,
+        xticklabels=\empty,
+        overwritecolor0blue,
+      }}
+    \input{../../fig/exp11_noise_monitoring/fig/lambdas_gammas_mean/cifar10_3c3d_SGD_epoch_00067_batch_00000.tex}
+  \end{minipage}
+  \hspace{-2.5ex}
+
+  \vspace{-2.4\baselineskip}
+
+  \begin{flushleft}
+    (b)
+  \end{flushleft}
+  \vspace{-1.65\baselineskip}
+
+  \hspace{-0.2ex}
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={noisedefault,
+        xlabel=\empty,
+        xticklabels=\empty,
+        ymin = 1e-6,
+        title=\empty,
+        ylabel = {$\gamma_k^2 / \lVert \vg \rVert^2$},
+        overwritecolor0purple,
+      }}
+    \input{../../fig/exp11_noise_monitoring/fig/gradient_curvature_overlap_hist/cifar10_3c3d_SGD_epoch_00000_batch_00000.tex}
+  \end{minipage}
+  \hspace{2ex}
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={noisedefault,
+        xlabel=\empty,
+        xticklabels=\empty,
+        ylabel=\empty,
+        yticklabels=\empty,
+        ymin = 1e-6,
+        overwritecolor0purple,
+        title=\empty,
+      }}
+    \input{../../fig/exp11_noise_monitoring/fig/gradient_curvature_overlap_hist/cifar10_3c3d_SGD_epoch_00004_batch_00000.tex}
+  \end{minipage}
+  \hspace{-3.5ex}
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={noisedefault,
+        xlabel=\empty,
+        xticklabels=\empty,
+        ylabel=\empty,
+        yticklabels=\empty,
+        ymin = 1e-6,
+        overwritecolor0purple,
+        title=\empty,
+      }}
+    \input{../../fig/exp11_noise_monitoring/fig/gradient_curvature_overlap_hist/cifar10_3c3d_SGD_epoch_00067_batch_00000.tex}
+  \end{minipage}
+  \hspace{-2.5ex}
+  \hspace{0ex}
+
+  \vspace{-2.4\baselineskip}
+
+  \begin{flushleft}
+    (c)
+  \end{flushleft}
+  \vspace{-1.65\baselineskip}
+
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={noisedefault,
+        xlabel=\empty,
+        xticklabels=\empty,
+        title=\empty,
+        overwritecolor0orange,
+      }}
+    \input{../../fig/exp11_noise_monitoring/fig/lambdas_snr/cifar10_3c3d_SGD_epoch_00000_batch_00000.tex}
+  \end{minipage}
+  \hspace{2ex}
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={noisedefault,
+        ylabel=\empty,
+        yticklabels=\empty,
+        xlabel=\empty,
+        xticklabels=\empty,
+        title=\empty,
+        overwritecolor0orange,
+      }}
+    \input{../../fig/exp11_noise_monitoring/fig/lambdas_snr/cifar10_3c3d_SGD_epoch_00004_batch_00000.tex}
+  \end{minipage}
+  \hspace{-3.5ex}
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={noisedefault,
+        ylabel=\empty,
+        yticklabels=\empty,
+        xlabel=\empty,
+        xticklabels=\empty,
+        title=\empty,
+        overwritecolor0orange,
+      }}
+    \input{../../fig/exp11_noise_monitoring/fig/lambdas_snr/cifar10_3c3d_SGD_epoch_00067_batch_00000.tex}
+  \end{minipage}
+  \hspace{-2.5ex}
+
+  \vspace{-2.4\baselineskip}
+
+  \begin{flushleft}
+    (d)
+  \end{flushleft}
+  \vspace{-1.65\baselineskip}
+
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={noisedefault,
+        ymin = 1e-6,
+        title=\empty,
+        overwritecolor0green,
+      }}
+    \input{../../fig/exp11_noise_monitoring/fig/gammas_snr/cifar10_3c3d_SGD_epoch_00000_batch_00000.tex}
+  \end{minipage}
+  \hspace{2ex}
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={noisedefault,
+        ylabel=\empty,
+        yticklabels=\empty,
+        ymin = 1e-6,
+        title=\empty,
+        overwritecolor0green,
+      }}
+    \input{../../fig/exp11_noise_monitoring/fig/gammas_snr/cifar10_3c3d_SGD_epoch_00004_batch_00000.tex}
+  \end{minipage}
+  \hspace{-3.5ex}
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={noisedefault,
+        ylabel=\empty,
+        yticklabels=\empty,
+        ymin = 1e-6,
+        title=\empty,
+        overwritecolor0green,
+      }}
+    \input{../../fig/exp11_noise_monitoring/fig/gammas_snr/cifar10_3c3d_SGD_epoch_00067_batch_00000.tex}
+  \end{minipage}
+  \hspace{-2.5ex}
+
+  \vspace{-1.5\baselineskip}
+
+  \caption{\textbf{Gradient, curvature and noise during training.} Columns show
+    the \threecthreed architecture at initialization (\textit{left}), an early
+    (epoch 5, \textit{center}), and advanced (epoch 68, \textit{right}) stage of
+    training on \cifarten with \sgd (hyperparameters from
+    \cite{schneider2019deepobs, dangel2020backpack}, details in
+    \Cref{sec:details-noise-monitoring}). For each direction $k$, characterized
+    by its curvature $\lambda_k$, we monitor (a) the directional gradient
+    magnitude; (b) gradient-eigenvector alignment; (c,d) $\mathrm{SNR}$s of
+    curvatures and gradients.}
+  \label{fig:noise-cifar10-3c3d-sgd}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

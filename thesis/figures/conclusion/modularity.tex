@@ -1,0 +1,19 @@
+\begin{tikzpicture}
+  \node
+  [inner sep=0, anchor=south west]
+  (input)
+  {\tikz \drawMessagesWithArrows{\,\scalebox{0.8}{$\{\vz_{n}^{(l-1)}\}$}\,}{\,\scalebox{0.75}{$\{\grad{\vz_{n}^{(l-1)}}\gL\}$}\,}{ \includegraphics[width=3.7ex]{../repos/backpack-paper/tex/logo/backpack_logo_github} }{\hNodeDistance};};
+  \node (layerLast)
+  [anchor=south west, inner sep=0]
+  at (input.south east)
+  {\tikz \drawModuleWithParams{$\vf^{(l)}_{\vtheta^{(l)}}$}{16}{$\vtheta^{(l)}$}{$\grad{\vtheta^{(l)}}\gL$}{ \includegraphics[width=3.7ex]{../repos/backpack-paper/tex/logo/backpack_logo_github} };};
+  \node (outLast)
+  [inner sep=0, anchor=south west]
+  at (layerLast.south east)
+  {\tikz \drawMessagesWithArrows{\scalebox{0.8}{$\{\vz_{n}^{(l)}\}$}}{\scalebox{0.75}{$\{\grad{\vz_{n}^{(l)}}\gL\}$}}{ \includegraphics[width=3.7ex]{../repos/backpack-paper/tex/logo/backpack_logo_github} }{\hNodeDistance};};
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

@@ -1,0 +1,72 @@
+\paragraph{\KFAC versus \KFLR:}
+As the \KFLR of \citet{botev2017practical} is orders of magnitude more expensive
+to compute than the \KFAC of \citet{martens2015optimizing} on \CIFAR{100}, it
+was not included in the main plot. This is not an implementation error; it
+follows from the definition of those methods. To approximate the \GGN,
+$\mG(\vtheta) = \nicefrac{1}{N} \sum_n [\jac_{\vtheta} \vf_n]^\top
+\nabla_{\vf_n}^2 \: \ell_n \: [\jac_{\vtheta} \vf_n]$, \KFAC uses a rank-1
+approximation for each of the inner Hessian $\nabla_{\vf_n}^2 \: \ell_n \approx
+\vs_n\vs_n^\top$, and needs to propagate a \emph{vector} through the computation
+graph for each sample. \KFLR uses the complete inner Hessian instead. For
+\CIFAR{100}, the network has 100 output nodes---one for each class---and the
+inner Hessians are $[100 \times 100]$ matrices. \KFLR needs to propagate a
+\emph{matrix} through the computation graph for each sample, which is
+$100\times$ more expensive as shown in \Cref{backpack::fig:apx-bench}.
+
+\begin{figure*}[!htbp]
+  \centering
+  \input{figures/backpack/style_bench_barplot.tex}
+  \pgfkeys{/pgfplots/zmystyle/.style={
+      BackPACKBenchBarplot,
+      title={\cifarhun on \allcnnc, $B=16$},
+    }
+  }
+  \tikzexternalenable
+  \input{../repos/backpack-paper/code/benchmarks/bench_barplot_appendix.tex}
+  \tikzexternaldisable
+  \vspace{-2ex}
+  \caption{ \textbf{\KFLR and \DiagGGN are more expensive to run on large
+      networks.} The gradient takes less than 20\,ms to compute, but \KFLR and
+    \DiagGGN are approximately $100\times$ more expensive. }
+  \label{backpack::fig:apx-bench}
+\end{figure*}
+
+\begin{figure}[!htbp]
+  \vspace{0ex}
+  \centering
+  \input{figures/backpack/style_bench_barplot.tex}
+  \pgfkeys{/pgfplots/zmystyle/.style={
+      BackPACKBenchBarplot,
+      x grid style = {opacity = 0},
+      log origin=infty,
+      legend pos = north west,
+      title = {\threecthreed with one sigmoid on \cifarten},
+    }
+  }
+  \tikzexternalenable
+  \input{../repos/backpack-paper/code/benchmarks/bench_diagh.tex}
+  \tikzexternaldisable
+  \caption{ \textbf{Diagonal of the Hessian versus the \GGN.} If the network
+    contains a single sigmoid activation function, the diagonal of the Hessian
+    is an order of magnitude more computationally intensive than the diagonal of
+    the \GGN. }
+  \label{backpack::fig:apx-diagh}
+\end{figure}
+
+\paragraph{\GGN diagonal versus Hessian diagonal:}
+Most nets used in deep learning use ReLU activations. ReLU functions have no
+\emph{curvature} as they are piecewise linear. Because of this, the diagonal of
+the \GGN is equivalent to the diagonal of the Hessian \citep{martens2014new}.
+However, for networks that use non piecewise linear activation functions like
+sigmoids or tanh, computing the Hessian diagonal can be much more expensive than
+the \GGN diagonal. To illustrate this, we modify the smaller net used in our
+benchmarks to include a single sigmoid activation function before the last
+classification layer. The results in \Cref{backpack::fig:apx-diagh} show that
+the Hessian diagonal computation is already an order of magnitude more expensive
+than for the \GGN.
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

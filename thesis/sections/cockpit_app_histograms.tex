@@ -1,0 +1,34 @@
+\subsection{Individual Gradient Element Histograms (\robustInlinecode{GradHist1d},
+  \robustInlinecode{GradHist2d})}
+For the $|\sB| \times D$ individual gradient elements, \cockpit's
+\inlinecode{GradHist1d} instrument displays a histogram of
+\begin{equation}
+  \label{cockpit::eq:app-grad-hist-1d}
+  \left\{
+    [\vg_n(\vtheta)]_d
+  \right\}_{n\in\sB,d=1,\dots, D}\,.
+\end{equation}
+\cockpit's \inlinecode{GradHist2d} instrument displays a two-dimensional histogram
+of the $|\sB| \times D$ tuples
+\begin{equation}
+  \label{cockpit::eq:app-grad-hist-2d}
+  \left\{
+    \left(
+      [\vtheta]_d,
+      [\vg_n(\vtheta)]_d
+    \right)
+  \right\}_{n\in\sB,d=1,\dots, D}\,
+\end{equation}
+and the marginalized one-dimensional histograms over the parameter and gradient
+axes.
+
+\subsubsection{Usage}
+
+\Cref{cockpit::sec:misscaled_data_exp,cockpit::sec:vanishing_gradient_exp}
+provide use cases (identifying data pre-processing issues and vanishing
+gradients) for both the gradient histogram as well as its layer-wise extension.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

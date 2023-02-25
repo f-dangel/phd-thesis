@@ -1,0 +1,41 @@
+  \begin{tikzpicture}
+    \node [font=\Large] (inTensor) {\drawInputTensor};
+    \node [yshift = -225, font=\Large] (inTensorExpanded) at (inTensor) {\drawInputTensorExpanded};
+
+    \node [xshift = 100](convolutionSign) at (inTensor) {$\star$};
+
+    \node [xshift = 80, yshift = 25, scale = 0.7, font=\Large] (inKernel1) at (convolutionSign) {\drawKernelOne};
+    \node [xshift = 80, yshift = -25, scale = 0.7, font=\Large] (inKernel2) at (convolutionSign) {\drawKernelTwo};
+
+    \coordinate [xshift=180] (kernelExpandedCenter) at (inTensorExpanded);
+    \node [yshift = 75, scale = 0.7, font=\Large] (kernelOneExpanded) at (kernelExpandedCenter) {\drawKernelOneExpanded};
+    \node [yshift = -75, scale = 0.7, font=\Large] (kernelTwoExpanded) at (kernelExpandedCenter) {\drawKernelTwoExpanded};
+
+    \node [xshift = 170] (equalSign) at (convolutionSign) {$=$};
+
+    \node [xshift = 80, font=\Large] (outTensor) at (equalSign) {\drawOutputTensor};
+    \node [yshift = -225, font=\Large] (outTensorExpanded) at (outTensor) {\drawOutputTensorExpanded};
+
+    \foreach \i/\j in {0.15/0.15, 0.5/0.5, 0.85/0.85}{
+      \foreach \name in {kernelOneExpanded}{
+        \draw [-latex, thick, out=0, in=180]
+        ($($(inTensorExpanded.north east)!\i!(inTensorExpanded.south east)$)+(0.2,0)$)
+        to
+        ($(\name.north west)!\j!(\name.south west)$);
+      }
+    }
+
+    \foreach \i/\j in {0.15/0.18, 0.5/0.24, 0.85/0.3}{
+      \foreach \name in {outTensorExpanded}{
+        \draw [-latex, thick, out=0, in=180]
+        ($($(kernelOneExpanded.north east)!\i!(kernelOneExpanded.south east)$)+(0.2,0)$)
+        to
+        ($(\name.north west)!\j!(\name.south west)$);
+      }
+    }
+
+    \node[yshift=-235] (inputMatrix) at (inTensorExpanded) {\drawInputMatrix};
+    \node[yshift=-235, xshift=180] (kernelMatrix) at (inTensorExpanded) {\drawKernelMatrix};
+    \node[yshift=-460] (equalSignMM) at (equalSign) {$=$};
+    \node[xshift=80] (outMatrix) at (equalSignMM) {\drawOutputMatrix};
+\end{tikzpicture}

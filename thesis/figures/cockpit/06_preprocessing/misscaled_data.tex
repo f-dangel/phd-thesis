@@ -1,0 +1,71 @@
+\begin{figure*}
+  \centering
+  \begin{subfigure}[t]{0.46\linewidth}
+    \begin{minipage}{.49\linewidth}
+      \Cshadowbox{\includegraphics[width =
+        .35\linewidth]{../repos/cockpit-paper/tex/fig/06_preprocessing/fig_samples/cifar10raw_3c3d_sample_00.png}}
+      \Cshadowbox{\includegraphics[width =
+        .35\linewidth]{../repos/cockpit-paper/tex/fig/06_preprocessing/fig_samples/cifar10raw_3c3d_sample_01.png}}
+
+      \Cshadowbox{\includegraphics[width =
+        .35\linewidth]{../repos/cockpit-paper/tex/fig/06_preprocessing/fig_samples/cifar10raw_3c3d_sample_02.png}}
+      \Cshadowbox{\includegraphics[width =
+        .35\linewidth]{../repos/cockpit-paper/tex/fig/06_preprocessing/fig_samples/cifar10raw_3c3d_sample_03.png}}
+    \end{minipage}
+    \begin{minipage}{.49\linewidth}
+      \input{figures/cockpit/06_preprocessing/default_style}
+      \centering
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={preprocessingexperimentdefault,
+          ylabel={Gradient Element}
+        }}
+      \vspace{1.4\baselineskip}
+      \tikzexternalenable
+      \input{../repos/cockpit-paper/tex/fig/06_preprocessing/fig_histograms/cifar10raw_3c3d.tex}
+      \tikzexternaldisable
+    \end{minipage}
+    \vspace{-2ex}
+    \caption{Normalized Data}
+    \label{cockpit::fig:data-pre-processing_norm}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.46\linewidth}
+    \begin{minipage}{.49\linewidth}
+      \Cshadowbox{\includegraphics[width =
+        .35\linewidth]{../repos/cockpit-paper/tex/fig/06_preprocessing/fig_samples/cifar10scale255_3c3d_sample_00.png}}
+      \Cshadowbox{\includegraphics[width =
+        .35\linewidth]{../repos/cockpit-paper/tex/fig/06_preprocessing/fig_samples/cifar10scale255_3c3d_sample_01.png}}
+
+      \Cshadowbox{\includegraphics[width =
+        .35\linewidth]{../repos/cockpit-paper/tex/fig/06_preprocessing/fig_samples/cifar10scale255_3c3d_sample_02.png}}
+      \Cshadowbox{\includegraphics[width =
+        .35\linewidth]{../repos/cockpit-paper/tex/fig/06_preprocessing/fig_samples/cifar10scale255_3c3d_sample_03.png}}
+    \end{minipage}
+    \begin{minipage}{.49\linewidth}
+      \input{figures/cockpit/06_preprocessing/default_style}
+      \centering
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={preprocessingexperimentdefault,
+          ylabel={Gradient Element}
+        }}
+      \vspace{1.4\baselineskip}
+      \tikzexternalenable
+      \input{../repos/cockpit-paper/tex/fig/06_preprocessing/fig_histograms/cifar10scale255_3c3d.tex}
+      \tikzexternaldisable
+    \end{minipage}
+    \vspace{-2ex}
+    \caption{Raw Data}
+    \label{cockpit::fig:data-pre-processing_raw}
+  \end{subfigure}
+  \caption{\textbf{Same inputs, different gradients; Catching data bugs with
+      \cockpittitle.} (a) \emph{normalized} ($[0, 1]$) and (b) \emph{raw} $([0,
+    255])$ images look identical in auto-scaled front-ends like \matplotlib's
+    \robustInlinecode{imshow}. The gradients on \threecthreed, however, are
+    crucially affected by this scaling.}
+  \label{cockpit::fig:data-pre-processing}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../../thesis"
+%%% End:

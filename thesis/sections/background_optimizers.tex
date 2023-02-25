@@ -1,0 +1,153 @@
+\input{figures/background/popular_optimizers}
+
+\Cref{sec:background::SupervisedLearning} formulates learning as minimizing the
+empirical risk, for which an optimization algorithm seeks to find a solution.
+Deep learning optimizers are iterative: they start from an initial parameter
+$\vtheta_{0}$ and aim to improve the parameters in iterations, leading
+to a trajectory $\vtheta_{0}, \vtheta_{1}, \dots$ in parameter space. An
+iteration is described by an update rule $\gM: \vtheta_{t} \mapsto
+\vtheta_{t+1}$ that relies on internal states of the optimizer from the
+observation history $H_t$, local observations at the current iterate
+$\vtheta_t$, and hyperparameters $\phi_t$~\cite{choi2020on}. The next iterate
+results from a simplified optimization problem where the actual objective is
+replaced by a computationally cheap approximation. Often, this direction is
+further adapted by outer-loop mechanisms, like line searches, or hyperparameters
+that require manual tuning to achieve good performance.
+
+The update quality is influenced by the quality of the local approximation.
+Computing exact information about the objective $\gL_{\sD}$ is expensive, but
+yields a more accurate local proxy. Due to the large-scale nature of deep
+learning, algorithms only rely on stochastic information from a mini-batch
+$\sB_t$ in form of the mini-batch loss $\gL_{\sB_t}$
+(\Cref{sec:background::MiniBatching}). In addition to locality, noise further
+complicates deriving a precise local approximation.
+
+\subsubsection{Stochastic Gradient Descent}
+One of the most popular methods, according to
+\Cref{fig:background::ArxivMentions}, is stochastic gradient descent (\sgd,
+\citep{robbins1951stochastic}). Its update derives from
+\begin{subequations}
+  \begin{align}
+    \gM:\qquad
+    \vtheta_{t+1}
+    =
+    \argmin_{\vtheta} m_{\vtheta_t}(\vtheta)
+    =
+    \vtheta_t - \eta \vg_{\sB_t}(\vtheta_t)
+  \end{align}
+  where $m_{\vtheta_t}(\vtheta)$ is a first-order Taylor around the current
+  iterate $\vtheta_t$ based on the mini-batch gradient, regularized by a quadratic
+  $L_2$ penalty to discourage large steps with a learning rate $\eta$,
+  \begin{align}\label{eq:background::SGDLocalApproximation}
+    m_{\vtheta_t}(\vtheta)
+    =
+    \gL_{\sB_t}(\vtheta_t)
+    +
+    {\vg_{\sB_t}(\vtheta_t)}^{\top}
+    (\vtheta - \vtheta_t)
+    +
+    \frac{1}{2 \eta}
+    \lVert \vtheta - \vtheta_t \rVert_2^2
+  \end{align}
+\end{subequations}
+This leads to \Cref{opt:background::SGD}, which updates the parameters with the
+scaled negative mini-batch gradient. The negative gradient also corresponds to
+the direction of steepest descent, \ie along which the loss decreases most
+rapidly around $\vtheta_t$ (see
+\Cref{sec:background::naturalGradientDescent,eq:background::negativeGradientSteepestDescent}).
+
+\subsubsection{Momentum Methods (Incorporating Past Knowledge)}
+
+The descent direction in \sgd becomes poorer as the mini-batch gradient is
+subject to more noise. Incorporating previous gradient observations can help
+reduce noise and find a better descent direction~\cite[][Chapter
+8.3]{goodfellow2016deep}. From a physical interpretation, the optimizer builds
+up a velocity (referred to as \emph{momentum}) that is adapted with new gradient
+observation. Two variations are the heavy ball~\cite{polyak1964some} and
+Nesterov~\cite{nesterov1983method} momentum methods
+(\Cref{opt:background::Momentum,opt:background::NAG}). Another intuition for
+momentum is that it suppresses \sgd's oscillating behavior in the presence of
+two directions with differing curvature by averaging out gradients that point in
+opposite directions (see \eg central panel of \Cref{cockpit::fig:LINE}).
+
+\subsubsection{Adaptive Methods (Per-parameter Learning Rate)}
+
+Adaptive methods like AdaGrad~\cite{duchi2011adaptive},
+RMSProp~\cite{tieleman2012lecture}, Adadelta~\cite{zeiler2012adadelta},
+Adam~\cite{kingma2015adam}~\&~AMSGrad~\cite{reddi2018on} keep a learning rate
+for each parameter that is adapted over time. This rescaling is driven by the
+elementwise square of the mini-batch gradient, $\vg_{\sB_t}(\vtheta_t)^{\odot
+  2}$
+(\Cref{opt:background::AdaGrad,opt:background::RMSProp,opt:background::Adadelta,ex:background::Adam,opt:background::AMSGrad}).
+These algorithms use this quantities in different ways, motivated by
+shortcomings of predecessors (\eg too aggressive learning rate
+shrinking~\cite{tieleman2012lecture,zeiler2012adadelta} and convergence
+problems~\cite{reddi2018on}).
+
+\subsubsection{No Clear Winner \& Mini-batch Gradient as Central Object}
+
+\Cref{fig:background::popularDeepLearningOptimizers} summarizes the update rules
+of the above optimization methods. Their update rules to derive $\vtheta_{t+1}$
+rely on three ingredients:
+\begin{itemize}
+\item The history of iterates $\{\vtheta_{t'}\}_{t'=0}^{t}$
+\item The history of gradients\sidenote{%
+    One mild exception is Nesterov momentum (\Cref{opt:background::NAG}). It
+    relies on the ``lookahead'' gradient history rather than the gradient
+    history of iterates.}%
+  $\{\vg_{\sB_{t'}}(\vtheta_{t'})\}_{t'=0}^{t}$
+
+\item The history of elementwise gradient squares
+  $\{\vg_{\sB_{t'}}(\vtheta_{t'})^{\odot 2}\}_{t'=0}^{t}$
+  % , which can be derived from the gradient history
+\end{itemize}
+In summary, the main ingredient in all of these methods is the average
+mini-batch gradient (and its elementwise square). Their updates are cheap and
+only require computation of average mini-batch gradients, as efficiently
+provided by AD in popular ML libraries
+(\Cref{sec:background::GradientBackpropagation}):
+\begin{align}\label{eq:background::PopularOptimizers}
+  \begin{split}
+    \gM
+    &=
+      \gM(
+      H_t,
+      \phi_t)
+    \\
+    \text{with}\qquad
+    H_t
+    &=
+      \left\{\vtheta_{t'}\right\}_{t'=0}^{t},
+      \cup
+      \left\{\vg_{\sB_{t'}}(\vtheta_{t'}) \right\}_{t'=0}^{t},
+      \cup
+      \left\{\vg_{\sB_{t'}}(\vtheta_{t'})^{\odot 2} \right\}_{t'=0}^{t},
+  \end{split}
+\end{align}
+While the mentioned methods are a representative subset of popular algorithms,
+there are more than one hundred algorithms with structurally similar update
+rules (see Table 2 in~\cite{schmidt2021descending} and references therein). Some
+adaptive methods like Adam and RMSProp contain simpler methods like SGD and
+Momentum as special cases~\cite{choi2020on}. Therefore, they should, in
+principle, be able to perform better. However, recent work that compares deep
+learning optimizers through benchmarks to identify the best-performing method
+finds that the currently existing methods perform quite
+similarly~\cite{schmidt2021descending}.
+
+One reason why newly developed optimizers of the structure
+\Cref{eq:background::PopularOptimizers} seem to not be able to clearly improve
+over existing methods could be that their update rules are constrained to using
+the average gradient, as it is readily available in software. To overcome these
+limitations, it might be helpful to study the potential of methods that leverage
+information beyond the gradient. Second-order optimization incorporate curvature
+information and represent the state-of-the art in ``classical'' optimization
+problems (convex optimization, generalized linear models). Noise-reduction
+methods focus on improving the gradient estimator $\vg_{\sB_t}$ by reducing its
+variance through per-sample information. The rest of this chapter provides
+definitions for the information used by such methods, and provides additional
+motivation for them by showcasing applications outside optimization.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

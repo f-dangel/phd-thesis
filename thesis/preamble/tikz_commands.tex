@@ -1,0 +1,74 @@
+\input{../repos/hbp-paper/doc/tikz_commands.tex}
+
+\newlength{\figwidth}
+\newlength{\figheight}
+\setlength{\figwidth}{0.9\textwidth}
+\setlength{\figheight}{0.6\figwidth}
+
+% pgfplots style
+\pgfkeys{/pgfplots/HBPoriginal/.style={
+    enlarge x limits = 0.,
+    enlarge y limits = 0.02,
+    width=\figwidth,
+    height=\figheight,
+    grid=major,
+    grid style = {dashed},
+    every axis plot/.append style={line width = 1.5pt},
+    tick pos = left,
+    xtick align = inside,
+    ytick align = inside,
+    xmajorticks = true,
+    ymajorticks = true,
+    ylabel near ticks,
+    xlabel near ticks,
+    xticklabel style = {font = \footnotesize},
+    xlabel style = {font = \footnotesize},
+    axis line style = {black},
+    yticklabel style = {font = \footnotesize},
+    ylabel style = {font = \footnotesize},
+    title style = {font = \footnotesize},
+    grid = major,
+    grid style = {dashed},
+    legend cell align = left,
+    legend style = {
+      fill opacity = 0.7,
+      text opacity = 1,
+      font = \footnotesize,
+    },
+  }
+}
+
+\pgfkeys{/pgfplots/HBPnolegend/.style={
+    legend style = {
+      fill opacity = 0.0,
+      text opacity = 0.0,
+      draw opacity = 0.0,
+      font = \footnotesize,
+    },
+  }
+}
+
+\pgfkeys{/pgfplots/HBPnox/.style={
+    xlabel style={opacity=0},
+    xticklabel style={opacity=0, yshift=3ex},
+  }
+}
+
+\newcommand{\HBPresetPGFStyle}{
+  \pgfkeys{/pgfplots/mystyle/.style={
+      HBPoriginal
+    }}
+}
+\HBPresetPGFStyle
+
+\usepackage{preamble/backpack-plotting}
+
+% how the best runs are defined
+\newcommand{\bestStrategy}{final}
+\newcommand{\bestMetricType}{valid}
+\newcommand{\bestMetric}{accuracies}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

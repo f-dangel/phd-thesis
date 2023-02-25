@@ -1,0 +1,61 @@
+% This file was created by tikzplotlib v0.9.7.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.211764705882353,0.294117647058824,0.603921568627451}
+\definecolor{color1}{rgb}{0.431372549019608,0.650980392156863,0.803921568627451}
+\definecolor{color2}{rgb}{0.76078431372549,0.894117647058824,0.937254901960784}
+
+\begin{axis}[
+legend cell align={left},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=white!80!black},
+tick align=outside,
+tick pos=left,
+title={Batch gradients},
+x grid style={white!69.0196078431373!black},
+xmin=-0.5125, xmax=2.5125,
+xtick style={color=black},
+xtick={0,1,2},
+xticklabels={For-loop,BackPACK,Gradient
+(Ref.)},
+y grid style={white!69.0196078431373!black},
+ylabel={Time [ms]},
+ymin=0, ymax=715.401721642411,
+ytick style={color=black},
+zmystyle
+]
+\draw[draw=none,fill=white!20!black] (axis cs:1.625,0) rectangle (axis cs:1.875,22.247069500736);
+\draw[draw=none,fill=color0] (axis cs:-0.375,0) rectangle (axis cs:-0.125,190.67248400097);
+\addlegendimage{ybar,ybar legend,draw=none,fill=color0};
+\addlegendentry{Batch size 64}
+
+\draw[draw=none,fill=color0] (axis cs:0.625,0) rectangle (axis cs:0.875,30.771913996432);
+\draw[draw=none,fill=white!40!black] (axis cs:1.875,0) rectangle (axis cs:2.125,40.6486490028328);
+\draw[draw=none,fill=color1] (axis cs:-0.125,0) rectangle (axis cs:0.125,367.899422002665);
+\addlegendimage{ybar,ybar legend,draw=none,fill=color1};
+\addlegendentry{                 128}
+
+\draw[draw=none,fill=color1] (axis cs:0.875,0) rectangle (axis cs:1.125,57.7847249951446);
+\draw[draw=none,fill=color2] (axis cs:0.125,0) rectangle (axis cs:0.375,681.334972992772);
+\addlegendimage{ybar,ybar legend,draw=none,fill=color2};
+\addlegendentry{                 256}
+
+\draw[draw=none,fill=color2] (axis cs:1.125,0) rectangle (axis cs:1.375,96.5649990030215);
+\draw[draw=none,fill=white!60!black] (axis cs:2.125,0) rectangle (axis cs:2.375,79.2037880019052);
+\addplot [semithick, white!20!black, opacity=0.4, forget plot]
+table {%
+-0.5125 22.247069500736
+2.5125 22.247069500736
+};
+\addplot [semithick, white!40!black, opacity=0.4, forget plot]
+table {%
+-0.5125 40.6486490028329
+2.5125 40.6486490028329
+};
+\addplot [semithick, white!60!black, opacity=0.4, forget plot]
+table {%
+-0.5125 79.2037880019052
+2.5125 79.2037880019052
+};
+\end{axis}
+
+\end{tikzpicture}

@@ -1,0 +1,44 @@
+\begin{tikzpicture}
+
+
+\draw  (-5.25,2.25) rectangle (5.25,-2.25);
+\draw  (-1,1) rectangle (1,-1);
+
+\node (v5) at (1,0.5) {};
+\node (v6) at (2,0.5) {};
+\node (v9) at (1,0) {};
+\node (v10) at (2,0) {};
+\node (v11) at (-1,0) {};
+\node (v12) at (-2,0) {};
+\node (v13) at (-2,0.5) {};
+\node (v14) at (-1,0.5) {};
+\node (v2) at (-0.5,1) {};
+\node (v1) at (-0.5,1.5) {};
+\node (v4) at (0.5,1.5) {};
+\node (v3) at (0.5,1) {};
+\node (v7) at (0,-1) {};
+\node (v8) at (0,-1.5) {};
+\draw[->] (v1) edge (v2);
+\draw[->]  (v3) edge (v4);
+\draw[->]  (v5) edge (v6);
+\draw[->]  (v7) edge (v8);
+\draw[<-]  (v9) edge (v10);
+\draw[->]  (v11) edge (v12);
+\draw[->]  (v13) edge (v14);
+\node at (0,0) {Layer};
+\node at (-0.5,1.75) {$\theta$};
+\node at (0.5,1.75) {$\frac{\partial \mathcal{L}}{\partial \theta}$};
+\node at (3.5,0.5) {$\{b_n\}_{n \in [N]}$};
+\node at (3.5,0) {$\{\nabla_{b_n} \ell_n\}_{n \in [N]}$};
+\node at (-3.25,0.5) {$\{a_n\}_{n \in [N]}$};
+\node at (-3.25,0) {$\{\nabla_{a_n} \ell_n\}_{n\in[N]}$};
+\node (v16) at (1,-0.5) {};
+\node (v15) at (2,-0.5) {};
+\node (v17) at (-1,-0.5) {};
+\node (v18) at (-2,-0.5) {};
+\node at (3.5,-0.5) {$\{[J_{b_n} f_n]^\top S_n\}_{n \in [N]}$};
+\node at (-3.25,-0.5) {$\{[J_{a_n} f_n]^\top S_n\}_{n \in [N]}$};
+\draw[->] (v15) edge (v16);
+\draw[->]  (v17) edge (v18);
+\node at (0,-1.75) {$\{[J_{\theta} f]^\top S_n\}_{n \in [N]}$};
+\end{tikzpicture}

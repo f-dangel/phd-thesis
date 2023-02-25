@@ -1,0 +1,64 @@
+\subsubsection{Abstract}
+
+When engineers train deep learning models, they are very much ``flying blind''.
+Commonly used methods for real-time training diagnostics, such as monitoring the
+train/test loss, are limited. Assessing a net's training process solely through
+these performance indicators is akin to debugging software without access to
+internal states through a debugger. To address this, we present \cockpit, a
+collection of instruments that enable a closer look into the inner workings of a
+learning machine, and a more informative and meaningful status report for
+practitioners. It facilitates the identification of learning phases and failure
+modes, like ill-chosen hyperparameters. The instruments leverage novel
+higher-order information about the gradient distribution and curvature, which
+has only recently become efficiently accessible. We believe that such a
+debugging tool, which we open-source for \pytorch, is valuable in
+troubleshooting the training process. By revealing new insights, it also more
+generally contributes to explainability and interpretability of deep nets.
+
+\marginnote{%
+  \begin{center}
+    Code and experiments available at the Github repositories
+    \href{https://github.com/f-dangel/cockpit}{\texttt{f-dangel/cockpit}},
+    \href{https://github.com/f-dangel/cockpit-experiments}{\texttt{f-dangel/cockpit-experiments}}
+  \end{center}
+  \begin{center}
+    \includegraphics[height = 0.8\linewidth]{../repos/cockpit/docs/source/_static/LogoSquare}
+  \end{center}
+}
+
+\section{Introduction \& Motivation}\label{cockpit::sec:intro}
+\input{sections/cockpit_introduction}
+
+\section{\cockpittitle's Instruments}\label{cockpit::sec:instruments}
+\input{sections/cockpit_instruments}
+
+\section{Experiments}\label{cockpit::sec:experiments}
+\input{sections/cockpit_experiments}
+
+\section{Showcase}\label{cockpit::sec:showcase}
+\input{sections/cockpit_showcase}
+
+\section{Benchmark}\label{cockpit::sec:benchmark}
+\input{sections/cockpit_benchmark}
+
+\section{Conclusion}\label{cockpit::sec:conclusion}
+\input{sections/cockpit_conclusion}
+
+\section*{Acknowledgments}
+The authors gratefully acknowledge financial support by the European Research
+Council through ERC StG Action 757275 / PANAMA; the DFG Cluster of Excellence
+“Machine Learning - New Perspectives for Science”, EXC 2064/1, project number
+390727645; the German Federal Ministry of Education and Research (BMBF) through
+the Tübingen AI Center (FKZ: 01IS18039A); and funds from the Cyber Valley
+Initiative of the Ministry for Science, Research and Arts of the State of
+Baden-Württemberg. Moreover, the authors thank the International Max Planck
+Research School for Intelligent Systems (IMPRS-IS) for supporting Felix Dangel
+and Frank Schneider. Further, we are grateful to Agustinus Kristiadi, Alexandra
+Gessner, Christian Fröhlich, Filip de Roos, Jonathan Wenger, Julia Grosse, Lukas
+Tatzel, Marius Hobbhahn, and Nicholas Krämer for providing feedback to the
+manuscript.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

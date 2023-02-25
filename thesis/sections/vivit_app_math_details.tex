@@ -1,0 +1,114 @@
+\subsection{The \gnn's Eigenvalues \& the Gram
+  Matrix}\label{vivit::sec:relation-ggn-gram-eigenvalues}
+
+For \Cref{vivit::eq:ggn-eigenvalues}, consider the left hand side of the \ggn's
+characteristic polynomial $\det(\mG - \lambda \mI_D) = 0$. Inserting the \vivit
+factorization (\Cref{vivit::eq:ggn-factorization}) and using the matrix determinant
+lemma yields
+\begin{align*}
+  &\det\left(
+  - \lambda \mI_D + \mG
+  \right)
+  \\
+  &\qquad =
+    \det\!\left(
+    - \lambda \mI_D + \mV\mV^\top
+    \right)
+    \explainmath{(Low-rank structure (\ref{vivit::eq:ggn-factorization}))}
+  \\
+  &\qquad=
+    \det\!\left(
+    \mI_{NC} + \mV^\top (-\lambda \mI_D)^{-1} \mV
+    \right)
+    \det\!\left(
+    -\lambda \mI_D
+    \right)
+    \explainmath{(Matrix determinant lemma)}
+  \\
+  &\qquad=
+    \det\!\left(
+    \mI_{NC} - \frac{1}{\lambda} \mV^\top \mV
+    \right)
+    (-\lambda)^D
+    \explainmath{\empty}
+  \\
+  &\qquad=
+    \left(-\frac{1}{\lambda}\right)^{NC}
+    \det\!\left(
+    \mV^\top \mV - \lambda \mI_{NC}
+    \right)
+    (-\lambda)^D
+    \explainmath{\empty}
+  \\
+  &\qquad=
+    (-\lambda)^{D - NC}
+    \det\!\left(
+    \mGtilde - \lambda \mI_{NC}
+    \right)\,.
+    \explainmath{(Gram matrix)}
+\end{align*}
+Setting the above expression to zero reveals that the \ggn's spectrum decomposes
+into $D-NC$ zero eigenvalues and the Gram matrix spectrum obtained from
+$\det(\mGtilde - \lambda \mI_{NC} )= 0$.
+
+\subsection{Relation Between \ggn \& Gram Matrix Eigenvectors}
+\label{vivit::sec:relation-ggn-gram-eigenvectors}
+
+Assume the nontrivial Gram matrix spectrum $\tilde{\sS}_+ := \{(\lambda_k,
+\vetilde_k)\:|\: \lambda_k \neq 0, \mGtilde \vetilde_k = \lambda_k \vetilde_k
+\}_{k=1}^K$ with orthonormal eigenvectors $\vetilde_j^\top \vetilde_k =
+\delta_{j,k}$ ($\delta$ is the Kronecker delta) and $K = \mathrm{rank}(\mG)$. We
+now show that $\ve_k = \nicefrac{1}{\sqrt{\lambda_k}} \mV \vetilde_k$ are
+normalized eigenvectors of $\mG$ and inherit orthogonality from $\vetilde_k$.
+
+To see the first, consider right-multiplication of the \ggn with $\ve_k$, then
+expand the low-rank structure,
+\begin{align*}
+  \mG \ve_k
+  &=
+    \frac{1}{\sqrt{\lambda_k}}
+    \mV \mV^\top  \mV \vetilde_k
+    \explainmath{(\Cref{vivit::eq:ggn-factorization} and definition of $\ve_k$)}
+  \\
+  &=
+    \frac{1}{\sqrt{\lambda_k}}
+    \mV \mGtilde \vetilde_k
+    \explainmath{(Gram matrix)}
+  \\
+  &=
+    \lambda_k\frac{1}{\sqrt{\lambda_k}}
+    \mV \vetilde_k
+    \explainmath{(Eigenvector property of $\vetilde_k$)}
+  \\
+  &= \lambda_k \ve_k\,.
+\end{align*}
+Orthonormality of the $\ve_k$ results from the Gram matrix eigenvector
+orthonormality,
+\begin{align*}
+  \ve_j^\top \ve_{k}
+  &=
+    \left(
+    \frac{1}{\sqrt{\lambda_j}} \vetilde_j^\top \mV ^\top
+    \right)
+    \left(
+    \frac{1}{\sqrt{\lambda_k}} \mV \vetilde_k
+    \right)
+    \explainmath{(Definition of $\ve_j, \ve_k$)}
+  \\
+  &=
+    \frac{1}{\sqrt{\lambda_j\lambda_k}} \vetilde_j^\top \mGtilde \vetilde_k
+    \explainmath{(Gram matrix)}
+  \\
+  &=
+    \frac{\lambda_k}{\sqrt{\lambda_j\lambda_k}} \vetilde_j^\top \vetilde_k
+    \explainmath{(Eigenvector property of $\vetilde_k$)}
+  \\
+  &=
+    \delta_{j,k}\,.
+    \explainmath{(Orthonormality)}
+\end{align*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

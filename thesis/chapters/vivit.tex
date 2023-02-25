@@ -1,0 +1,56 @@
+\subsubsection{Abstract}
+
+Curvature in form of the Hessian or its generalized Gauss-Newton (\ggn)
+approximation is valuable for algorithms that rely on a local model for the loss
+to train, compress, or explain deep networks.
+% What has been done
+Existing methods based on implicit multiplication via automatic differentiation
+or Kronecker-factored block diagonal approximations do not consider noise in the
+mini-batch.
+% What we do
+We present \vivit, a curvature model that leverages the \ggn's low-rank
+structure without further approximations. It allows for efficient computation of
+eigenvalues, eigenvectors, as well as per-sample first- and second-order
+directional derivatives.
+% Computation
+The representation is computed in parallel with gradients in one backward pass
+and offers a fine-grained cost-accuracy trade-off, which allows it to scale.
+% Experiments
+We demonstrate this by conducting performance benchmarks and substantiate
+\vivit's usefulness by studying the impact of noise on the \ggn's structural
+properties during neural network training.
+
+\marginnote{%
+  \begin{center}
+    Code and experiments available at the Github repositories
+    \href{https://github.com/f-dangel/vivit}{\texttt{f-dangel/vivit}},
+    \href{https://github.com/f-dangel/vivit-experiments}{\texttt{f-dangel/vivit-experiments}}
+  \end{center}
+  \begin{center}
+    \includegraphics[height =
+    0.8\linewidth]{../repos/vivit/docs/rtd/assets/vivit_logo}
+  \end{center}
+}
+
+\section{Introduction \& Motivation}\label{vivit::sec:introduction}
+\input{sections/vivit_introduction}
+
+\section{Notation \& Method}\label{vivit::sec:method}
+\input{sections/vivit_method}
+
+\section{Experiments}\label{vivit::sec:experiments}
+\input{sections/vivit_experiments}
+
+\section{Related Work} \label{vivit::sec:related}
+\input{sections/vivit_related_work}
+
+\section{Use Cases}\label{vivit::sec:use_cases}
+\input{sections/vivit_use_cases}
+
+\section{Conclusion}\label{vivit::sec:conclusion}
+\input{sections/vivit_conclusion}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

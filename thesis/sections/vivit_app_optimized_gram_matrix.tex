@@ -1,0 +1,80 @@
+Our goal is to efficiently extract $\vtheta^{(l)}$'s contribution to the Gram matrix,
+\begin{align}
+  \label{vivit::eq:layerwise-gram-matrix}
+  \mGtilde^{(l)} = {\mV^{(l)}}^\top \mV^{(l)} \in \sR^{NC \times NC}\,.
+\end{align}
+
+\subsubsection{Gram Matrix via Expanding $\mV^{(l)}$}
+
+One way to construct $\mG^{(l)}$ is to first expand $\mV^{(l)}$
+(\Cref{vivit::eq:layerwise-ggn-factor}) via the Jacobian $\jac_{\vtheta^{(l)}}
+\vz_n^{(l)}$, then contract it (\Cref{vivit::eq:layerwise-gram-matrix}). This can be a
+memory bottleneck for large linear layers which are common in many architectures
+close to the network output. However if only the Gram matrix rather than $\mV$
+is required, structure in the Jacobian can be used to construct $\mGtilde^{(l)}$
+without expanding $\mV^{(l)}$ and thus reduce this overhead.
+
+\subsubsection{Optimization for Linear Layers}
+
+Now, let $f^{(l)}_{\vtheta^{(l)}}$ be a linear layer with weights $\mW^{(l)} \in
+\sR^{h^{(l)}\times h^{(l-1)}}$, \ie $\vtheta^{(l)} = \mathrm{vec}(\mW^{(l)}) \in
+\sR^{d^{(l)} = h^{(l)} h^{(l-1)}}$ with column stacking as flattening,
+\begin{align*}
+  f^{(l)}_{\vtheta^{(l)}}:\quad \vz_n^{(l)} = \mW^{(l)} \vz_n^{(l-1)}\,.
+\end{align*}
+The Jacobian is
+\begin{align}
+  \label{vivit::eq:jacobian-linear-layer}
+  \jac_{\vtheta^{(l)}} \vz_n^{(l)}
+  =
+  {\vz_n^{(l-1)}}^\top \otimes \mI_{h^{(l)}}\,,
+\end{align}
+and can be used to compute Gram matrix entries without expanding $\mV^{(l)}$,
+\begin{align*}
+  &\left[ \mGtilde^{(l)}\right]_{(n,c),(n',c')}
+  \\
+  &\qquad =
+    {\vv_{n,c}^{(l)}}^\top\vv_{n',c'}^{(l)}
+    \explainmath{(\Cref{vivit::eq:layerwise-gram-matrix})}
+    \\
+  &\qquad =
+    {\vs^{(l)}_{n,c}}^\top
+    \left( \jac_{\vtheta^{(l)}} \vz_n^{(l)} \right)
+    \left( \jac_{\vtheta^{(l)}} \vz_{n'}^{(l)} \right)^\top
+    {\vs^{(l)}_{n',c'}}
+  \\
+  &\qquad =
+    {\vs^{(l)}_{n,c}}^\top
+    \left( {\vz_n^{(l-1)}}^\top \otimes \mI_{h^{(l)}}\right)
+    \left( {\vz_{n'}^{(l-1)}}^\top \otimes \mI_{h^{(l)}} \right)^\top
+    {\vs^{(l)}_{n',c'}}
+    \explainmath{(\Cref{vivit::eq:jacobian-linear-layer})}
+    \\
+  &\qquad =
+    {\vs^{(l)}_{n,c}}^\top
+    \left( {\vz_n^{(l-1)}}^\top \vz_{n'}^{(l-1)} \otimes \mI_{h^{(l)}}\right)
+    \vs^{(l)}_{n',c'}
+    \explainmath{(\Cref{vivit::eq:ggn-vector-layer-i})}
+  \\
+  &\qquad =
+    { \vz_n^{(l-1)}}^\top \vz_{n'}^{(l-1)} {\vs^{(l)}_{n,c}}^\top
+     \mI_{h^{(l)}} \vs^{(l)}_{n',c'}
+    \explainmath{(${\vz_n^{(l-1)}}^\top \vz_{n'}^{(l-1)}\in \sR$)}
+  \\
+  &\qquad =
+    \left(  { \vz_n^{(l-1)}}^\top \vz_{n'}^{(l-1)}\right)
+    \left( {\vs^{(l)}_{n,c}}^\top \vs^{(l)}_{n',c'} \right)\,.
+\end{align*}
+We see that the Gram matrix is built from two Gram matrices based on $\{
+\vz_n^{(l-1)}\}_{n=1}^N$ and $\{\vs_{n,c}^{(l)}\}_{n=1,c=1}^{N,C}$, that require
+$\gO(N^2)$ and $\gO((NC)^2)$ memory, respectively. In comparison, the na\"ive
+approach via $\mV^{(l)} \in \sR^{d^{(l)} \times N C}$ scales with the number of
+weights, which is often comparable to $D$. For instance, the \threecthreed
+architecture on \cifarten has $D=895,\!210$ and the largest weight matrix has
+$d^{(l)}=589,\!824$, whereas $N C = 1,\!280$ during training
+\citep{schneider2019deepobs}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

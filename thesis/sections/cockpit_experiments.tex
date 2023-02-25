@@ -1,0 +1,134 @@
+The diverse information provided by \cockpit can help users and researchers in
+many ways, some of which, just like for a traditional debugger, only become
+apparent in practical use. In this section, we present a few motivating
+examples, selecting specific instruments and scenarios in which they are
+practically useful. Specifically, we show that \cockpit can help the user
+discern between, and thus fix, common training bugs
+(\Cref{cockpit::sec:misscaled_data_exp,cockpit::sec:vanishing_gradient_exp}) that are otherwise
+hard to distinguish as they lead to the same failure: bad training. We
+demonstrate that \cockpit can guide practitioners to choose efficient
+hyperparameters \emph{within a single training run}
+(\Cref{cockpit::sec:vanishing_gradient_exp,cockpit::sec:alpha_exp}). Finally, we highlight that
+\cockpit's instruments can provide research insights about the optimization
+process (\Cref{cockpit::sec:alpha_exp}). Our empirical findings are demonstrated on
+problems from the \deepobs \citep{schneider2019deepobs} benchmark collection.
+
+\subsection{Incorrectly Scaled Data}\label{cockpit::sec:misscaled_data_exp}
+One prominent source of bugs is the data pipeline. To pick a relatively simple
+example: for standard optimizers to work at their usual learning rates, network
+inputs must be standardized (\ie~between zero and one, or have zero mean and
+unit variance \citep[\eg][]{bengio2012neural}). If the user forgets to do this,
+optimizer performance is likely to degrade. It can be difficult to identify the
+source of this problem as it does not cause obvious failures, \texttt{NaN} or
+\texttt{Inf} gradients, \etc. We now construct a semi-realistic example, to show
+how using \cockpit can help diagnose this problem upon observing slow training
+performance.
+
+By default\sidenote{See the documentation, available at
+  \href{https://www.cs.toronto.edu/~kriz/cifar.html}{\texttt{cs.toronto.edu/\textasciitilde
+      kriz/cifar.html}}}, the popular image datasets \cifartenhun
+\citep{krizhevsky2009learning} are provided as \numpy \citep{harris2020array}
+arrays that consist of integers in the interval $[0,255]$. This \emph{raw} data,
+instead of the widely used version with floats in $[0,1]$, changes the data
+scale and thus the gradients by a factor of $255$. Therefore, the optimizer's
+optimal learning rate is scaled as well. In other words, the default parameters
+of popular optimization methods may not work well anymore, or good
+hyperparameters may take extreme values. Even if the user directly inspects the
+training images, this may not be apparent
+(\Cref{cockpit::fig:data-pre-processing}). But the gradient histogram instrument
+of \cockpit, which has a deliberate default plotting range around $[-1,1]$ to
+highlight such problems, immediately and prominently shows that there is an
+issue.
+
+\input{figures/cockpit/06_preprocessing/misscaled_data.tex}
+
+Of course, this particular data is only a placeholder for real practical data
+sets. While this problem may not frequently arise in the highly pre-processed,
+packaged \cifarten, it is not a rare problem for practitioners who work with
+their personal datasets. This is particularly likely in domains outside
+standard computer vision, \eg when working with mixed-type data without obvious
+natural scales.
+
+\subsection{Vanishing Gradients}\label{cockpit::sec:vanishing_gradient_exp}
+
+The model itself can be a source of training bugs. As before, such problems
+mostly arise with novel datasets, where well-working architectures are unknown.
+The following example shows how even small (in terms of code) model
+modifications may severely harm the training.
+
+\Cref{cockpit::fig:layerwise-experiment_net} shows the distribution of gradient values of
+two different network architectures in blue and orange. Although the blue model
+trains considerably better than the orange one, their gradient distributions
+look quite similar. The difference becomes evident when inspecting the histogram
+\emph{layer-wise}. We can see that multiple layers have a degenerated gradient
+distribution with many elements being practically zero (see
+\Cref{cockpit::fig:layerwise-experiment_layers}, bottom row). Since the fully connected
+layers close to the output have far more parameters (a typical pattern of
+convolutional networks), they dominate the network-wide histogram. This obscures
+that a major part of the model is effectively unable to train.
+
+\input{figures/cockpit/09_layerwise/vanishing_gradients.tex}
+
+Both the blue and orange networks follow \deepobs's \threecthreed architecture.
+The only difference is the non-linearity: the blue net uses standard ReLU
+activations, while the orange one has sigmoid activations. Here, the layer-wise
+histogram instrument of \cockpit~highlights which part of the architecture makes
+training unnecessarily hard. Accessing information layer-wise is also essential
+due to the strong overparameterization in deep models where training can happen
+in small subspaces \citep{gurari2018gradient}. Again, this is hard to do with
+common monitoring tools, such as the loss curve.
+
+\subsection{Tuning Learning Rates}
+\label{cockpit::sec:alpha_exp}
+Once the architecture is defined, the optimizer's learning rate is the most
+important hyperparameter to tune. Getting it right requires extensive
+hyperparameter searches at high resource costs. \cockpit's instruments can
+provide intuition and information to streamline this process: in contrast to the
+raw learning rate, the curvature-standardized step size $\alpha$-quantity (see
+\Cref{cockpit::sec:adapting_hyperparameters}) has a natural scale.
+
+\begin{figure*}
+	\begin{center}
+		\includegraphics[width=\linewidth]{../repos/cockpit-paper/fig/07_learning_rate_selection/output/median_alpha_vs_performance_thesis-wide}
+	\end{center}
+  \vspace{-2ex}
+	\caption{\textbf{Test accuracy as a function of standardized step size
+      $\alpha$}. For four \deepobs problems (see \Cref{cockpit::app:benchmarks}), final
+    test accuracy is shown versus the median $\alpha$-value over the entire
+    training. Marker size indicates the magnitude of the raw learning rate,
+    marker color identifies tasks (see legend). For each problem, the
+    best-performing setting is highlighted by a vertical colored line.}
+	\label{cockpit::fig:alpha_exp}
+\end{figure*}
+
+Across multiple optimization problems, we observe, perhaps surprisingly, that
+the best runs and indeed all good runs have a median $\alpha>0$
+(\Cref{cockpit::fig:alpha_exp}). This illustrates a fundamental difference between
+stochastic optimization, as is typical for machine learning, and classic
+deterministic optimization. Instead of locally stepping ``to the valley floor''
+(optimal in the deterministic case), stochastic optimizers should
+\emph{overshoot} the valley somewhat. This need to ``surf the walls'' has been
+hypothesized before \citep[e.g.][]{wu2018understanding,xing2018walk} as a property of neural
+network training. Frequently, learning rates are adapted during training, which
+fits with our observation about positive $\alpha$-values: ``overshooting''
+allows fast early progression towards areas of lower loss, but it does not yield
+convergence in the end. Real-time visualizations of the training state, as
+offered by \cockpit, can augment these fine-tuning processes.
+
+\Cref{cockpit::fig:alpha_exp} also indicates a major challenge preventing simple
+automated tuning solutions: the optimal $\alpha$-value is problem-dependent, and
+simpler problems, such as a multi-layer perceptron (\mlp) on \mnist
+\citep{lecun1998gradient}, behave much more similar to classic optimization problems.
+Algorithmic research on small problems can thus produce misleading conclusions.
+The figure also shows that the $\alpha$-gauge is not sufficient by itself:
+extreme overshooting with a too-large learning rate leads to poor performance,
+which however can be prevented by taking additional instruments into account.
+This makes the case for the cockpit metaphor of increasing interpretability from
+several instruments in conjunction. By combining the $\alpha$-instrument with
+other gauges that capture the local geometry or network dynamics, the user can
+better identify good choices of the learning rate and other hyperparameters.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

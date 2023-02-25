@@ -1,0 +1,139 @@
+To illustrate the utility of \BackPACK, we implement preconditioned gradient
+descent optimizers using diagonal and Kronecker approximations of the \GGN. To
+our knowledge, and despite their apparent simplicity, results using diagonal
+approximations or the naïve damping update rule we chose have not been reported
+in publications so far. However, this section is not meant to introduce a
+bona-fide new optimizer. Our goal is to show that \BackPACK can enable research
+of this kind. The update rule we implement uses a curvature matrix
+$\mC(\vtheta_t^{(l)})$, which could be a diagonal or Kronecker factorization of
+the \GGN blocks, and a damping parameter $\lambda$ to precondition the gradient:
+\begin{equation}
+  \label{backpack::eq:update_rule}
+  \vtheta_{t+1}^{(l)}
+  =
+  \vtheta_t^{(l)} - \eta \left(\mC(\vtheta_t^{(l)}) + \lambda \mI\right)^{-1}
+  \grad{\vtheta_t^{(l)}}\Loss(\vtheta_t^{(l)})\equationPunctuation{,}
+  \qquad l = 1,\dots, L\equationPunctuation{.}
+\end{equation}
+We run the update rule with the following approximations of the generalized
+Gauss-Newton: the exact diagonal (\DiagGGN) and an \MC estimate (\DiagGGNMC),
+and the Kronecker factorizations \KFAC \citep{martens2015optimizing}, \KFLR and
+\KFRA\sidenote{ \KFRA was not originally designed for convolutions; we extend it
+  using the Kronecker factorization of \citet{grosse2016kronecker}. While it can
+  be computed for small networks on \MNIST, which we report in
+  \Cref{backpack::app:additional-results}, the approximate backward pass of
+  \KFRA does not seem to scale to large convolution layers. }
+\citep{botev2017practical}.%
+The inversion required by the update rule is straightforward for the diagonal
+curvature. For the Kronecker-factored quantities, we use the approximation
+introduced by \cite{martens2015optimizing} (see
+\Cref{backpack::app:update_rule_details}).
+
+\begin{figure*}[!t]
+  \centering
+  \input{figures/backpack/style_bench_barplot.tex}
+  \begin{subfigure}[t]{1.0\linewidth}
+    \centering
+    \caption{\threecthreed, \cifarten}\label{backpack::subfig:benchmark-all1}
+    \vspace{-1ex}
+    \pgfkeys{/pgfplots/zmystyle/.style={
+        BackPACKBenchBarplot,
+        height = 0.35\linewidth,
+        title = \empty,
+      }
+    }
+    \tikzexternalenable
+    \input{../repos/backpack-paper/code/benchmarks/bench_compressed_0.tex}
+    \tikzexternaldisable
+  \end{subfigure}
+  \begin{subfigure}[t]{1.0\linewidth}
+    \centering
+    \caption{\allcnnc, \cifarhun}\label{backpack::subfig:benchmark-all2}
+    \vspace{-1ex}
+    \pgfkeys{/pgfplots/zmystyle/.style={
+        BackPACKBenchBarplot,
+        height = 0.35\linewidth,
+        ylabel = {Time [ms]},
+        title = \empty,
+      }
+    }
+    \tikzexternalenable
+    \hspace{-1ex}\input{../repos/backpack-paper/code/benchmarks/bench_compressed_1.tex}
+    \tikzexternaldisable
+  \end{subfigure}
+  \caption{ \textbf{Overhead benchmark for computing the gradient \emph{and}
+      first- or second-order extensions on real networks, compared to just the
+      gradient.} Most quantities add little overhead. \KFLR and \DiagGGN
+    propagate 100$\times$ more information than \KFAC and \DiagGGNMC on
+    \CIFAR{100} and are two orders of magnitude slower. We report benchmarks on
+    those, and the Hessian's diagonal, in \Cref{backpack::app:benchmark}. }
+  \label{backpack::fig:benchmark-all}
+\end{figure*}
+
+
+\begin{figure*}[!t]
+  \centering
+  \begin{subfigure}[t]{1.0\linewidth}
+    \centering
+    \caption{}\label{backpack::subfig:cifar1}
+    \vspace{-5.5ex}
+    \begin{center}\textbf{\footnotesize \CIFARTEN : \CIFARTENNET}\end{center}
+    \tikzexternalenable
+    \plotDifferentCurvatures{cifar10}{3c3d}{const}{final}{valid}{accuracies}
+    \tikzexternaldisable
+  \end{subfigure}
+  \vspace{-2ex}
+  \begin{subfigure}[t]{1.0\linewidth}
+    \centering
+    \caption{}\label{backpack::subfig:cifar2}
+    \vspace{-5.5ex}
+    \begin{center}\textbf{\footnotesize \CIFARHUN : \ALLCNNC}\end{center}
+    \tikzexternalenable
+    \plotDifferentCurvatures{cifar100}{allcnnc}{const}{final}{valid}{accuracies}
+    \tikzexternaldisable
+  \end{subfigure}
+  \caption{\textbf{Median performance with shaded quartiles of the \DeepOBS
+      benchmark} for \subfigref{backpack::subfig:cifar1} \CIFARTENNET (895,210
+    parameters) on \CIFARTEN and \subfigref{backpack::subfig:cifar1} \ALLCNNC
+    (1,387,108 parameters) on \CIFARHUN. Solid lines show \DeepOBS' baselines of
+    momentum \SGD and Adam.}
+  \label{backpack::fig:cifar}
+\end{figure*}
+
+These curvature estimates are tested for the training of deep neural networks by
+running the corresponding optimizers on the main test problems of the
+benchmarking suite \DeepOBS\sidenote{%
+  \href{https://deepobs.github.io/}{\texttt{deepobs.github.io}}. We cannot run
+  \BackPACK on all test problems in this benchmark due to the limitations
+  outlined in \Cref{backpack::sec:theory-and-implementation}. Despite this
+  limitation, we still run on models spanning a representative range of image
+  classification problems. } \citep{schneider2019deepobs}. We use the setup
+(batch size, number of training epochs) of \DeepOBS' baselines, and tune the
+learning rate $\eta$ and damping parameter $\lambda$ with a grid search for
+each optimizer (details in \Cref{backpack::app:grid-search}). The best
+hyperparameter settings is chosen according to the final accuracy on a
+validation set. We report the median and quartiles of the performance for ten
+random seeds.
+
+\Cref{backpack::subfig:cifar1} shows the results for the \CIFARTENNET network
+trained on \CIFAR{10}. The optimizers that leverage Kronecker-factored curvature
+approximations beat the baseline performance in terms of per-iteration progress
+on the training loss, training and test accuracy. Using the same
+hyperparameters, there is little difference between \KFAC and \KFLR, or \DiagGGN
+and \DiagGGNMC. Given that the quantities based on \MC-sampling are considerably
+cheaper, this experiment suggests it being an important technique to reduce
+the computational burden of curvature proxies.
+
+\Cref{backpack::subfig:cifar2} shows benchmarks for the \ALLCNNC network trained
+on \CIFAR{100}. Due to the high-dimensional output, the curvatures using a full
+matrix propagation rather than an \MC sample cannot be run on this problem due
+to memory issues. Both \DiagGGNMC and \KFAC can compete with the baselines in
+terms of progress per iteration. As the update rule we implemented is simplistic
+on purpose, this is promising for future applications of second-order methods
+that can more efficiently use the additional information given by curvature
+approximations.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

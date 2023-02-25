@@ -1,0 +1,437 @@
+% ===================================================================
+% THESIS OVERVIEW
+% ===================================================================
+\section{Introduction}\label{sec:introduction}
+
+Deep learning has achieved significant performance gains over traditional
+methods on various tasks like image
+classification~\cite{deng2009imagenet,krizhevsky2012imagenet,zeiler2012visualizing,simonyan2015deep,szegedy2015going,he2016deep},
+image
+generation~\cite{goodfellow2014generative,choi2020starganv2,karras2018progressive,ramesh2021zero},
+machine translation~\cite{bahdanau2014neural,luong2015effective,wu2016google},
+and game play~\cite{mnih2013playing,silver2016mastering,silver2018general}.
+These applications are powered by machine learning (ML)
+frameworks~\cite{tokui2015chainer,chen2015mxnet,paszke2019pytorch,abadi2016tensorflow,}
+that tremendously reduce the added complexity for practitioners of using
+highly-efficient implementations on hardware accelerators like
+GPUs~\cite{kirk2007nvidia} and TPUs~\cite{jouppi2017in}. The convenience
+introduced by these libraries makes deep learning more accessible and is one
+main factor for its popularity and success.
+
+It is surprisingly easy to build, train, and deploy a model, despite deep
+learning being computationally extremely demanding. Typically, neural networks
+have
+millions~\cite{krizhevsky2012imagenet,zeiler2012visualizing,simonyan2015deep,szegedy2015going,he2016deep},
+billions~\cite{radford2019language,brown2020language}, even
+trillions~\cite{fedus2022switch} of parameters, and are trained on large data
+sets~\cite{deng2009imagenet,lin2014microsoft} that can only be processed in
+smaller batches. The parameters are adjusted during training, which is phrased
+as optimization of a performance measure called ``the loss''.
+
+Training, \ie optimization, proceeds in an iterative fashion: to update the
+model, a mini-batch of data is fed through the model (forward pass) to evaluate
+its current performance---the mini-batch loss. This loss is then differentiated
+\wrt the model's parameters to obtain the mini-batch gradient (backward pass).
+Finally, an optimizer incorporates this gradient to update the model parameters.
+Popular frameworks like \pytorch \cite{paszke2019pytorch} and \tensorflow
+\cite{abadi2016tensorflow} realize this procedure in code that looks similar to
+the following pseudocode:
+
+\begin{lstlisting}[ language=Python, caption={\textbf{Canonical deep learning
+training loop.} After setting up the data, model, loss function, and optimizer,
+iterate over batches: in each iteration, compute the mini-batch loss in a forward
+pass, and its gradient with a backward pass. Then use the gradient as learning
+signal to update the model parameters.}, label=alg:background::trainingLoop,
+captionpos=t,
+linebackgroundcolor={\ifnum\value{lstnumber}=15\color{secondcolor!50}\fi\ifnum\value{lstnumber}=16\color{secondcolor!50}\fi}]
+ dataset = ...    # Learning task examples (@\label{line:background::dataset}@)
+
+ model = ...      # Practitioner's choice (@\label{line:background::model}@)
+ loss_func = ...  # Practitioner's choice (@\label{line:background::lossFunc}@)
+
+ optimizer = ...  # First-order method
+
+ while not_converged: # Standard training loop
+     features, targets = dataset.next_minibatch()
+
+     # Forward pass: Compute the loss
+     predictions = model(features)
+     loss = loss_func(predictions, targets)
+
+     # Backward pass: Compute the gradient
+     loss.backward() (@\label{line:background::Backward}@)
+
+     # Update model parameters using the gradient
+     optimizer.step()
+     optimizer.zero_grad()
+\end{lstlisting}
+
+This framework frees practitioners from implementation details and lets them
+focus on, \eg, specifying the neural network (\Cref{line:background::model}) and
+performance criterion (\Cref{line:background::lossFunc}). No matter how
+complicated a model a practitioner may come up with: as long as it is
+differentiable, it will be compatible with the above training loop, and can be
+automatically differentiated and trained. This allows practitioners to focus on
+modeling aspects of their problem. Thanks to automatic differentiation built
+into ML libraries, they do not have to worry about low-level details of how to
+compute the learning signal. They obtain the gradient with a single function
+call that performs the backward pass (\Cref{line:background::Backward}).
+
+However, by abstracting these details, \Cref{alg:background::trainingLoop}
+limits practitioners and researchers to gradient access only. This is not
+restrictive for the most popular optimizers to train DNNs as they only rely on
+the gradient (\Cref{fig:background::ArxivMentions}).
+%
+\begin{figure*}[!t]
+  \centering
+  \tikzexternalenable%
+  \input{figures/background/optimizer_mentions}
+  \tikzexternaldisable%
+  \vspace{-3ex}
+  \caption{\textbf{All popular deep learning optimizers are first-order methods
+      that rely on the gradient.} Reproduced from \citet{schmidt2021descending}
+    with permission from the authors.
+    \subfigref{subfig:background::ArxivMentions1} Number of ArXiv mentions in
+    titles and abstracts of deep learning optimization methods, with other
+    methods grouped into a single category.
+    \subfigref{subfig:background::ArxivMentions2} The same plot with mentions
+    normalized to the unit interval.}\label{fig:background::ArxivMentions}
+\end{figure*}
+%
+But the development of novel methods focuses mainly on inventing alternative
+update rules involving the gradient. Currently, there exist more than one
+hundred such methods; see \eg~\cite{schmidt2021descending} for an overview. This
+leads to the question whether one of these update rules performs significantly
+better than others. A broad comparison of the methods
+in~\Cref{fig:background::ArxivMentions}, however, raises concerns that those
+methods do not seem to be specialized to problems or leverage different problem
+properties:
+\begin{quotation}
+  \itshape%
+  Despite efforts by the community, there is currently no method that clearly
+  dominates the competition. [\dots] tuning helps about as much as trying other
+  optimizers. \hfill \citet{schmidt2021descending}
+\end{quotation}
+One reason for this may be that despite the diversity of update rules, they
+all rely on the same gradient information. Research and the development of novel
+methods should therefore use more than just the gradient.
+
+Such information can be of statistical or geometrical nature
+(\Cref{fig:background::higher_order_information}). The loss/gradient is the
+empirical mean of the distribution of per-sample losses/gradients. Higher
+moments of the gradients, such as their variance, could enable more robust
+estimation of the mean. Higher-order derivatives, \eg curvature in form of the
+Hessian, encode the loss landscape’s geometry. These quantities are useful to
+build approximations of the loss that take its stochastic nature and curvature
+into account.
+
+\begin{figure}[!t]
+  \centering
+  \tikzexternalenable%
+  \input{figures/background/higher_order_information}
+  \tikzexternaldisable%
+  \caption{\textbf{Beyond the average gradient.} Higher-order statistical
+    (noise) and geometrical (curvature) information provide a richer local
+    approximation of the loss in deep learning, which relies mostly on the
+    gradient highlighted in
+    {\protect\tikz[baseline=-0.5ex]{\protect\draw[fill=secondcolor!25,
+        draw=none] circle (0.75ex);}}. The goal of this thesis is making
+    higher-order information
+    {\protect\tikz[baseline=-0.5ex]{\protect\draw[fill=thirdcolor!25, draw=none]
+        circle (0.75ex);}} more readily available (figure inspired
+    by~\cite{bottou2016machine}). $\grad{\vtheta}\gL$,
+    $\gradsquared{\vtheta}\gL$ denote average gradient and Hessian;
+    $\{\grad{\vtheta}\ell_n\} $, $\{\gradsquared{\vtheta}\ell_n\}$ are the
+    distributions of per-sample gradients and Hessians.}\label{fig:background::higher_order_information}
+\end{figure}
+
+Optimization methods that use more than the gradient are the default in other
+applications (\eg%
+convex optimization, generalized linear models) and have also been considered in
+deep
+learning~\cite{becker1988improving,amari1998natural,martens2010deep,martens2015optimizing,zhang2017blockdiagonal,henriques2019small,gargiani2020promise,yao2021adahessian}.
+However, they are often so complicated to implement that practitioners barely
+try them out: efficiently computing with higher-order information is challenging
+because its explicit representation is often too large to be stored in memory.
+Therefore, practical methods rely on implicit schemes, such as matrix-vector
+products, or light-weight structured approximations. Understanding and
+efficiently implementing them requires expert knowledge, which complicates
+experimentation.
+
+The adoption of, and research on, algorithms depend on ease-of-use within
+frameworks. Existing software has closely evolved with the popularity of
+first-order methods that only demand efficient access to the gradient. This
+leads to the question on how to make higher-order information more readily
+available within such frameworks to expand the available toolkit. As
+backpropagation~\cite{rumelhart1986learning} forms the computational backbone of
+deep learning, this thesis describes approaches to extend the backpropagation
+algorithm, and answers the research questions:
+\begin{enumerate}[start=1,label={\bfseries(Q\arabic*)},ref={(Q\arabic*)},leftmargin=35pt]\label{enum:background::Questions}
+\item \emph{Which information beyond the gradient is efficiently
+    accessible?}\label{enum:background::Q1}
+
+\item \emph{How to compute this information---conveniently, automatically, and
+    efficiently---re-using the existing backpropagation implementation of ML
+    frameworks?}\label{enum:background::Q2}
+
+\item \emph{How to use this information to advance gradient-based deep
+    learning?}\label{enum:background::Q3}
+\end{enumerate}
+
+\section{Outline}
+
+This thesis contains three main parts: (\ref{part:background}) an introduction
+to the setting, related concepts, and relevant notation along with motivation;
+(\ref{part:papers}) the achieved scientific contributions; and
+(\ref{part:conclusion}) a discussion of their impact and future directions.
+Throughout the text, additional details (examples, auxiliary calculations, \etc)
+are provided in margins. Readers that are familiar with the subject should feel
+encouraged to read the main text without interruptions of this additional
+material. An extensive appendix (\ref{part:appendix}) complements the main
+parts. It collects lengthier mathematical discussions and details about
+experiments and implementations, along with additional empirical results.
+
+\Cref{part:background} provides background material and motivates the goal of
+this work. \Cref{chap:background::Paradigms} introduces the components of
+supervised deep learning through gradient-based empirical risk minimization
+(\Cref{alg:background::trainingLoop}). The goal is to highlight how each
+component introduces structure in the empirical risk that can be leveraged for
+convenient and efficient computation. This structure is helpful to identify new
+classes of interesting quantities and understand the computational pipeline that
+will be extended in this work. Specifically, we inspect the following
+components:
+
+\begin{itemize}
+\item \textbf{The loss:} \Cref{sec:background::SupervisedLearning} presents
+  supervised learning through empirical risk minimization and outlines
+  connections of loss-based learning to approximating the unknown data
+  distribution through samples via maximum likelihood estimation (MLE) or
+  maximum a posteriori (MAP) estimation. Further, it highlights the finite-sum
+  structure in the loss. This allows for massive speed-ups on parallel hardware
+  accelerators like GPUs~\cite{kirk2007nvidia} when evaluating the loss, and
+  stochastic approximation via sub-sampling with mini-batches, which introduces
+  noise into the computed quantities.
+
+\item \textbf{The model:} \Cref{sec:background::DeepNeuralNetworks} outlines
+  structure in the optimization space given by the parameter space of a deep
+  neural network. DNNs are usually highly over-parameterized, containing
+  millions~\cite{krizhevsky2012imagenet,zeiler2012visualizing,simonyan2015deep,szegedy2015going,he2016deep},
+  billions~\cite{radford2019language,brown2020language}, even
+  trillions~\cite{fedus2022switch} of parameters. Yet, they are built from
+  relatively simple functional units---layers, or modules---glued together
+  through function composition. We give a selected overview of layers, and
+  present sequential feedforward neural networks, which are the model class this
+  work focuses on.
+
+\item \textbf{The gradient:} \Cref{sec:background::GradientBackpropagation}
+  outlines the importance of automatic differentiation (AD) for ML. It starts
+  with fundamentals on how to automate the chain rule for functions
+  represented by a computation graph that tracks the dependencies between input,
+  output, and intermediate variables. One important property is the modularity
+  of AD, which allows for an elegant and extensible implementation: because the
+  chain rule relates the derivative of a function composition to the derivatives
+  of its composites, only these composites need to implement derivatives. New
+  operations that cannot be composed from primitives can be added by specifying
+  their derivatives. The discussion concludes by presenting gradient
+  backpropagation~\cite{rumelhart1986learning}, the most prominent evaluation
+  scheme to compute gradients of the loss in deep learning which will be
+  extended in this work.
+\end{itemize}
+
+\Cref{chap:background::HigherOrder} motivates why focusing only on the gradient
+might be problematic, and motivates the importance of higher-order information,
+\eg in form of noise (stochasticity) and curvature, to further enrich deep
+learning algorithms. First, \Cref{sec:background::PopularOptimizers} exemplifies
+the gradient's dominance in optimization for deep learning where
+state-of-the-art methods are first-order methods. Next,
+\Cref{sec:background::SecondOrderOptimization} introduces relevant higher-order
+information for second-order optimization methods that rely on curvature. It
+discusses popular curvature matrices, such as the Hessian, generalized
+Gauss-Newton (GGN), Fisher information, and gradient covariance matrix, as well
+as their connections. \Cref{sec:background:moreApplications} further motivates
+the utility of such information through concrete examples.
+
+This concludes the background material. We identified and appreciated the
+strengths of deep learning libraries, their potential shortcomings that might
+complicate advances in the field, and found higher-order information as a
+promising direction for their extension.
+
+\Cref{part:papers} tackles this manuscript's goal to \emph{extend
+  the functionality of machine learning libraries to efficiently, automatically,
+  and conveniently provide access to higher-order information}. It describes
+doing so by extending the gradient backpropagation algorithm of ML libraries to
+go beyond the gradient.
+
+\Cref{chap:hbp}\marginnote{%
+  \Cref{chap:hbp}: HBP: block-diagonal curvature via Hessian
+  backpropagation.
+  \begin{center}
+    \vspace{-4ex}
+    \includegraphics[height=0.8\linewidth]{../repos/hbp-paper/doc/aistats_talk/logo/hbp_logo}
+    \href{https://github.com/f-dangel/hbp}{\texttt{github.com/f-dangel/hbp}}
+  \end{center}} %
+presents Hessian backpropagation (HBP), an extension of gradient backpropagation
+to compute layer-wise curvature in sequential feedforward neural networks. Just
+like gradient backpropagation recovers the gradient vectors in blocks that
+correspond to layers, local curvature, \ie second-order partial derivatives of
+the loss \wrt parameters in a layer can be evaluated by backpropagating
+Hessians. Its computation is disentangled to the modular level, which allows for
+an elegant and extensible implementation in analogy to gradient backpropagation.
+We describe the backpropagation operations at the per-layer level, resulting in
+an algorithm that computes local curvature in an automated fashion, and at the
+same time as the gradient. Adaptations of the exact procedure recover positive
+semi-definite block diagonal approximations (BDAs)---\eg of the GGN---and
+recently proposed Kronecker-factored curvature approximations
+\cite{martens2015optimizing,botev2017practical,wei2018bdapch} of the Hessian,
+unifying their computation.
+
+\begin{disclaimer}
+  \Cref{chap:hbp} is based on the peer-reviewed conference
+  paper with the following co-author contributions:
+
+  \fullcite{dangel2020modular} \cite{dangel2020modular}
+
+  \vspace{-1.75ex}
+
+  \begin{center}
+    \begin{tabular}[!h]{lrrrr}
+      & \textbf{Ideas} & \textbf{Experiments} & \textbf{Analysis} & \textbf{Writing}
+      \\
+      \textbf{F.\,Dangel} & 70\,\% & 80\,\% & 70\,\% & 65\,\%
+      \\
+      S.\,Harmeling & 10\,\%& 10\,\% & 10\,\% & 10\,\%
+      \\
+      P.\,Hennig & 20\,\% & 10\,\% & 20\,\% & 25\,\%
+    \end{tabular}
+  \end{center}
+\end{disclaimer}
+
+\Cref{chap:backpack} \marginnote{%
+  \Cref{chap:backpack}:
+  \backpack: an efficient framework built on top of \PyTorch that extends the
+  backpropagation algorithm.
+  \begin{center}
+    \vspace{-2ex} \includegraphics[height =
+    0.8\linewidth]{../repos/backpack-paper/tex/logo/backpack_logo_github}
+    \href{https://github.com/f-dangel/backpack}{\texttt{github.com/f-dangel/backpack}}
+  \end{center}} %
+further generalizes this idea and presents \backpack, an efficient framework
+that extends the gradient backpropagation of \pytorch. The library provides
+access to higher-order statistical information about the gradient distribution,
+like individual gradients or an estimate of their variance, and structured
+curvature information, like the Hessian/\ggn diagonal and block-diagonal
+Kronecker-factored curvature approximations. This is achieved with slightly more
+flexible implementations of AD functionality and by backpropagating additional
+information through the graph. Importantly, most quantities add small overhead
+to the gradient, making their exploration for research more attractive.
+
+\begin{disclaimer}
+  \Cref{chap:backpack} is based on the peer-reviewed
+  conference publication with the following co-author contributions:
+
+  \fullcite{dangel2020backpack} \cite{dangel2020backpack}
+
+  \vspace{-1.75ex}
+
+  \begin{center}
+    \begin{tabular}[!h]{lrrrr}
+      & \textbf{Ideas} & \textbf{Experiments} & \textbf{Analysis} & \textbf{Writing}
+      \\
+      \textbf{F.\,Dangel} & 33\,\% & 55\,\% & 45\,\% & 35\,\%
+      \\
+      F.\,Kunstner & 33\,\%& 45\,\% & 45\,\% & 45\,\%
+      \\
+      P.\,Hennig & 33\,\% & 0\,\% & 10\,\% & 20\,\%
+    \end{tabular}
+  \end{center}
+\end{disclaimer}
+
+\Cref{chap:cockpit}\marginnote{%
+  \Cref{chap:cockpit}: \cockpit: a debugging tool
+  for the training of deep neural networks.
+  \begin{center}
+    \vspace{-5ex} \includegraphics[height =
+    0.8\linewidth]{../repos/cockpit/docs/source/_static/LogoSquare}
+    \href{https://github.com/f-dangel/cockpit}{\texttt{github.com/f-dangel/cockpit}}
+  \end{center}} %
+introduces \cockpit, a live-monitoring debugging tool that consists of various
+instruments which leverage higher-order information, efficiently provided by
+\backpack. By providing a deeper look into the inner workings of neural networks
+through the lens of this information, \cockpit can help identify bugs in the ML
+pipeline, while keeping the computational overhead acceptable. This demonstrates
+the utility of higher-order information to assist deep learning practitioners
+and researchers to better understand their problems and conduct research.
+
+\begin{disclaimer}
+  \Cref{chap:cockpit} is based on the peer-reviewed
+  conference paper with the following co-author contributions:
+
+  \fullcite{schneider2021cockpit} \cite{schneider2021cockpit}
+
+  \vspace{-1.75ex}
+
+  \begin{center}
+    \begin{tabular}[!h]{lrrrr}
+      & \textbf{Ideas} & \textbf{Experiments} & \textbf{Analysis} & \textbf{Writing}
+      \\
+      F.\,Schneider & 45\,\%& 40\,\% & 40\,\% & 45\,\%
+      \\
+      \textbf{F.\,Dangel} & 40\,\% & 50\,\% & 40\,\% & 40\,\%
+      \\
+      P.\,Hennig & 15\,\% & 10\,\% & 20\,\% & 15\,\%
+    \end{tabular}
+  \end{center}
+\end{disclaimer}
+
+\Cref{chap:vivit} \marginnote{%
+  \Cref{chap:vivit}: \vivit: efficient computation with the \ggn's low-rank
+  structure.
+  \begin{center}
+    \vspace{-4ex} \includegraphics[height =
+    0.8\linewidth]{../repos/vivit/docs/rtd/assets/vivit_logo}
+    \href{https://github.com/f-dangel/vivit}{\texttt{github.com/f-dangel/vivit}}
+  \end{center}}%
+presents \vivit, a method that leverages the low-rank structure in the \ggn to
+efficiently extract eigenvalues, eigenvectors, per-sample first- and
+second-order directional derivatives, and Newton steps. In contrast to other
+popular curvature approximations, \vivit is capable of tracking off-diagonal
+curvature blocks, offers principled approximations to trade off cost and
+accuracy, and allows studying noise in the curvature. Under the hood, \vivit's
+quantities are efficiently computed during backpropagation, building on
+\backpack's advanced AD functionality. This demonstrates how such functionality
+enables investigations of unexplored structure in higher-order information which
+may be used to develop novel algorithms and better understand challenges to make
+them work in practice, \eg noise.
+
+\begin{disclaimer}
+  \Cref{chap:vivit} is based on the peer-reviewed journal paper with the
+  following co-author contributions:
+
+  \fullcite{dangel2022vivit} \cite{dangel2022vivit}
+
+  \vspace{-1.75ex}
+
+  \begin{center}
+    \begin{tabular}[!h]{lrrrr}
+      & \textbf{Ideas} & \textbf{Experiments} & \textbf{Analysis} & \textbf{Writing}
+      \\
+      \textbf{F.\,Dangel} & 50\,\% & 40\,\% & 40\,\% & 40\,\%
+      \\
+      L.\,Tatzel & 35\,\%& 50\,\% & 40\,\% & 45\,\%
+      \\
+      P.\,Hennig & 15\,\% & 10\,\% & 20\,\% & 15\,\%
+    \end{tabular}
+  \end{center}
+\end{disclaimer}
+
+\Cref{part:conclusion} summarizes the findings of this manuscript \wrt the
+inital questions from \Cpageref{enum:background::Questions}, as well as their
+impact and relation to the latest developments in the field. Finally, the
+manuscript identifies future research directions for the presented extended AD
+eco-system around \pytorch, and more broadly for the development of future ML
+libraries.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

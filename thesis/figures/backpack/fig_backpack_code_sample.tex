@@ -1,0 +1,51 @@
+\begin{figure*}[t]
+  \centering
+  \hfill
+  \begin{minipage}[t]{.48\linewidth}
+    \textbf{\!Computing the gradient with \pytorchtitle\ldots}\\[1em]
+    \footnotesize
+    \texttt{%
+      X, y~~~~~= load\_mnist\_data()\\
+      model~~~~= Linear(784, 10)\\
+      lossfunc~= CrossEntropyLoss()\\
+      ~\\
+      loss~~~~~= lossfunc(model(X), y)\\
+      ~\\
+      loss.backward()\\
+      ~\\
+      for param in model.parameters():~\\
+      \null\hspace{2.5em}print(param.grad)
+    }
+  \end{minipage}\hspace{-0.5em}\vline\hfill
+  \begin{minipage}[t]{.48\linewidth}
+    \textbf{\!\ldots and the variance with \backpacktitle}\\[1em]
+    \footnotesize
+    \texttt{%
+      X, y~~~~~= load\_mnist\_data()\\
+      model~~~~= \textbf{\color{maincolor} extend(}Linear(784, 10)\textbf{\color{maincolor})}\\
+      lossfunc~= \textbf{\color{maincolor} extend(}CrossEntropyLoss()\textbf{\color{maincolor})}\\
+      ~\\
+      loss~~~~~= lossfunc(model(X), y)\\
+      \textbf{\color{maincolor} with backpack(Variance()):}\\
+      \null\hspace{2.5em}loss.backward()\\
+      ~\\
+      for param in model.parameters():~\\
+      \null\hspace{2.5em}print(param.grad)\\
+      \textbf{\color{maincolor} \null\hspace{2.5em}print(param.var)}
+    }
+  \end{minipage}
+  \vspace{-2ex}
+  \captionof{lstlisting}{ \textbf{\BackPACK integrates with \PyTorch to
+      seamlessly extract more information from the backward pass.} Instead of
+    the variance (or alongside it, in the same pass), \BackPACK can compute
+    individual gradients in the mini-batch, their $L_2$ norm and
+    2\textsuperscript{nd} moment. It can also compute curvature approximations
+    like diagonal or Kronecker factorizations of the \GGN such as \KFAC, \KFLR
+    \& \KFRA. }
+  \label{fig:backpack-code-sample}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

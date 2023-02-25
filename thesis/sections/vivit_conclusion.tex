@@ -1,0 +1,28 @@
+We have presented \vivit, a curvature model based on the low-rank structure of
+the Hessian's generalized Gauss-Newton (\ggn) approximation. This structure
+allows for efficient extraction of \textit{exact} curvature properties, such as
+the \ggn{}'s full eigenvalue spectrum and directional gradients and curvatures
+along the associated eigenvectors. \vivit's quantities scale by approximations
+that allow for a fine-grained cost-accuracy trade-off. In contrast to
+alternatives, these quantities offer a notion of curvature uncertainty across
+the mini-batch in the form of directional derivatives.
+
+We empirically demonstrated the efficiency of leveraging the \ggn's low-rank
+structure and substantiated its usefulness by studying characteristics of
+curvature noise on various deep learning architectures.
+
+% We find that they pose challenges to the stability of second-order methods,
+% and showed, in a simplistic toy model, how \vivit can provide quantities to
+% improve their stability.
+
+The low-rank representation is efficiently computed in parallel with gradients
+during a single backward pass. As it mainly relies on vectorized Jacobians, it
+is general enough to be integrated into existing machine learning libraries in
+the future. For now, we provide an efficient open-source implementation in
+\pytorch \cite{paszke2019pytorch} by extending the existing \backpack
+\cite{dangel2020backpack} library.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

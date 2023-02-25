@@ -1,0 +1,47 @@
+\Cref{cockpit::tab:feature-table} lists all quantities available in the first
+public release of \cockpit. If necessary, we provide references to their
+mathematical definition. This table contains additional quantities, compared to
+\Cref{cockpit::tab:overview-quantities} in the main text. To improve the
+presentation of this work, we decided to not describe every quantity available
+in \cockpit in the main part and instead focus on the investigated metrics.
+Custom quantities can be added easily without having to understand the
+inner-workings.
+
+{\def\arraystretch{1.2}
+  \begin{table*}[!tbh]
+    \caption{\textbf{Overview of all \cockpittitle quantities} with a short
+      description and, if necessary, a reference to mathematical definition.}
+    \label{cockpit::tab:feature-table}
+    \begin{center}
+      \footnotesize
+      \begin{tabularx}{\linewidth}{ lXc }
+        \toprule
+        \textbf{Name}          & \textbf{Description}                                                                                                         & \textbf{Math}                               \\ \midrule
+        \inlinecode{Loss}          & Mini-batch training loss at current iteration, $\gL_{\sB}(\vtheta)$                                                          & (\ref{cockpit::eq:mini-batch-loss})                  \\
+        \inlinecode{Parameters}    & Parameter values $\vtheta_{t}$ at the current iteration                                                                      & -                                           \\
+        \inlinecode{Distance}      & $L_2$ distance from initialization $\lVert \vtheta_{t} -  \vtheta_{0} \rVert_2$                                              & -                                           \\
+        \inlinecode{UpdateSize}    & Update size of the current iteration $\lVert \vtheta_{t + 1} -  \vtheta_{t} \rVert_2$                                        & \multicolumn{1}{l}{}                        \\
+        \inlinecode{GradNorm}      & Mini-batch gradient norm $\lVert \vg_{\sB}(\vtheta) \rVert_2$                                                                & -                                           \\
+        \inlinecode{Time}          & Time of the current iteration  (\eg used in benchmark of \Cref{cockpit::app:benchmarks})                                      & -                                           \\
+        \inlinecode{Alpha}         & Normalized step on a noisy quadratic interpolation between two iterates $\vtheta_t, \vtheta_{t+1}$                           & (\ref{cockpit::eq:alpha-feature-table})              \\
+        \inlinecode{CABS}          & Adaptive batch size for \sgd, optimizes expected objective gain per cost, from \citep{balles2017coupling}                    & (\ref{cockpit::eq:cabs-feature-table})               \\
+        \inlinecode{EarlyStopping} & Evidence-based early stopping criterion for \sgd,  proposed in \citep{mahsereci2017early}                                 & (\ref{cockpit::eq:early-stopping-feature-table})     \\
+        \inlinecode{GradHist1d}    & Histogram of individual gradient elements, $\{ [\vg_n(\vtheta)]_j \}_{n\in \sB}^{j = 1, \dots, D}$                             & (\ref{cockpit::eq:app-grad-hist-1d})                 \\
+        \inlinecode{GradHist2d}    & Histogram of weights and individual gradient elements, $\{ ( [\vtheta]_j, [\vg_n(\vtheta)]_j ) \}_{n\in \sB}^{ j = 1, \dots, D}$ & (\ref{cockpit::eq:app-grad-hist-2d})                 \\
+        \inlinecode{NormTest}      & Normalized fluctuations of the residual norms $\lVert  \vg_{\sB} - \vg_n \rVert$,  proposed in \citep{byrd2012sample}      & (\ref{cockpit::eq:norm-test-feature-table})          \\
+        \inlinecode{InnerTest}     & Normalized fluctuations of $\vg_n$'s parallel components along $\vg_{\sB}$,  proposed in \citep{bollapragada2017adaptive}    & (\ref{cockpit::eq:inner-product-test-feature-table}) \\
+        \inlinecode{OrthoTest}     & Normalized fluctuations of $\vg_n$'s orthogonal components along $\vg_{\sB}$,  proposed in \citep{bollapragada2017adaptive}  & (\ref{cockpit::eq:orthogonality-test-feature-table}) \\
+        \inlinecode{HessMaxEV}     & Maximum Hessian eigenvalue, $ \lambda_{\text{max}}(\mH_{\sB}(\vtheta))$, inspired by \citep{yao2020pyhessian}                         & (\ref{cockpit::eq:hess-max-ev-feature-table})        \\
+        \inlinecode{HessTrace}     & Exact or approximate Hessian trace, $\Tr(\mH_{\sB}(\vtheta))$, inspired by \citep{yao2020pyhessian}                                   & -                                           \\
+        \inlinecode{TICDiag}       & Relation between (diagonal) curvature and gradient noise,  inspired by \citep{thomas2020interplay}                            & (\ref{cockpit::eq:tic-diag-feature-table})           \\
+        \inlinecode{TICTrace}      & Relation between curvature and gradient noise trace,  inspired by \citep{thomas2020interplay}                                 & (\ref{cockpit::eq:tic-trace-feature-table})          \\
+        \inlinecode{MeanGSNR}      & Average gradient signal-to-noise ratio (GSNR), inspired by \citep{liu2020understanding}                                                   & (\ref{cockpit::eq:mean-gsnr-feature-table})          \\ \bottomrule
+      \end{tabularx}
+    \end{center}
+  \end{table*}
+}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

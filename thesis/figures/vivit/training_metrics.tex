@@ -1,0 +1,252 @@
+\begin{figure*}[p]
+  \centering
+  \begin{subfigure}{1.0\linewidth}
+    \centering
+    \caption{\fmnist \twoctwod \sgd}
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = north east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/fmnist_2c2d_sgd_loss}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = south east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/fmnist_2c2d_sgd_accuracy}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}{1.0\linewidth}
+    \centering
+    \caption{\fmnist \twoctwod \adam}
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = north east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/fmnist_2c2d_adam_loss}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = south east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/fmnist_2c2d_adam_accuracy}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}{1.0\linewidth}
+    \centering
+    \caption{\cifarten \threecthreed \sgd}
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = north east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/cifar10_3c3d_sgd_loss}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = south east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/cifar10_3c3d_sgd_accuracy}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}{1.0\linewidth}
+    \centering
+    \caption{\cifarten \threecthreed \adam}
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = north east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/cifar10_3c3d_adam_loss}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = south east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/cifar10_3c3d_adam_accuracy}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \caption{\textbf{Training metrics (1).} Training/test loss/accuracy for all test
+    problems.}
+  \label{vivit::fig:training_metrics_1}
+\end{figure*}
+
+\begin{figure*}[p]
+  \centering
+  \begin{subfigure}{1.0\linewidth}
+    \centering
+    \caption{\cifarten \resnetthirtytwo \sgd}
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = north east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/cifar10_resnet32_sgd_loss}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = south east,
+        }
+      }
+      \tikzexternalenable
+      \vspace{-\baselineskip}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/cifar10_resnet32_sgd_accuracy}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}{1.0\linewidth}
+    \centering
+    \caption{\cifarten \resnetthirtytwo \adam}
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = north east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/cifar10_resnet32_adam_loss}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = south east,
+        }
+      }
+      \tikzexternalenable
+      \vspace{-\baselineskip}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/cifar10_resnet32_adam_accuracy}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}{1.0\linewidth}
+    \centering
+    \caption{\cifarhun \allcnnc \sgd}
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = north east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/cifar100_allcnnc_sgd_loss}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = south east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/cifar100_allcnnc_sgd_accuracy}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}{1.0\linewidth}
+    \centering
+    \caption{\cifarhun \allcnnc \adam}
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = north east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/cifar100_allcnnc_adam_loss}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.495\linewidth}
+      \centering
+      \input{figures/vivit/loss_accuracy_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          lossaccuracydefault,
+          legend pos = south east,
+        }
+      }
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/cifar100_allcnnc_adam_accuracy}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \caption{\textbf{Training metrics (2).} Training/test loss/accuracy for all test
+    problems.}
+  \label{vivit::fig:training_metrics_2}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

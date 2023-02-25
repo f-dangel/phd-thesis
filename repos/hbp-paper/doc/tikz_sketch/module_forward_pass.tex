@@ -1,0 +1,14 @@
+% A single module with data flow for forward pass
+\begin{tikzpicture}
+    \node (in)
+        [inner sep=0]
+        {\tikz \drawMessagesWithArrows{$x$}{ }{ }{\hNodeDistance};};
+    \node (module)
+         [anchor=south west, inner sep=0]
+         at (in.south east)
+         {\tikz \drawModuleWithParams{$f$}{16}{$\theta$}{ }{ };};
+    \node (out)
+        [inner sep=0, anchor=south west]
+        at (module.south east)
+         {\tikz \drawMessagesWithArrows{$z$}{ }{ }{\hNodeDistance};};	
+\end{tikzpicture}

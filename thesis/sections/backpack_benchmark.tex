@@ -1,0 +1,24 @@
+We benchmark the overhead of \BackPACK %
+on \CIFARTEN and \CIFARHUN, using the \CIFARTENNET network and the \ALLCNNC
+network of \citet{springenberg2015striving} provided by \DeepOBS
+\citep{schneider2019deepobs}\sidenote{\CIFARTENNET is a sequence of three
+  convolutions and three dense linear layers with 895,210 parameters. \ALLCNNC
+  is a sequence of nine convolutions with 1,387,108 parameters.}.
+\Cref{backpack::fig:benchmark-all} shows the results.
+
+For first-order extensions, the computation of individual gradients from a
+mini-batch adds noticeable overhead due to the additional memory requirements to
+store them. But more specific quantities such as the $L_2$ norm,
+2\textsuperscript{nd} moment and variance can be extracted efficiently.
+Regarding second-order extensions, the \ggn computation can be expensive for
+nets with large outputs like \CIFAR{100}, regardless of the approximation being
+diagonal of Kronecker-factored. Thankfully, the \MC approximation used by \KFAC,
+which we also implement for a diagonal approximation, can be computed at minimal
+overhead---much less than two backward passes. This last point is encouraging,
+as our optimization experiment in \Cref{backpack::sec:experiments} suggest that
+this approximation is reasonably accurate.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

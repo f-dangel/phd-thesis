@@ -1,0 +1,23 @@
+\ifthenelse{\boolean{createCurvaturePlots}}{
+
+%\begin{figure}[t]
+%	\plotDifferentCurvaturesExtendedLogging{mnist}{logreg}{const}{\bestStrategy}{\bestMetricType}{\bestMetric}
+%\end{figure}
+
+\begin{figure}[t]
+	\plotDifferentCurvaturesExtendedLogging{mnist}{logreg}{LM}{\bestStrategy}{\bestMetricType}{\bestMetric}
+\end{figure}
+
+%\begin{figure}[t]
+%	\plotDifferentCurvaturesExtendedLogging{mnist}{logreg}{fancy}{\bestStrategy}{\bestMetricType}{\bestMetric}
+%\end{figure}
+
+}{
+
+% NOTHING
+
+}
+
+
+
+

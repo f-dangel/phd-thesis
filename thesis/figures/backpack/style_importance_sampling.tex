@@ -1,0 +1,48 @@
+\pgfkeys{/pgfplots/BackPACKImportanceSamplingMNIST/.style={
+    xmin = -0.02,
+    xmax = 1.02,
+    xtick={0, 1},
+    xticklabels = {0, max},
+    xlabel={$\lVert \nabla_{\vtheta}\ell_{n} \rVert_2$},
+    scaled y ticks=real:50000,
+    y tick label style={
+      /pgf/number format/.cd,
+      fixed,
+      fixed zerofill,
+      precision=2,
+      /tikz/.cd
+    },
+    ytick scale label code/.code={$\cdot |\sD_{\text{train}}|$},
+    ylabel = {},
+    width = 1.15\linewidth,
+    height = 0.9\linewidth,
+    every axis plot/.append style={line width = 1.5pt},
+    axis line style = black,
+    tick pos = left,
+    xtick align = inside,
+    ytick align = inside,
+    xmajorticks = true,
+    ymajorticks = true,
+    ylabel near ticks,
+    xlabel near ticks,
+    xticklabel style = {font = \footnotesize},
+    xlabel style = {font = \footnotesize},
+    yticklabel style = {font = \footnotesize},
+    ylabel style = {font = \footnotesize},
+    title style = {font = \footnotesize},
+    grid = major,
+    grid style = {dashed},
+    legend cell align = left,
+    legend style = {
+      fill opacity = 0,
+      text opacity = 0,
+      draw opacity = 0,
+      font = \footnotesize,
+    },
+  }
+}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

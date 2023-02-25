@@ -1,0 +1,249 @@
+\begin{figure*}[p]
+  \centering
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    {\footnotesize First-order derivatives}
+  \end{minipage}
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    {\footnotesize Second-order derivatives}
+  \end{minipage}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\fmnist \twoctwod \sgd}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/gammas_lambdas_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          gammaslambdasdefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/fmnist_2c2d_sgd_gammas}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/gammas_lambdas_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          gammaslambdasdefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/fmnist_2c2d_sgd_lambdas}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\fmnist \twoctwod \adam}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/gammas_lambdas_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          gammaslambdasdefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/fmnist_2c2d_adam_gammas}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/gammas_lambdas_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          gammaslambdasdefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/fmnist_2c2d_adam_lambdas}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarten \threecthreed \sgd}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/gammas_lambdas_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          gammaslambdasdefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar10_3c3d_sgd_gammas}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/gammas_lambdas_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          gammaslambdasdefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar10_3c3d_sgd_lambdas}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarten \threecthreed \adam}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/gammas_lambdas_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          gammaslambdasdefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar10_3c3d_adam_gammas}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/gammas_lambdas_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          gammaslambdasdefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar10_3c3d_adam_lambdas}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+  \caption{\textbf{Directional SNRs (1).} SNR along each of the mini-batch
+    \ggn{}'s top-$C$ eigenvectors during training for all test problems. At fixed
+    epoch, the SNR for the most curved direction is shown in
+    {\protect\tikz{\protect\draw[white,fill={light_red},line width=0mm] (0,0)
+        circle (.8ex);}} and for the least curved direction in
+    {\protect\tikz{\protect\draw[white,fill={black}] (0,0) circle (.8ex);}}.
+  } \label{vivit::fig:directional_derivatives_1}
+\end{figure*}
+
+\begin{figure*}[p]
+  \centering
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    {\footnotesize First-order derivatives}
+  \end{minipage}
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    {\footnotesize Second-order derivatives}
+  \end{minipage}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarten \resnetthirtytwo \sgd}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/gammas_lambdas_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          gammaslambdasdefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar10_resnet32_sgd_gammas}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/gammas_lambdas_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          gammaslambdasdefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar10_resnet32_sgd_lambdas}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarten \resnetthirtytwo \adam}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/gammas_lambdas_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          gammaslambdasdefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar10_resnet32_adam_gammas}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/gammas_lambdas_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          gammaslambdasdefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar10_resnet32_adam_lambdas}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarhun \allcnnc \sgd}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      % \input{figures/vivit/gammas_lambdas_default_style}
+      % \pgfkeys{/pgfplots/zmystyle/.style={
+      % gammaslambdasdefault
+      % }}
+      %   NOTE: Too large. pdflatex will run out of memory during externalization
+      %   \tikzexternalenable
+      %   \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar100_allcnnc_sgd_gammas}
+      %   \tikzexternaldisable
+      \includegraphics[width=\linewidth]{fig/exp13_plots/gammas_lambdas/cifar100_allcnnc_sgd_gammas.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      % \input{figures/vivit/gammas_lambdas_default_style}
+      % \pgfkeys{/pgfplots/zmystyle/.style={
+      % gammaslambdasdefault
+      % }}
+      %   \tikzexternalenable
+      %   NOTE: Too large. pdflatex will run out of memory during externalization
+      %   \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar100_allcnnc_sgd_lambdas}
+      %   \tikzexternaldisable
+      \includegraphics[width=\linewidth]{fig/exp13_plots/gammas_lambdas/cifar100_allcnnc_sgd_lambdas.pdf}
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarhun \allcnnc \adam}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      % \input{figures/vivit/gammas_lambdas_default_style}
+      % \pgfkeys{/pgfplots/zmystyle/.style={
+      % gammaslambdasdefault
+      % }}
+      %   \tikzexternalenable
+      %   NOTE: Too large. pdflatex will run out of memory during externalization
+      %   \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar100_allcnnc_adam_gammas}
+      %   \tikzexternaldisable
+      \includegraphics[width=\linewidth]{fig/exp13_plots/gammas_lambdas/cifar100_allcnnc_adam_gammas.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      % \input{figures/vivit/gammas_lambdas_default_style}
+      % \pgfkeys{/pgfplots/zmystyle/.style={
+      % gammaslambdasdefault
+      % }}
+      %   \tikzexternalenable
+      %   NOTE: Too large. pdflatex will run out of memory during externalization
+      %   \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar100_allcnnc_adam_lambdas}
+      %   \tikzexternaldisable
+      \includegraphics[width=\linewidth]{fig/exp13_plots/gammas_lambdas/cifar100_allcnnc_adam_lambdas.pdf}
+    \end{minipage}
+  \end{subfigure}
+  \caption{\textbf{Directional SNRs (2).} SNR along each of the mini-batch
+    \ggn{}'s top-$C$ eigenvectors during training for all test problems. At fixed
+    epoch, the SNR for the most curved direction is shown in
+    {\protect\tikz{\protect\draw[white,fill={light_red},line width=0mm] (0,0)
+        circle (.8ex);}} and for the least curved direction in
+    {\protect\tikz{\protect\draw[white,fill={black}] (0,0) circle (.8ex);}}.
+  } \label{vivit::fig:directional_derivatives_2}
+\end{figure*}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

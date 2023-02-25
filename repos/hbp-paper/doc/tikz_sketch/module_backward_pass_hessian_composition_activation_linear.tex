@@ -1,0 +1,24 @@
+% Overkill example: Dissected linear layer
+
+\begin{tikzpicture}
+    % first layers
+    \node (in1)
+        [inner sep=0]
+        {\tikz \drawMessagesWithArrows{$x$}{$\delta x$}{$\HeCal  x$}{\hNodeDistance};};
+    \node (layer1)
+        [anchor=south west, inner sep=0]
+         at (in1.south east)
+         {\tikz \drawModuleWithParams{$y = Wx$}{19}{\hspace{1.5ex}$\vec W$\hspace{1.5ex} }{\,$\delta \vec W$\,\,}{$\HeCal  \vec W$};};
+    \node (out1)
+        [inner sep=0, anchor=south west]
+        at (layer1.south east)
+        {\tikz \drawMessagesWithArrows{$y$}{$\delta y$}{$\HeCal  y$}{\hNodeDistance};};
+    \node (layer2)
+        [inner sep=0pt, anchor=south west]
+        at (out1.south east)
+        {\tikz\drawModuleWithParams{$z = y + b$}{16}{$b$}{$\delta b$}{$\HeCal  b$};};
+    \node (out2)
+        [inner sep=0, anchor=south west]
+        at (layer2.south east)
+        {\tikz \drawMessagesWithArrows{$z$}{$\delta z$}{$\HeCal  z$}{\hNodeDistance};};
+\end{tikzpicture}	

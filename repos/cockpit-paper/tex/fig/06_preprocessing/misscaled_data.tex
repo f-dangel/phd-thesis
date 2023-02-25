@@ -1,0 +1,87 @@
+\begin{figure}
+%	 pgfplots style "prerocessingexperimentdefault"
+		\pgfkeys{/pgfplots/preprocessingexperimentdefault/.style={
+				width=\linewidth,
+				height=1.4\linewidth,
+				every axis plot/.append style={line width = 1.2pt},
+				tick pos = left,
+				xmajorticks = true,
+				ymajorticks = true,
+				ylabel near ticks,
+				xlabel near ticks,
+				xtick align = inside,
+				ytick align = inside,
+				legend cell align = left,
+				legend columns = 1,
+				legend pos = south east,
+				legend style = {
+					fill opacity = 0.9,
+					text opacity = 1,
+					font = \small,
+				},
+				xticklabel style = {font = \small, inner xsep = -5ex},
+				xlabel style = {font = \small},
+				axis line style = {black},
+				yticklabel style = {font = \small, inner ysep = -4ex},
+				ylabel style = {font = \small},
+				title style = {font = \small, inner ysep = -3ex},
+				grid = major,
+				grid style = {dashed}
+			}
+		}
+	
+	\centering
+	\begin{subfigure}[t]{0.46\textwidth}
+		\begin{minipage}{.49\textwidth}
+			\Cshadowbox{\includegraphics[width = .35\textwidth]{fig/06_preprocessing/fig_samples/cifar10raw_3c3d_sample_00.png}}
+			\Cshadowbox{\includegraphics[width = .35\textwidth]{fig/06_preprocessing/fig_samples/cifar10raw_3c3d_sample_01.png}}
+	
+			\Cshadowbox{\includegraphics[width = .35\textwidth]{fig/06_preprocessing/fig_samples/cifar10raw_3c3d_sample_02.png}}
+			\Cshadowbox{\includegraphics[width = .35\textwidth]{fig/06_preprocessing/fig_samples/cifar10raw_3c3d_sample_03.png}}
+		\end{minipage}
+		\begin{minipage}{.49\textwidth}
+			\centering
+			%			 customize "zmystyle" as you wish
+			\pgfkeys{/pgfplots/zmystyle/.style={preprocessingexperimentdefault,
+					ylabel={Gradient Element}
+			}}
+			\vspace{1.4\baselineskip}
+			\input{fig/06_preprocessing/fig_histograms/cifar10raw_3c3d.tex}
+		\end{minipage}
+		\caption{Normalized Data}
+		\label{fig:data-pre-processing_norm}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.46\textwidth}
+		\begin{minipage}{.49\textwidth}
+			\Cshadowbox{\includegraphics[width = .35\textwidth]{fig/06_preprocessing/fig_samples/cifar10scale255_3c3d_sample_00.png}}
+			\Cshadowbox{\includegraphics[width = .35\textwidth]{fig/06_preprocessing/fig_samples/cifar10scale255_3c3d_sample_01.png}}
+			
+			\Cshadowbox{\includegraphics[width = .35\textwidth]{fig/06_preprocessing/fig_samples/cifar10scale255_3c3d_sample_02.png}}
+			\Cshadowbox{\includegraphics[width = .35\textwidth]{fig/06_preprocessing/fig_samples/cifar10scale255_3c3d_sample_03.png}}
+		\end{minipage}
+		\begin{minipage}{.49\textwidth}
+			\centering
+%			 customize "zmystyle" as you wish
+			\pgfkeys{/pgfplots/zmystyle/.style={preprocessingexperimentdefault,
+					ylabel={Gradient Element}
+			}}
+			\vspace{1.4\baselineskip}
+			\input{fig/06_preprocessing/fig_histograms/cifar10scale255_3c3d.tex}
+		\end{minipage}
+		\caption{Raw Data}
+		\label{fig:data-pre-processing_raw}
+	\end{subfigure}
+	\caption{\textbf{Same inputs, different gradients; Catching data 
+	    bugs with \cockpittitle.} (a) \emph{normalized} ($[0, 1]$) and (b)
+    	\emph{raw} $([0, 255])$ images look identical in auto-scaled
+	    front-ends like \matplotlib's \texttt{imshow}. The gradient distribution on
+	    the \threecthreed model, however, is crucially affected by this
+	    scaling.}
+	\label{fig:data-pre-processing}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../cockpit_paper"
+%%% End:

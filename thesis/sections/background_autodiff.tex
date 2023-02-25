@@ -1,0 +1,919 @@
+Together with empirical risk minimization and neural networks, the last
+ingredient in the ML pipeline, \Cref{alg:background::trainingLoop}, is computing
+the gradient. Contemporary methods to train neural networks
+(\Cref{sec:background::PopularOptimizers}) rely on this quantity. ML libraries
+compute it via their built-in automatic differentiation (AD), built around the
+famous backpropagation algorithm~\cite{rumelhart1986learning}, described in more
+detail here.
+
+\subsection{Foundations}\label{sec:background::ADFoundations}
+
+\subsubsection{An Example \& Path Interpretation}
+
+Given a program that evaluates a function, AD produces a program to evaluate its
+derivative. The general idea is to consider the function as composition of
+atomic operations (\eg addition, multiplication, \dots) with known derivatives.
+To automatically compute the derivatives, one needs to track the dependencies
+between intermediate variables and combine their derivatives using the chain
+rule.
+
+\tikzexternalenable
+\input{figures/background/automatic_differentiation}
+\tikzexternaldisable
+
+\Cref{fig:background::AutodiffSketch} illustrates the basic principles of AD for
+an example from~\cite{oktay2021randomized}. The starting point is a function
+defined by code (\Cref{subfig:background::AutodiffSketch1}). Such a function
+transforms input to output variables through atomic operations and builds up
+intermediate variables along its execution. The relation between these
+operations are described by a directed graph $\gG = (\gV, \gE)$ with a set of
+nodes $\gV = \{z^{(1)}, z^{(2)}, \dots\}$ and a set of edges $\gE =
+\{(z^{(i_1)}, z^{(j_1)}), (z^{(i_2)}, z^{(j_2)}), \dots\}$ where $(z^{(i)},
+z^{(j)})$ denotes a directed edge from node $z^{(i)}$ to $z^{(j)}$
+(\Cref{subfig:background::AutodiffSketch2}).
+
+To compute derivatives, the local derivatives on edges
+(\Cref{subfig:background::AutodiffSketch3}) are combined according to the chain
+rule. For $\nicefrac{\partial z^{(j)}}{ \partial z^{(i)}}$ between two variables
+in the graph, all paths connecting them need to be considered. A path between
+two nodes $z^{(i)}$ and $z^{(j)}$ is a sequence of edges that connect them:
+starting from $z^{(i)}$, following the edges in a path leads to $z^{(j)}$. Let
+$[z^{(i)} \to z^{(j)}]$ denote the set of paths connecting $z^{(i)}$ to
+$z^{(j)}$. Then the derivative is the sum of path products of local derivatives
+(\Cref{subfig:background::AutodiffSketch4}),
+\begin{align}
+  \label{eq:background::BauersFormula}
+  \frac{\partial z^{(j)}}{\partial z^{(i)}}
+  =
+  \sum_{p \in [z^{(i)} \to z^{(j)}]}
+  \prod_{(z^{(k)}, z^{(l)}) \in p}
+  \frac{\partial z^{(l)}}{\partial z^{(k)}}\,.
+\end{align}
+The path formulation goes back to~\citet{bauer1974computational}.
+
+\subsubsection{The Jacobian Matrix \& Its Chain Rule}
+For the computation graph of a neural network's empirical risk, tracking
+dependencies between variables at a scalar level would result in a considerable
+book-keeping overhead due to the large number of connections. This can be
+circumvented by using vector-valued (or tensor-valued) nodes $ \vz^{(1)},
+\vz^{(2)}, \dots$ and tracking edges between vectors (or tensors), see
+\Cref{fig:background::neuralNetworkLoss}. However, this requires a
+generalization of \Cref{eq:background::BauersFormula} to multi-variate nodes.
+The accumulation is efficiently expressed as matrix multiplication by arranging
+partial derivatives into \emph{Jacobians}.
+
+\begin{definition}[\textbf{Jacobian}]\label{def:background::JacobianVectorVector}
+  Let $\vb:\mathbb{R}^{n} \to \mathbb{R}^{m}, \va \mapsto \vb(\va)$ be a
+  differentiable vector-to-vector function. The Jacobian $\jac_{\va} \vb(\va)$
+  of $\vb$ \wrt $\va$ is an $m \times n$ matrix with partial derivatives,
+  \begin{align}
+    \label{eq:background::JacobianVector}
+    \jac_{\va} \vb(\va) = \frac{\partial \vb(\va)}{\partial \va^\top}\,,
+    \quad\text{with}\quad
+    [\jac_{\va} \vb(\va)]_{i,j}
+    &=
+      \frac{
+      \partial \evb_i(\va)
+      }{
+      \partial \eva_j
+      }\,.
+  \end{align}
+  Matrix- and tensor-valued functions require flattening their arguments into
+  vectors\sidenote[][-15em]{\Cref{def:background::JacobianVectorVector} assumes
+    vector-valued functions. With the flattening convention
+    \Cref{def:background::Flattening}, it generalizes to tensor-valued functions
+    as follows:\vspace{1ex}
+    \begin{definition}[\textbf{Generalized Jacobian}]\label{hbp::def:generalizedJacobian}
+      Let $\mB:\mathbb{R}^{n\times q}\to\mathbb{R}^{m\times p},
+      \mA\mapsto\mB(\mA)$ be a differentiable matrix-to-matrix function. The
+      Jacobian $\jac_{\mA} \mB(\mA)$ of $\mB$ \wrt $\mA$ is an $mp \times nq$
+      matrix
+      \begin{subequations}\label{hbp::equ:generalizedJacobian}
+        \begin{align}
+          \jac_{\mA} \mB(\mA) &= \frac{\partial \vec \mB(\mA)}{\partial (\vec \mA)^\top}
+                                \shortintertext{with entries}
+                                [\jac_{\mA} \mB(\mA)]_{i,j}
+          &=
+            \frac{
+            \partial \left[ \vec \mB(\mA)\right]_i
+            }{
+            \partial \left[\vec \mA\right]_j
+            }
+        \end{align}
+      \end{subequations}
+      and the flattening operation $\vec$ from \Cref{def:background::Flattening}
+      \citep[Chapter 9.4]{magnus1999MatrixDifferentialCalculus}. The analogous
+      tensor case $(\mA, \mB) \to (\tA, \tB)$ requires lengthy notation and is
+      therefore omitted.
+    \end{definition}
+    In the context of neural networks, the most common occurrences of
+    \Cref{hbp::def:generalizedJacobian} involve vector-to-vector functions $f:
+    \mathbb{R}^n \to \mathbb{R}^m, \vx \mapsto f(\vx)$ with
+    \begin{align*}
+      \jac_{\vx} f(\vx) = \frac{\partial f(\vx)}{\partial \vx^\top}\,.
+    \end{align*}
+    For instance, $\vx$ can be considered the input or bias vector of a layer
+    applying an affine transformation. Other cases involve matrix-to-vector mappings
+    $f: \mathbb{R}^{n\times q} \to \mathbb{R}^m, \mX \mapsto f(\mX)$ with
+    \begin{align*}
+      \jac_{\mX} f(\mX) = \frac{\partial f(\mX)}{\partial (\vec \mX)^\top}\,,
+    \end{align*}
+    where $\mX$ might correspond to the $\mathbb{R}^{m\times q}$ weight matrix
+    of a linear layer. See \Cref{tab:background::Jacobians} for an overview.
+  }.
+  For a vector-to-scalar function $b(\va)$, \ie $m=1$, the Jacobian has one row
+  that contains the gradient, $[\jac_{\va} b(\va)]^{\top} = \grad{\va}b$. The
+  gradient will often be denoted by $\vg$. \Eg $\vg_{\pdata}(\vtheta) :=
+  \grad{\vtheta} \gL_{\pdata}(\vtheta)$ for the gradient of the population risk
+  \Cref{eq:background::expectedRisk}, and $\vg_{\sD}(\vtheta) := \grad{\vtheta}
+  \gL_{\sD}(\vtheta)$ for the gradient of the empirical risk
+  \Cref{eq:background::empiricalRisk} on a dataset $\sD$ (with $\sD = \Dtrain, \sB$
+  for the train loss and the mini-batch gradient).
+\end{definition}
+
+In the vector-valued case, one must accumulate Jacobians through matrix
+multiplies instead of scalar multiplications to compute derivatives,
+\begin{align}\label{eq:background::BauersFormulaVector}
+  \jac_{\vz^{(j)}}\vz^{(i)}
+  =
+  \sum_{p \in [\vz^{(i)} \to \vz^{(j)}]}
+  \prod_{(\vz^{(k)}, \vz^{(l)}) \in p}
+  \jac_{\vz^{(k)}}\vz^{(l)}(\vz^{(k)})\,.
+\end{align}
+The product term generalizes the chain rule to vector-valued functions.
+
+\begin{theorem}[\textbf{Jacobian chain
+    rule}]\label{def:background::JacobianChainRuleVector} Let $\vb: \mathbb{R}^{n} \to
+  \mathbb{R}^{m}, \va \mapsto \vb(\va)$ and $\vc: \mathbb{R}^{m} \to
+  \mathbb{R}^{r}, \vb \mapsto \vc(\vb)$ be differentiable vector-to-vector
+  functions. Consider their composition $\vd = \vc \circ \vb: \mathbb{R}^{n} \to
+  \mathbb{R}^{r}, \va \mapsto \vd(\va) = \vc(\vb(\va))$. The composition's
+  Jacobian $\jac_{\va} \vd(\va) \in \sR^{r \times n}$ is related to the composite
+  Jacobians via
+  \begin{align}
+    \label{eq:background::JacobianChainRuleVector}
+    \jac_{\va} \vd(\va)=  \left[ \jac_{\vb} \vc(\vb) \right] \jac_{\va} \vb(\va)\,.
+  \end{align}
+  This can be generalized to tensor-valued functions\sidenote[][1em]{Proper
+    arrangement of partial derivatives leads to a generalized Jacobian chain
+    rule for matrices/tensors:\vspace{1ex}
+    \begin{theorem}[\textbf{Generalized Jacobian chain rule}]
+      \label{hbp::the:chainRuleJacobians}
+      Let $\mB: \mathbb{R}^{n\times q} \to \mathbb{R}^{m \times p}$ and $\mC:
+      \mathbb{R}^{m\times p} \to \mathbb{R}^{r\times s}$ be differentiable
+      matrix-to-matrix functions. Let $\mD = \mC \circ \mB: \mathbb{R}^{n\times q}
+      \to \mathbb{R}^{r\times s}, \mA \to \mD(\mA) = \mC(\mB(\mA))$ be their
+      composition. Then,
+      \begin{align}
+        \label{hbp::equ:chainRuleJacobians}
+        \jac_{\mA} \mD(\mA)=  \left[ \jac_{\mB} \mC(\mB) \right] \jac_{\mA} \mB(\mA)
+      \end{align}
+      with the generalized Jacobian \Cref{hbp::def:generalizedJacobian}
+      \citep[Chapter 5.15]{magnus1999MatrixDifferentialCalculus}. The tensor case
+      $(\mD, \mC, \mB, \mA) \to (\tD, \tC, \tB, \tA)$ is analogous.
+    \end{theorem}
+  }.
+\end{theorem}
+
+\subsubsection{Jacobian Accumulation (Automatic Differentiation Modes)}
+
+Given the computation graph $\gG$ of a function to be differentiated,
+\Cref{eq:background::BauersFormulaVector} describes the operations that need to
+be performed. But there are different schedules for carrying out these
+computations, with differing performance: \eg, it is possible to share
+accumulated derivative products between paths that share subpaths (like paths
+\tikz[baseline=-0.5ex]{\draw[fill=thirdcolor, draw=none] circle (0.75ex);} and
+\tikz[baseline=-0.5ex]{\draw[fill=darkgraycolor, draw=none] circle (0.75ex);} in
+\Cref{subfig:background::AutodiffSketch4}). And for a single path in the vector
+case, the optimal contraction order of the Jacobian matrix chain (one summand of
+\Cref{eq:background::BauersFormulaVector}) depends on the dimension of the nodes
+(\Cref{eq:background::MatrixChain}). The following Jacobian accumulation
+schedules are of specific interest for AD:
+\begin{itemize}
+\item \textbf{Forward accumulation, or forward mode AD,} starts at the leafs,
+  \ie the nodes \wrt which the function is differentiated. Jacobians are
+  accumulated in the same order as the function evaluation.
+\item \textbf{Reverse accumulation, or reverse mode
+    AD~\cite{griewank2012invented,linnainmaa1976taylor},} starts at the root,
+  \ie the variable that is differentiated. Jacobians are accumulated from root
+  to leaf nodes, traversing the graph backwards. This is often called a
+  \emph{backward pass}.
+\item \textbf{Optimal Jacobian accumulation} computes derivatives according to
+  the optimal schedule which usually traverses the computation graph in a
+  nontrivial fashion. For arbitrary computation graphs, finding this schedule is
+  NP-hard \cite{naumann2008optimal}.
+\end{itemize}
+Due to the specific structure of computation graphs in deep learning, reverse
+mode AD is often more practical than forward accumulation. This is outlined in
+in the following section, that illustrates reverse mode for differentiation of a
+neural network's loss \wrt its parameters, leading to the famous backpropagation
+algorithm~\cite{rumelhart1986learning}.
+
+\subsection{Gradient Backpropagation}\label{sec:background:GradientBackpropagationInMLLibraries}
+
+Gradient backpropagation~\cite{rumelhart1986learning} enables efficient
+differentiation of the training objective in deep learning. It is the central
+algorithm of popular ML libraries with built-in AD. This section presents
+backpropagation for chain-structured computation graphs (see~\cite[Chapter
+6]{goodfellow2016deep} for the general case) like the loss of a sequential
+feedforward neural network. Starting from the loss of a single datum, the goal
+is to show that ML libraries combine AD and batching to maximize efficiency. But
+this limits their functionality to computing the gradient, ignoring \eg the
+per-sample structure in the loss. Alleviating this limitation to compute richer
+information (\Cref{chap:background::HigherOrder}) using the existing
+implementation of gradient backpropagation is a main goal of \Cref{part:papers}
+in this thesis.
+
+\tikzexternalenable
+\begin{figure*}[t]
+  \centering \resizebox{\linewidth}{!}{ {\footnotesize
+      \input{figures/background/forward_pass_datum}}}
+  \caption{\textbf{Computation graph of a sequential feedforward neural
+      network's loss for a single datum from
+      \Cref{eq:background::neuralNetworkLoss}.}}\label{fig:background::neuralNetworkLoss}
+\end{figure*}
+\tikzexternaldisable
+
+\subsubsection{Loss of a Single Datum}
+Consider the loss implied by a single datum $(\vx, \vy)$, a loss function
+$\ell$, and a neural network $f_{\vtheta}$ depicted in
+\Cref{fig:background::neuralNetworkLoss},
+\begin{subequations}
+  \begin{align}
+    \label{eq:background::neuralNetworkLoss}
+    \ell(\vtheta)
+    =
+    \ell(f_{\vtheta}(\vx), \vy)
+    \qquad
+    \text{with}
+    \qquad
+    f_{\vtheta}
+    =
+    f^{(L)}_{\vtheta^{(L)}}
+    \circ
+    f^{(L-1)}_{\vtheta^{(L-1)}}
+    \circ
+    \ldots
+    \circ
+    f^{(1)}_{\vtheta^{(1)}}\,.
+  \end{align}
+  Its computation graph $\gG = (\gV, \gE)$ has nodes
+  \begin{align}
+    \gV &=
+          \left\{
+          \vtheta^{(l)}
+          \right\}_{l=1}^L
+          \cup
+          \left\{
+          \vz^{(l)}
+          \right\}_{l=0}^L
+          \cup
+          \left\{
+          \vy, \ell
+          \right\}
+          \shortintertext{and edges}
+          \gE &=
+                \left\{
+                (\vz^{(l-1)}, \vz^{(l)})
+                \right\}_{l=1}^L
+                \cup
+                \left\{
+                (\vtheta^{(l)}, \vz^{(l)})
+                \right\}_{l=1}^L
+                \cup
+                \left\{
+                (\vz^{(L)}, \ell), (\vy, \ell)
+                \right\}\,.
+  \end{align}
+\end{subequations}
+Each edge implies a Jacobian, categorized as one of the following:
+\begin{itemize}
+\item The \emph{input-output} Jacobian $\jac_{\vz^{(l-1)}}\vz^{(l)}(\vz^{(l-1)})$ of
+  a module $l$.
+\item The \emph{parameter-output} Jacobian
+  $\jac_{\vtheta^{(l)}}\vz^{(l)}(\vtheta^{(l)})$ of a module $l$.
+\item The \emph{prediction-loss} Jacobian $\jac_{\vz^{(L)}}\ell(\vz^{(L)})$ has
+  one column and will be written as gradient of the loss \wrt the model
+  prediction, $\jac_{\vz^{(L)}}\ell(\vz^{(L)}) = [\grad{\vz^{(L)}}
+  \ell(\vz^{(L)})]^{\top}$.
+\end{itemize}
+The goal is to compute \emph{parameter-loss} Jacobians, \ie gradients of the
+loss \wrt parameters $\jac_{\vtheta^{(l)}}\ell(\vtheta^{(l)}) =
+[\grad{\vtheta^{(l)}} \ell(\vtheta^{(l)})]^{\top}$ for all layers $l=1,\dots,
+L$.
+
+First, consider only the gradient $\grad{\vtheta^{(l)}} \ell$ of one parameter
+$\vtheta^{(l)}$. \Cref{eq:background::BauersFormulaVector} requires identifying
+all paths connecting $\vtheta^{(l)}$ to $\ell$. Due to the computation graph's
+chain structure, this is only a single path,
+\begin{subequations}
+  \begin{gather}
+    [\vtheta^{(l)} \to \ell]
+    =
+    \left\{
+      p
+    \right\}
+    \shortintertext{with}
+    p
+    =
+    \left(
+      \left( \vtheta^{(l)}, \vz^{(l)} \right),
+      \left( \vz^{(l)}, \vz^{(l+1)} \right),
+      \dots
+      \left( \vz^{(L-1)}, \vz^{(L)} \right),
+      \left( \vz^{(L)}, \ell \right)
+    \right)\,.
+  \end{gather}
+  Plugging this into \Cref{eq:background::BauersFormulaVector} simplifies to
+  \begin{align}
+    \label{eq:background::ParameterJacobian}
+    \underbrace{
+    \jac_{\vtheta^{(l)}}\ell(\vtheta)
+    }_{
+    1 \times d^{(l)}
+    }
+    =
+    \underbrace{
+    \left[
+    \jac_{\vz^{(L)}}\ell
+    \right]
+    }_{
+    1 \times h^{(L)}
+    }
+    \underbrace{
+    \left[
+    \jac_{\vz^{(L-1)}}\vz^{(L)}
+    \right]
+    }_{
+    h^{(L)} \times h^{(L-1)}
+    }
+    \cdots
+    \underbrace{
+    \left[
+    \jac_{\vz^{(l)}}\vz^{(l+1)}
+    \right]
+    }_{
+    h^{(l+1)} \times h^{(l)}
+    }
+    \underbrace{
+    \left[
+    \jac_{\vtheta^{(l)}}\vz^{(l)}
+    \right]
+    }_{
+    h^{(l)} \times d^{(l)}
+    }
+    \,,
+    \intertext{and in gradient notation}
+    \label{eq:background::ParameterGradient}
+    \underbrace{
+    \grad{\vtheta^{(l)}}\ell(\vtheta)
+    }_{
+    d^{(l)}
+    }
+    =
+    \underbrace{
+    \left[
+    \jac_{\vtheta^{(l)}}\vz^{(l)}
+    \right]^{\top}
+    }_{
+    d^{(l)}
+    \times
+    h^{(l)}
+    }
+    \underbrace{
+    \left[
+    \jac_{\vz^{(l)}}\vz^{(l+1)}
+    \right]^{\top}
+    }_{
+    h^{(l)}
+    \times
+    h^{(l+1)}
+    }
+    \cdots
+    \underbrace{
+    \left[
+    \jac_{\vz^{(L-1)}}\vz^{(L)}
+    \right]^{\top}
+    }_{
+    h^{(L-1)}
+    \times
+    h^{(L)}
+    }
+    \underbrace{
+    \grad{\vz^{(L)}}\ell
+    }_{
+    h^{(L)}
+    }
+    \,.
+  \end{align}
+\end{subequations}
+In comparison to the general formulation
+\Cref{eq:background::BauersFormulaVector}, the rather simple graphs of a neural
+network's loss yield much simpler expressions
+(\Cref{eq:background::ParameterJacobian,eq:background::ParameterGradient}) that
+are a result of the Jacobian chain rule
+(\Cref{def:background::JacobianChainRuleVector}) applied to the loss
+\Cref{eq:background::neuralNetworkLoss}. They also illustrate the impact of
+contraction order on performance due to the connection to matrix
+chains\sidenote[][-15em]{Assuming no cost to compute a Jacobian, the optimal
+  Jacobian contraction of
+  \Cref{eq:background::ParameterGradient,eq:background::ParameterJacobian} are
+  matrix chain problems that can be solved with dynamic programming: given $n$
+  matrices $\mA_1, \mA_2, \dots, \mA_n$, the task is to find the optimal
+  contraction schedule of $\mA_1 \mA_2 \cdots \mA_n$. This is crucial for
+  performance, as this example from \citet[Chapter 15.2]{cormen2001introduction}
+  illustrates:
+  \begin{example}[\textbf{Matrix chain contraction}]\label{eq:background::MatrixChain}
+    Let $\mA_1 \in \sR^{10 \times 100}, \mA_2 \in \sR^{100 \times 5}, \mA_3 \in
+    \sR^{5 \times 50}$. There are two schedules to evaluate the chain $\mA_1
+    \mA_2 \mA_3$ (cost for addition neglected for simplicity):
+    \begin{itemize}[leftmargin=*]
+    \item \textbf{$(\mA_1 \mA_2)\mA_3$:} $\mB_1 = \mA_1 \mA_2 \in \sR^{10 \times
+        5}$ costs 100 multiplications per element ($5,000$ in total). $\mB_1
+      \mA_3 \in \sR^{10 \times 50}$ costs 5 multiplications per element ($2,500$
+      in total).
+    \item \textbf{$\mA_1 (\mA_2 \mA_3)$:} $\mB_2 = \mA_2 \mA_3 \in \sR^{100
+        \times 50}$ costs 5 multiplications per element ($25,000$ in total).
+      $\mA_1 \mB_2 \in \sR^{10 \times 50}$ costs 100 multiplications per element
+      ($50,000$ in total).
+    \end{itemize}
+    The order $(\mA_1 \mA_2) \mA_3$ uses 10x fewer operations ($7,500$ versus
+    $75,000$).
+  \end{example}
+}%
+, mentioned in \Cref{sec:background::ADFoundations}.
+
+In forward mode, the matrix chain \Cref{eq:background::ParameterGradient} would
+be evaluated from left to right, starting with a $d^{(l)} \times h^{(l)}$
+Jacobian that is transformed into $d^{(l)} \times h^{(l')}$ matrices where $l' >
+l$. Since the parameter count $d^{(l)}$ in a layer is large in DNNs, these
+intermediate matrices are costly to store.
+
+In reverse mode, \Cref{eq:background::ParameterGradient} is evaluated from right
+to left, starting with a $h^{(L)}$-dimensional vector that is transformed into
+vectors of dimension $h^{(l')}$ with $L > l' \ge l$. These intermediate
+accumulations require less memory than forward mode.
+
+Each approach has drawbacks, however. Reverse mode uses a more efficient matrix
+multiplication order, but the entire graph must have been evaluated and stored,
+or re-computed, to construct the Jacobians. While this is not needed for forward
+mode, forward accumulation starts with the Jacobian of an edge $(\vtheta^{(l)},
+\vz^{(l)})$ that is not shared with paths for other parameters. Therefore,
+intermediate accumulations can not be reused for other gradients. This is
+another crucial property of reverse mode, which does allow reuse of intermediate
+results: consider the accumulations to obtain the gradient $\grad{\vtheta}\ell$
+of all layers,
+\begin{align*}
+  \setlength{\arraycolsep}{1.4pt} % auto-reverts outside the environment
+  \begin{array}{cccrc}
+    \grad{\vtheta^{(1)}}\ell
+    &
+      =
+    &
+      \left[
+      \jac_{\vtheta^{(1)}} \vz^{(1)}
+      \right]^{\top}
+    &
+      \left[
+      \jac_{\vz^{(1)}} \vz^{(2)}
+      \right]^{\top}
+      \left[
+      \jac_{\vz^{(2)}} \vz^{(3)}
+      \right]^{\top}
+      \cdots
+      \left[
+      \jac_{\vz^{(L-1)}} \vz^{(L)}
+      \right]^{\top}
+    &
+      \grad{\vz^{(L)}} \ell
+    \\
+    \grad{\vtheta^{(2)}}\ell
+    &
+      =
+    &
+      \left[
+      \jac_{\vtheta^{(2)}} \vz^{(2)}
+      \right]^{\top}
+    &
+      \left[
+      \jac_{\vz^{(2)}} \vz^{(3)}
+      \right]^{\top}
+      \cdots
+      \left[
+      \jac_{\vz^{(L-1)}} \vz^{(L)}
+      \right]^{\top}
+    &
+      \grad{\vz^{(L)}} \ell
+    \\
+    \vdots
+    &
+      =
+    &
+      \vdots
+    &
+      \ddots
+      \phantom{
+      \left[
+      \jac_{\vz^{(L-1)}} \vz^{(L)}
+      \right]^{\top}
+      }
+    &
+      \vdots
+    \\
+    \grad{\vtheta^{(L-1)}}\ell
+    &
+      =
+    &
+      \left[
+      \jac_{\vtheta^{(L-1)}} \vz^{(L-1)}
+      \right]^{\top}
+    &
+      \left[
+      \jac_{\vz^{(L-1)}} \vz^{(L)}
+      \right]^{\top}
+    &
+      \grad{\vz^{(L)}} \ell
+    \\
+    \grad{\vtheta^{(L)}}\ell
+    &
+      =
+    &
+      \left[
+      \jac_{\vtheta^{(L)}} \vz^{(L)}
+      \right]^{\top}
+    &
+    %
+    &
+      \grad{\vz^{(L)}} \ell
+  \end{array}
+\end{align*}
+The paths for any two parameters $\vtheta^{(l_1)}, \vtheta^{(l_2)}$ with $l_2 >
+l_1$ share edges
+\begin{align*}
+  \left( \vz^{(l_2)}, \vz^{(l_2+1)} \right),
+  \dots,
+  \left( \vz^{(L-1)}, \vz^{(L)} \right),
+  \left( \vz^{(L)}, \ell \right)\,.
+\end{align*}
+Therefore, their matrix chains share the accumulated gradient
+\begin{align*}
+  \grad{\vz^{(l_2)}}\ell
+  =
+  \left[
+  \jac_{\vz^{(l_2)}}\vz^{(l_2+1)}
+  \right]^{\top}
+  \left[
+  \jac_{\vz^{(l_2+1)}}\vz^{(l_2+2)}
+  \right]^{\top}
+  \cdots
+  \left[
+  \jac_{vz^{(L-1)}}\vz^{(L)}
+  \right]^{\top}
+  \grad{\vz^{(L)}}\ell\,.
+\end{align*}
+This gradient \wrt hidden features is passed backwards through the graph and
+used by a layer, before updating it and passing it to the next. The
+interpretation of the described accumulation scheme is therefore known as
+gradient backpropagation algorithm \cite{rumelhart1986learning}:%
+
+\begin{definition}[\textbf{Gradient backpropagation for sequential feedforward
+    neural networks}]
+  \label{def:background::GradientBackpropagation}
+  Given the computation graph of a loss $\ell(f_{\vtheta}(\vx), \vy)$ implied by
+  a datum $(\vx, \vy)$, a loss function $\ell$, and a sequential feedforward
+  neural network $f_{\vtheta}$ from \Cref{eq:background::neuralNetworkLoss},
+  gradient backpropagation recovers the gradient vector $\grad{\vtheta}\ell =
+  \begin{pmatrix}
+    (\grad{\vtheta^{(1)}}\ell)^{\top},
+    (\grad{\vtheta^{(2)}}\ell)^{\top},
+    \dots,
+    (\grad{\vtheta^{(L)}}\ell)^{\top}
+  \end{pmatrix}^{\top}
+  $ in stages by passing gradients backward through the graph (\Cref{subfig:background::gradientBackpropagation1}):
+  \begin{itemize}
+  \item Initialize the backpropagated vector with $\grad{\vz^{(L)}}\ell$ at $L$.
+  \item For layer $l = L, \dots, 1$
+    \begin{enumerate}
+    \item Receive the output gradient $\grad{\vz^{(l)}}\ell$.
+    \item Recover the parameter gradient $\grad{\vtheta^{(l)}}\ell =
+      \left[ \jac_{\vtheta^{(l)}}\vz^{(l)}\right]^{\top}\grad{\vz^{(l)}}\ell$\,.
+    \item Compute the input gradient $\grad{\vz^{(l-1)}}\ell = \left[
+        \jac_{\vtheta^{(l)}}\vz^{(l)}\right]^{\top}\grad{\vz^{(l)}}\ell$\,.
+    \item Free $\grad{\vz^{(l)}}\ell$ and send $\grad{\vz^{(l-1)}}\ell$ to layer
+      $l-1$.
+    \end{enumerate}
+  \end{itemize}
+\end{definition}
+\Cref{def:background::GradientBackpropagation} is \emph{modular}, as mentioned
+earlier in \Cref{sec:background::CommonOperations}: it only relies on local
+derivatives. Supporting a new operation only requires specifying its forward
+pass and the vector-Jacobian products (VJPs%
+\sidenote[][-3.5\baselineskip]{During backpropagation, the transposed Jacobian is
+  right-multiplied onto the backpropagated gradient vector
+  (\Cref{eq:background::ParameterGradient} from right to left). One can see this
+  as left-multiplying the Jacobian to a column vector
+  (\Cref{eq:background::ParameterJacobian} from left to right), \ie computing a
+  vector-Jacobian product. Forward accumulation instead left-multiplies the
+  transposed Jacobian onto a matrix (\Cref{eq:background::ParameterGradient}
+  from left to right). One can view this as right-multiplying the Jacobian onto
+  the transposed matrix (\Cref{eq:background::ParameterJacobian} from right to
+  left). This requires multiple Jacobian-vector products (JVPs), or a
+  Jacobian-matrix product (JMP).}) %
+with its input-output and parameter-output Jacobians. Given functionality to
+create and traverse computation graphs, implementations of backpropagation are
+very extensible due to its abstraction to the modular level.
+
+Backpropagation itself performs a VJP with the network's parameter-output
+Jacobian $\jac_{\vtheta} \vz^{(L)}$. Choosing the vector to be
+$\grad{\vz^{(L)}}\ell$ yields the gradient $\grad{\vtheta} \ell =
+[\jac_{\vtheta} \vz^{(L)}]^{\top} \grad{\vz^{(L)}}\ell$. But one can also
+compute VJPs $[\jac_{\vtheta} \vz^{(L)}]^{\top} \vv$ with arbitrary vectors
+$\vv$. The model's parameter-output Jacobian is crucial for computing
+higher-order information (\Cref{chap:background::HigherOrder,part:papers}).
+
+Although backpropagation only requires VJPs, the Jacobian matrix is an
+interesting object for analytical studies into its structure, and for efficient
+implementation of functionality that goes beyond computing gradients (\eg
+matrix-Jacobian products (MJPs)). \Cref{tab:background::Jacobians} contains the
+Jacobians of the common operations in neural networks from
+\Cref{sec:background::CommonOperations}. These Jacobians are conveniently
+obtained using matrix differential
+calculus~\cite{magnus1999MatrixDifferentialCalculus}, presented in
+\Cref{hbp::sec:matrixDifferentialCalculus}.
+
+\begin{table*}[t]
+  \centering
+  \caption{\textbf{Jacobians (\Cref{hbp::def:generalizedJacobian}) for common
+      modules in feedforward networks.} Input and output are denoted $\vx, \vz$
+    rather than $\vz^{(l)}, \vz^{(l+1)}$ to avoid clutter. $\mI$ is the identity
+    matrix. Matrices use bold upper-case symbols ($\mW, \mX, \mZ, \dots$),
+    tensors use bold upper-case sans serif symbols ($\tW, \tX, \tZ, \dots$).
+    Most Jacobians can be elegantly derived with matrix differential calculus,
+    see \Cref{hbp::sec:matrixDifferentialCalculus} for
+    details.}\label{tab:background::Jacobians}
+  \begin{footnotesize}
+    \begin{tabular}{llll}
+      \toprule
+      \textbf{OPERATION} & \textbf{FORWARD} & \textbf{JACOBIAN} (\Cref{hbp::def:generalizedJacobian}) & \textbf{DETAILS}
+      \\
+      \midrule
+      % matrix-vector multiplication
+      Matrix-vector multiplication & $\vz(\vx, \mW) = \mW\vx$ & $\jac_{\vx}\vz = \mW$\,,  & \Cref{hbp::subsec:linearLayerBackwardPass}
+      \\
+                         & & $\jac_{\mW} \vz = \vx^{\top} \otimes \mI$
+      \\
+      % matrix-matrix multiplication
+      Matrix-matrix multiplication & $\mZ(\mX, \mW) = \mW\mX$ & $\jac_{\mX} \mZ = \mI \otimes
+                                                                \mW$\,, & \Cref{hbp::subsec:linearLayerBackwardPass}
+      \\
+                         & & $\jac_{\mW} \mZ = \mX^\top \otimes \mI$
+      \\
+      % addition
+      Addition & $\vz(\vx, \vb) = \vx + \vb$ & $\jac_{\vx}\vz = \jac_{\vb} \vz =\mI $ & \Cref{hbp::subsec:linearLayerBackwardPass}
+      \\
+      % elementwise activation
+      Elementwise activation & $\vz(\vx) = \vphi(\vx)$\,,\ \text{s.t.} & $\jac_{\vx}\vz = \diag[\vphi'(\vx)]$ & \Cref{hbp::subsec:activationBackwardPass}
+      \\
+                         & $z_i(\vx) = \phi(x_i)$ &
+      \\
+      \midrule
+      % residual unit/skip-connection
+      Skip-connection & $\vz(\vx, \vtheta) = \vx + \vs(\vx, \vtheta)$ & $\jac_{\vx}\vz =
+                                                                        \mI + \jac_{\vx}\vs$\,, & \Cref{hbp::subsec:skipconnectionBackwardPass}
+      \\
+                         & & $\jac_{\vtheta}\vz = \jac_{\vtheta} \vs $
+      \\
+      \midrule
+      % reshape/view operation
+      Reshape/view & $\tZ(\tX)=
+                     \mathrm{reshape}(\tX)$ & $\jac_{\tX}\tZ = \mI$ & \Cref{hbp::subsec:HBPReshape}
+      \\
+      % extraction operator
+      Index select/map $\pi$ & $\vz(\vx) = \mPi \vx\, ,$ $\emPi_{j,\pi(j)} =
+                               1 $ & $\jac_{\vx}\vz = \mPi$ %(same as matrix-vector mul.\ with $W$)
+                                                                                                      & \Cref{hbp::subsec:HBPIndexSelect}
+      \\
+      % convolution
+      Convolution & $\tZ(\tX, \tW) = \tX
+                    \star \tW$\,, & $\jac_{\llbracket \tX \rrbracket}\tZ =
+                                    \mI \otimes \mW$\,,
+                                                                                                      & \Cref{hbp::subsec:convolutions}
+      \\
+                         & $\mZ(\mW, \llbracket\tX\rrbracket) = \mW
+                           \llbracket \tX \rrbracket$ & $\jac_{\mW} \tZ = \llbracket
+                                                        \tX \rrbracket^\top \otimes \mI$
+      \\
+      \midrule
+      % square loss
+      Square loss & $\ell(\vf, \vy) = \nicefrac{1}{C}(\vy-\vf)^\top (\vy - \vf)$ & $\jac_{\vf}\ell = 2(\vf - \vy)^{\top}$ & \Cref{hbp::subsec:mselossBackwardPass}
+      \\
+      % cross-entropy loss
+      Softmax cross-entropy & $\ell(\vf, y) = -\onehot(y)^{\top} \log[\vp(\vf)]$ & $\jac_{\vf}\ell = (\vy - \vp(\vf))^{\top}$ & \Cref{hbp::subsec:crossentropylossBackwardPass}
+      \\
+      \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+\end{table*}
+
+\tikzexternalenable
+\input{figures/background/gradient_backpropagation}
+\tikzexternaldisable
+
+\subsubsection{Backpropagation \& Batching}
+
+To see the interplay between AD and batching
+(\Cref{sec:background::MiniBatching}), consider differentiation of the
+mini-batch loss (\Cref{eq:background::miniBatchRisk}). Popular ML libraries like
+\PyTorch construct the computation graph on the level of tensor-valued variables
+with an additional batch axis.
+
+\paragraph{General case:} Starting from the previous differentiation of a single
+datum loss, the mini-batch scenario follows by the substitutions
+\begin{subequations}\label{eq:background::ADBatchedCase}
+  \begin{align}\label{eq:background::ADBatchedCaseSubstitutions}
+    \begin{split}
+      \vx =: \vz^{(0)}
+      \quad&\leftrightarrow\quad
+             \mX =: \mZ^{(0)} \in \sR^{|\sB| \times h^{(0)}}\,,
+      \\
+      \vy
+      \quad&\leftrightarrow\quad
+             \mY \in \sR^{|\sB| \times C}\,,
+      \\
+      \vz^{(\ell)}
+      \quad&\leftrightarrow\quad
+             \mZ^{(l)} \in \sR^{|\sB| \times h^{(l)}}\,,
+      \\
+      \ell
+      \quad&\leftrightarrow\quad
+             \vell \in  \sR^{|\sB|}\,,
+    \end{split}
+  \end{align}
+  with stacked data $\mX= (\vx_1\, \vx_2\, \dots\, \vx_{|\sB|})$ and $ \mY =
+  (\vy_1\, \vy_2\, \dots\, \vy_{|\sB|})$, and assuming matrix-to-matrix layer
+  functions. To account for the reduction of per-sample losses $\vell$, the
+  graph is extended by
+  \begin{align}
+    \gL(\ell) = \mean(\ell) = \frac{1}{|\sB|} \sum_{n=1}^{|\sB|} [\vell]_n\,.
+  \end{align}
+  The computation graph, shown in
+  \Cref{subfig:background::gradientBackpropagation2}, is $\gG = (\gE, \gV)$ with
+  nodes
+  \begin{align}
+    \gV &=
+          \left\{
+          \vtheta^{(l)}
+          \right\}_{l=1}^L
+          \cup
+          \left\{
+          \mZ^{(l)}
+          \right\}_{l=0}^L
+          \cup
+          \left\{
+          \mY, \vell, \gL
+          \right\}
+          \shortintertext{and edges}
+          \begin{split}
+            \gE &=
+                  \left\{
+                  (\mZ^{(l-1)}, \mZ^{(l)}),
+                  \right\}_{l=1}^L
+                  \cup
+                  \left\{
+                  (\vtheta^{(l)}, \mZ^{(l)})
+                  \right\}_{l=1}^{L}
+            \\
+                &\phantom{=}\,
+                  \cup
+                  \left\{
+                  (\mZ^{(L)}, \vell),
+                  (\mY, \vell),
+                  (\vell, \gL)
+                  \right\}\,.
+          \end{split}
+  \end{align}
+\end{subequations}
+Gradient backpropagation (\Cref{def:background::GradientBackpropagation})
+carries over the mini-batch loss graph \Cref{eq:background::ADBatchedCase} and
+efficiently recovers the gradient $\grad{\vtheta}\gL$.
+
+Popular libraries like \pytorch implement the required functionality, VJPs, for
+the matrix-to-matrix functions that process inputs with a batch axis (see
+\Cref{hbp::def:generalizedJacobian} for the Jacobian's generaliation to matrix
+functions). Hence, operations $\mZ^{(l)} \mapsto \mZ^{(l+1)}$ are allowed to
+create dependencies across the batch axis without breaking the gradient
+computation\sidenote[][-4\baselineskip]{%
+  \Eg batch normalization \cite{ioffe2015batch} introduces
+  dependencies along the batch dimension by centering and re-scaling the input
+  with statistics computed across the batch axis.}%
+.
+
+\paragraph{Per-sample structure:} This work focuses on empirical risks that are
+averages over \emph{per-sample} losses (recall
+\Cref{eq:background::empiricalRisk}),
+\begin{align*}
+  \gL_{\sB}(\vtheta)
+  =
+  \frac{1}{|\sB|}
+  \sum_{(\vx_n, \vy_n) \in \sB}
+  \ell(f_{\vtheta}(\vx_n), \vy_n)\,.
+\end{align*}
+Hence, all operations act independently, and using the same instructions, along
+the batch dimension. All variables in the graph inherit this independence along
+their batch axis,
+\begin{subequations}\label{eq:background::matrixNotationBatchedVariables}
+  \begin{align}
+    \mZ^{(l)}
+    &=
+      \begin{pmatrix}
+        \vz_1^{(l)} & \vz_2^{(l)} & \dots & \vz_{|\sB|}^{(l)}
+      \end{pmatrix}\,,\qquad l=0,\dots,L\,,
+    \\
+    \vell
+    &=
+      \begin{pmatrix}
+        \ell(f_{\vtheta}(\vx_1), \vy_1)
+        \\
+        \ell(f_{\vtheta}(\vx_2), \vy_2)
+        \\
+        \vdots
+        \\
+        \ell(f_{\vtheta}(\vx_{|\sB|}), \vy_{|\sB|})
+      \end{pmatrix}\,.
+  \end{align}
+  For all layers $l=1,\dots,L$, this independence across samples implies block-diagonal input-output Jacobians,
+  \begin{align}
+    \label{eq:background::perSampleStructureHiddenJacobian}
+    \jac_{\mZ^{(l-1)}} \mZ^{(l)}
+    =
+    \begin{pmatrix}
+      \jac_{\vz_1^{(l-1)}} \vz_1^{(l)} & 0 & \dots & 0
+      \\
+      0 & \jac_{\vz_2^{(l-1)}} \vz_2^{(l)} & \ddots & \vdots
+      \\
+      \vdots &  \ddots & \ddots & 0
+      \\
+      0 & \dots & 0 & \jac_{\vz_{|\sB|}^{(l-1)}} \vz_{|\sB|}^{(l)},
+    \end{pmatrix}
+  \end{align}
+  and per-sample block structure in the output-parameter Jacobian
+  \begin{align}
+    \label{eq:background::perSampleStructureParameterJacobian}
+    \jac_{\vtheta^{(l)}} \mZ^{(l)}
+    =
+    \begin{pmatrix}
+      \jac_{\vtheta^{(l)}} \vz_1^{(l)}
+      &
+        \jac_{\vtheta^{(l)}} \vz_2^{(l)}
+      &
+        \dots
+      &
+        \jac_{\vtheta^{(l)}} \vz_{|\sB|}^{(l)},
+    \end{pmatrix}\,.
+  \end{align}
+\end{subequations}
+Many implementations of backpropagation make it difficult to access this
+per-sample structure. They only expose VJPs $\vv \mapsto [\jac_{\mZ^{(l)}}
+\mZ^{(l+1)}]^{\top} \vv$ and $\vv \mapsto [\jac_{\vtheta^{(l)}}
+\mZ^{(l+1)}]^{\top} \vv$ for
+\Cref{eq:background::perSampleStructureHiddenJacobian,eq:background::perSampleStructureParameterJacobian}.
+While this allows supporting AD of more general graphs than those of an
+empirical risk (\Cref{eq:background::empiricalRisk}, it limits access to only
+the \emph{average} gradient
+\begin{align}\label{eq:backround::miniBatchGradientNotation}
+  \vg_{\sB}(\vtheta) :=
+  \grad{\vtheta}\gL_{\sB}(\vtheta) =
+  \frac{1}{|\sB|} \sum_{(\vx_n, \vy_n) \in \sB}
+  \grad{\vtheta}\ell(f_{\vtheta}(\vx_n), \vy_n)
+\end{align}
+when differentiating an empirical risk. Computing per-sample gradients is not
+more demanding than computing the average gradient---the only difference is
+taking the average---but their computation is not supported. More flexible
+access to the Jacobians
+\Cref{eq:background::perSampleStructureHiddenJacobian,eq:background::perSampleStructureParameterJacobian}
+through per-sample VJPs (or MJPs), enables the computation of various
+higher-order quantities. Their efficient realization will be the main focus of
+\Cref{chap:backpack,chap:hbp,chap:vivit}.
+
+To highlight independence across the batch axis in a computation graph, a set
+notation will be preferred over the matrix notation
+(\Cref{eq:background::ADBatchedCaseSubstitutions,eq:background::matrixNotationBatchedVariables})
+in the following. \Eg the text uses $\{ \vz_n^{(l)} \}_n$, or just $\{
+\vz_n^{(l)} \}$, instead of $\mZ^{(l)}$.
+\Cref{subfig:background::gradientBackpropagation3} illustrates this set
+notation\sidenote[][-10.5\baselineskip]{%
+  This notation is closer to recent developments in AD for ML
+  libraries~\cite{bradbury2018jax,he2021functorch} that separate batching and AD
+  more clearly through vectorization via a $\vmap$ interface
+  (\Cref{def:background::vmap}). A different way to arrive at the batched
+  computation graph in \Cref{subfig:background::gradientBackpropagation3} is to
+  start from the computation graph of a single datum's loss
+  $\ell(f_{\vtheta}(\vx), \vy)$ and vectorize it to obtain the set of graphs $
+  \{\ell(f_{\vtheta}(\vx_n), \vy_n)\}$, which can be stacked into a single graph
+  that produces $\vell$. Appending the reduction node to this graph, one obtains
+  the computation graph for the average loss.}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

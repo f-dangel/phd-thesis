@@ -1,0 +1,89 @@
+\subsection{Gradient Signal-to-noise Ratio (\robustInlinecode{MeanGSNR})}
+\label{cockpit::app:mean-gsnr}
+The gradient signal-to-noise ratio $\mathrm{GSNR}(\left[ \vtheta \right]_d) \in
+\sR$ for a single parameter $\left[ \vtheta \right]_d$ is defined as
+\begin{align}
+  \label{cockpit::eq:gsnr-definition}
+  \mathrm{GSNR}(\left[ \vtheta \right]_d)
+  =
+  \frac{
+  \E_{(\vx, \vy)\sim P}\left[
+  \left[
+  \nabla_\vtheta\ell(f_{\vtheta}(\vx), \vy)
+  \right]_d
+  \right]^2
+  }{
+  \Var_{(\vx, \vy)\sim P}\left[
+  \left[
+  \nabla_\vtheta \ell(f_{\vtheta}(\vx), \vy)
+  \right]_d
+  \right]
+  }
+  =
+  \frac{
+  \left[
+  \vg_{P}(\vtheta)
+  \right]^2_d
+  }{
+  \left[
+  \mSigma_P(\vtheta)
+  \right]_{d,d}
+  }\,.
+\end{align}
+\begin{subequations}
+  \citet{liu2020understanding} use it to explain generalization properties of models
+  in the early training phase. We apply their estimation to mini-batches,
+  \begin{align}
+    \label{cockpit::eq:gsnr-mini-batch}
+    \mathrm{GSNR}(\left[ \vtheta \right]_d)
+    &\approx
+      \frac{
+      \left[
+      \vg_{\sB}(\vtheta)
+      \right]_d^2
+      }{
+      \frac{|\sB| - 1}{|\sB|}
+      \left[
+      \hat{\mSigma}_{\sB}(\vtheta)
+      \right]_{d,d}
+      }
+      =
+      \frac{
+      \left[
+      \vg_{\sB}(\vtheta)
+      \right]_d^2
+      }{
+      \frac{1}{|\sB|}
+      \left(
+      \sum_{n\in \sB}
+      \left[
+      \vg_n(\vtheta)
+      \right]_d^2
+      \right)
+      -
+      \left[
+      \vg_{\sB}(\vtheta)
+      \right]_d^2
+      }\,.
+  \end{align}
+  Inspired by \citet{liu2020understanding}, \cockpit's \inlinecode{MeanGSNR} computes the average
+  GSNR over all parameters,
+  \begin{equation}
+    \label{cockpit::eq:mean-gsnr-feature-table}
+    \frac{1}{D}\sum_{j=1}^D \mathrm{GSNR}(\left[ \vtheta \right]_j)\,.
+  \end{equation}
+\end{subequations}
+
+\subsubsection{Usage}
+
+The \gsnr describes the gradient noise level which is
+influenced, among other things, by the batch size. Using the \gsnr, perhaps in
+combination with the gradient tests or the \cabs criterion could provide
+practitioners a clearer picture of suitable batch sizes for their particular
+problem. As shown by \citet{liu2020understanding}, the \gsnr is also linked to generalization
+of neural networks.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

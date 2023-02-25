@@ -1,0 +1,42 @@
+This section uses the notation from \Cref{vivit::sec:experiments} (see
+\Cref{vivit::tab:notation_cases}).
+
+\begin{table}[ht]
+  \centering
+  \caption{ \textbf{Notation for curvature approximations.} The notation is
+    introduced in \Cref{vivit::sec:experiments}. This table recapitulates the
+    abbreviations (referring to the approximations introduced in
+    \Cref{vivit::sec:approximations}) and provides corresponding explanations. }
+  \label{vivit::tab:notation_cases}
+  \vspace{1ex}
+  \begin{footnotesize}
+    \begin{tabular}{ll}
+      \toprule
+      Abbreviation
+      & Explanation \\
+      \midrule
+      \textbf{mb, exact}
+      & \makecell[tl]{Exact \ggn with all mini-batch samples.\\
+      Backpropagates $NC$ vectors.}
+      \\
+      \textbf{mb, mc}
+      & \makecell[tl]{ \mc-approximated \ggn with all mini-batch samples.\\
+      Backpropagates $N M$ vectors with $M$ the number of \mc{}-samples.}
+      \\
+      \textbf{sub, exact}
+      & \makecell[tl]{Exact \ggn on a subset of mini-batch samples ($\floor{\nicefrac{N}{8}}$ as in \cite{zhang2017blockdiagonal}).\\
+      Backpropagates $\floor{\nicefrac{N}{8}} C$ vectors.}
+      \\
+      \textbf{sub, mc}
+      & \makecell[tl]{\mc-approximated \ggn on a subset of mini-batch samples.\\
+      Backpropagates $\floor{\nicefrac{N}{8}} M$ vectors with $M$ the number of \mc{}-samples.}
+      \\
+      \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+\end{table}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

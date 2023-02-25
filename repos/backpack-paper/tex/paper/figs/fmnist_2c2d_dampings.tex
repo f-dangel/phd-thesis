@@ -1,0 +1,35 @@
+\ifthenelse{\boolean{createDampingPlots}}{
+
+\begin{figure}[t]
+	\plotDifferentDampings{fmnist}{2c2d}{Zero}
+\end{figure}
+
+\begin{figure}[t]
+	\plotDifferentDampings{fmnist}{2c2d}{DiagGGN}
+\end{figure}
+
+\begin{figure}[t]
+	\plotDifferentDampings{fmnist}{2c2d}{SDiagGGN}
+\end{figure}
+
+%\begin{figure}[t]
+%	\plotDifferentDampings{fmnist}{2c2d}{KFAC}
+%\end{figure}
+%
+%\begin{figure}[t]
+%	\plotDifferentDampings{fmnist}{2c2d}{KFLR}
+%\end{figure}
+
+%\begin{figure}[t]
+%	\plotDifferentDampings{fmnist}{2c2d}{KFRA}
+%\end{figure}
+
+}{
+
+% NOTHING
+
+}
+
+
+
+

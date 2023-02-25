@@ -1,0 +1,57 @@
+% defines the pgfplots style "eigspacedefault"
+\pgfkeys{/pgfplots/eigspacedefault/.style={
+    width=1.0\linewidth,
+    height=0.6\linewidth,
+    every axis plot/.append style={line width = 1.5pt},
+    tick pos = left,
+    ylabel near ticks,
+    xlabel near ticks,
+    xtick align = inside,
+    ytick align = inside,
+    legend cell align = left,
+    legend columns = 4,
+    legend pos = south east,
+    legend style = {
+      fill opacity = 1,
+      text opacity = 1,
+      font = \footnotesize,
+      at={(1, 1.025)},
+      anchor=south east,
+      column sep=0.25cm,
+    },
+    legend image post style={scale=2.5},
+    xticklabel style = {font = \footnotesize},
+    xlabel style = {font = \footnotesize},
+    axis line style = {black},
+    yticklabel style = {font = \footnotesize},
+    ylabel style = {font = \footnotesize},
+    title style = {font = \footnotesize},
+    grid = major,
+    grid style = {dashed}
+  }
+}
+
+\pgfkeys{/pgfplots/eigspacedefaultapp/.style={
+    eigspacedefault,
+    height=0.6\linewidth,
+    legend columns = 2,
+  }
+}
+
+\pgfkeys{/pgfplots/eigspacenolegend/.style={
+    legend image post style = {scale=0},
+    legend style = {
+      fill opacity = 0,
+      draw opacity = 0,
+      text opacity = 0,
+      font = \footnotesize,
+      at={(1, 1.025)},
+      anchor=south east,
+      column sep=0.25cm,
+    },
+  }
+}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

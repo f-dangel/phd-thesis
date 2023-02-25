@@ -1,0 +1,39 @@
+% HBP for convolutional layer decomposed into submodules
+\begin{tikzpicture}
+    % first four layers
+    \node (in1)
+        [inner sep=0]
+        {\tikz \drawMessagesWithArrows{$ \tX $}{ }{ $\gradsquared{\tX}\ell $}{\hNodeDistance};};
+    \node (layer1)
+        [anchor=south west, inner sep=0]
+        at (in1.south east)
+        {\tikz \drawModuleNoParams{unfold}{10};};
+    \node (out1)
+        [inner sep=0, anchor=south west]
+        at (layer1.south east)
+        {\tikz \drawMessagesWithArrows{$ \llbracket \tX \rrbracket$}{ }{ $\gradsquared{\llbracket \tX\rrbracket}\ell  $}{\hNodeDistance};};
+    \node (layer2)
+        [inner sep=0pt, anchor=south west]
+        at (out1.south east)
+        {\tikz\drawModuleWithParams{matmul}{16}{$\tW$}{ }{ $\gradsquared{\tW}\ell   $};};
+    \node (out2)
+        [inner sep=0, anchor=south west]
+        at (layer2.south east)
+        {\tikz \drawMessagesWithArrows{$\mZ$}{ }{ $\gradsquared{\mZ}\ell $}{\hNodeDistance};};
+    \node (layer3)
+        [inner sep=0pt, anchor=south west]
+        at (out2.south east)
+        {\tikz\drawModuleWithParams{add}{16}{$\vb$}{ }{ $\gradsquared{\vb}\ell $};};
+    \node (out3)
+        [inner sep=0, anchor=south west]
+        at (layer3.south east)
+        {\tikz \drawMessagesWithArrows{$\mY$}{ }{ $\gradsquared{\mY}\ell $}{\hNodeDistance};};
+    \node (layer4)
+        [anchor=south west, inner sep=0]
+        at (out3.south east)
+        {\tikz \drawModuleNoParams{col2im}{10};};
+    \node (out4)
+        [inner sep=0, anchor=south west]
+        at (layer4.south east)
+        {\tikz \drawMessagesWithArrows{$\tY$}{ }{$\gradsquared{\tY}\ell  $}{\hNodeDistance};};
+\end{tikzpicture}

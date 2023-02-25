@@ -1,0 +1,380 @@
+% https://texblog.org/2007/08/01/placing-figurestables-side-by-side-minipage/
+\begin{table}[tb]
+  \centering
+  \caption{\textbf{Memory performance for computing damped Newton steps:} Left
+    and right columns show the critical batch sizes with the full network's \ggn and
+    a per-layer block-diagonal approximation, respectively.}
+  \label{tab:performance}
+  
+%==========================================================  
+  
+  \begin{small}
+    \textbf{\fmnist \twoctwod}
+  \end{small}
+
+  \begin{minipage}{0.49\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Full network}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.49\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Block-diagonal approximation}
+    \end{small}
+  \end{minipage}
+  \vspace{1ex}
+
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (GPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_fmnist_2c2d_cuda_one_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (CPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_fmnist_2c2d_cpu_one_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (GPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_fmnist_2c2d_cuda_layerwise_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (CPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_fmnist_2c2d_cpu_layerwise_group.tex}
+    \end{small}
+  \end{minipage}
+
+  \vspace{5ex}
+
+
+%==========================================================
+
+
+\begin{small}
+    \textbf{\cifarten \threecthreed}
+  \end{small}
+
+  \begin{minipage}{0.49\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Full network}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.49\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Block-diagonal approximation}
+    \end{small}
+  \end{minipage}
+  \vspace{1ex}
+
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (GPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar10_3c3d_cuda_one_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (CPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar10_3c3d_cpu_one_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (GPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar10_3c3d_cuda_layerwise_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (CPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar10_3c3d_cpu_layerwise_group.tex}
+    \end{small}
+  \end{minipage}
+
+  \vspace{5ex}
+
+
+%==========================================================
+
+
+  \begin{small}
+    \textbf{\cifarten \resnetthirtytwo}
+  \end{small}
+
+  \begin{minipage}{0.49\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Full network}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.49\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Block-diagonal approximation}
+    \end{small}
+  \end{minipage}
+  \vspace{1ex}
+
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (GPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar10_resnet32_cuda_one_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+  \textcolor{white}{-}
+    % \centering
+    % \begin{small}
+    %   $N_{\text{crit}}$ (CPU)
+    % \end{small}
+    % \vspace{0.15\baselineskip}
+
+    % \begin{small}
+    %   % \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar10_resnet32_cpu_one_group.tex}
+    % \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (GPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar10_resnet32_cuda_layerwise_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+  \textcolor{white}{.}
+    % \centering
+    % \begin{small}
+    %   $N_{\text{crit}}$ (CPU)
+    % \end{small}
+    % \vspace{0.15\baselineskip}
+
+    % \begin{small}
+    %   % \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar10_resnet32_cpu_layerwise_group.tex}
+    % \end{small}
+  \end{minipage}
+  
+
+  \vspace{5ex}
+
+
+%==========================================================
+
+
+  \begin{small}
+    \textbf{\cifarten \resnetfiftysix}
+  \end{small}
+
+  \begin{minipage}{0.49\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Full network}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.49\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Block-diagonal approximation}
+    \end{small}
+  \end{minipage}
+  \vspace{1ex}
+
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (GPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar10_resnet56_cuda_one_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+  \textcolor{white}{.}
+    % \centering
+    % \begin{small}
+    %   $N_{\text{crit}}$ (CPU)
+    % \end{small}
+    % \vspace{0.15\baselineskip}
+
+    % \begin{small}
+    %   % \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar10_resnet56_cpu_one_group.tex}
+    % \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (GPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar10_resnet56_cuda_layerwise_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+  \textcolor{white}{.}
+    % \centering
+    % \begin{small}
+    %   $N_{\text{crit}}$ (CPU)
+    % \end{small}
+    % \vspace{0.15\baselineskip}
+
+    % \begin{small}
+    %   % \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar10_resnet56_cpu_layerwise_group.tex}
+    % \end{small}
+  \end{minipage}
+  
+  
+\vspace{5ex}
+  
+%==========================================================  
+  
+  
+  \begin{small}
+    \textbf{\cifarhun \allcnnc}
+  \end{small}
+
+  \begin{minipage}{0.49\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Full network}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.49\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Block-diagonal approximation}
+    \end{small}
+  \end{minipage}
+  \vspace{1ex}
+
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (GPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar100_allcnnc_cuda_one_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (CPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar100_allcnnc_cpu_one_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (GPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar100_allcnnc_cuda_layerwise_group.tex}
+    \end{small}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.245\linewidth}
+    \centering
+    \begin{small}
+      $N_{\text{crit}}$ (CPU)
+    \end{small}
+    \vspace{0.15\baselineskip}
+
+    \begin{small}
+      \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/newton/tab_cifar100_allcnnc_cpu_layerwise_group.tex}
+    \end{small}
+  \end{minipage}
+
+\end{table}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

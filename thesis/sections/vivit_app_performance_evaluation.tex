@@ -1,0 +1,151 @@
+\subsubsection{Hardware Details}
+
+Results were generated on a workstation with an Intel Core i7-8700K CPU (32\,GB)
+and one NVIDIA GeForce RTX 2080 Ti GPU (11\,GB).
+
+\subsubsection{Note}
+
+\vivit{}'s quantities are implemented through \backpack, which is triggered by
+\pytorch's gradient computation. Consequently, they can only be computed
+together with \pytorch{}'s mini-batch gradient.
+
+\subsubsection{Architectures}
+
+We use untrained deep convolutional and residual networks from \deepobs
+\cite{schneider2019deepobs} and \cite{idelbayev2018proper}. If a net has batch
+normalization layers, we set them to evaluation mode. Otherwise, the loss would
+not obey the sum structure of \Cref{vivit::eq:objective-function}. The batch
+normalization layers' internal moving averages, required for evaluation mode,
+are initialized by performing five forward passes with the current mini-batch in
+training mode before.
+
+In experiments with fixed mini-batches the batch sizes correspond to \deepobs'
+default value for training where possible (\cifarten: $N=128$, \fmnist:
+$N=128$). The ResNets use a batch size of $N=128$. On \cifarhun
+(trained with $N=256$), we reduce the batch size to $N=64$ to fit the exact
+computation on the full mini-batch, used as baseline, into memory. If the \ggn
+approximation is evaluated on a subset of the mini-batch (\textbf{sub}),
+$\floor{\nicefrac{N}{8}}$ of the samples are used (as in
+\cite{zhang2017blockdiagonal}). The \mc approximation is always evaluated with a
+single sample ($M=1$).
+
+\subsubsection{Memory Performance (Critical Batch Sizes)}
+
+Two tasks are considered (see \Cref{vivit::subsec:scalability}):
+\begin{enumerate}
+\item \textbf{Computing eigenvalues:} Compute the nontrivial eigenvalues
+  $\{\lambda_{k}\,|\, (\lambda_{k}, \vetilde_{k}) \in \tilde{\sS}_+\}$ .
+\item \textbf{Computing the top eigenpair:} Compute the top eigenpair
+  $(\lambda_{1}, \ve_{1})$.
+\end{enumerate}
+
+We repeat the tasks above and vary the mini-batch size until the device runs out
+of memory. The largest mini-batch size that can be handled by our system is
+denoted as $N_{\text{crit}}$, the critical batch size. We determine this number
+by bisection on the interval $[1; 32768]$.
+
+Subfigures (a) and (b) of
+\Cref{vivit::fig:performance-cifar10-3c3d-cpu,vivit::fig:performance-cifar10-3c3d-cuda,vivit::fig:performance-fmnist-2c2d-cpu,vivit::fig:performance-fmnist-2c2d-cuda,vivit::fig:performance-cifar100-allcnnc-cpu,vivit::fig:performance-cifar100-allcnnc-cuda,vivit::fig:performance-cifar10-resnet32-cpu,vivit::fig:performance-cifar10-resnet32-cuda,vivit::fig:performance-cifar10-resnet56-cpu,vivit::fig:performance-cifar10-resnet56-cuda}
+present the results. As described in \Cref{vivit::sec:method-complexity},
+computing eigenvalues is more memory-efficient than computing eigenvectors and
+exhibits larger critical batch sizes. In line with the description in
+\Cref{vivit::sec:approximations}, a block-diagonal approximation is usually more
+memory-efficient and results in a larger critical batch size. Curvature
+sub-sampling and \mc approximation further increase the applicable batch sizes.
+
+In summary, there always exists a combination of approximations which allows for
+critical batch sizes larger than the traditional size used for training (some
+architectures even permit exact computation). Different accuracy-cost trade-offs
+may be preferred, depending on the application and the computational budget. By
+the presented approximations, \vivit's representation is capable to adapt over a
+wide range.
+
+\subsubsection{Run Time Performance}
+
+Here, we consider the task of computing the $k$ leading eigenvectors and
+eigenvalues of a matrix. \vivit{}'s eigenpair computation is compared with a
+power iteration that computes eigenpairs iteratively via matrix-vector products.
+The power iteration baseline is based on the \pyhessian library
+\cite{yao2020pyhessian} and uses the same termination criterion (at most 100
+matrix-vector products per eigenvalue; stop if the eigenvalue estimate's
+relative change is less than $10^{-3}$). In contrast to \pyhessian, we use a
+different data format and stack the computed eigenvectors. This reduces the
+number of \texttt{for}-loops in the orthonormalization step. We repeat each run
+time measurement $20$ times and report the shortest execution time as result.
+
+Subfigures (c) and (d) of
+\Cref{vivit::fig:performance-cifar10-3c3d-cpu,vivit::fig:performance-cifar10-3c3d-cuda,vivit::fig:performance-fmnist-2c2d-cpu,vivit::fig:performance-fmnist-2c2d-cuda,vivit::fig:performance-cifar100-allcnnc-cpu,vivit::fig:performance-cifar100-allcnnc-cuda,vivit::fig:performance-cifar10-resnet32-cpu,vivit::fig:performance-cifar10-resnet32-cuda,vivit::fig:performance-cifar10-resnet56-cpu,vivit::fig:performance-cifar10-resnet56-cuda}
+show the results. For most architectures, our exact method outperforms the power
+iteration for $k>1$ and increases only marginally in run time as the number of
+requested eigenvectors grows. The proposed approximations share this property,
+and further reduce run time.
+
+\subsubsection{Note On \cifarhun (Large $C$)}
+
+For datasets with a large number of classes, like \cifarhun ($C=100$),
+computations with the exact \ggn are costly. In particular, constructing the
+Gram matrix $\mGtilde$ has quadratic memory cost in $C$, and its
+eigendecomposition has cubic cost in time with $C$ (see
+\Cref{vivit::sec:method-complexity}).
+
+As a result, the exact computation only works with batch sizes smaller than
+\deepobs' default ($N=256$ for \cifarhun, see subfigures (a) and (b) of
+\Cref{vivit::fig:performance-cifar100-allcnnc-cpu,vivit::fig:performance-cifar100-allcnnc-cuda}).
+For the \ggn block-diagonal approximation, which fits into CPU memory for
+$N=64$, the exact computation of top eigenpairs is slower than a power iteration
+and only becomes comparable if a large number of eigenpairs is requested, see
+\Cref{vivit::subfig:performance-cifar100-allcnnc-cpu-4}.
+
+For such datasets, the approximations proposed in \Cref{vivit::sec:approximations} are
+essential to reduce costs. The most effective approximation to eliminate the
+scaling with $C$ is using an \mc approximation.
+\Cref{vivit::fig:performance-cifar100-allcnnc-cpu,vivit::fig:performance-cifar100-allcnnc-cuda}
+confirm that the approximate computations scale to batch sizes used for training
+and that computing eigenpairs takes less time than a power iteration.
+
+\input{figures/vivit/performance_plot}
+
+\subsubsection{Computing Damped Newton Steps}
+
+A Newton step $-(\mG + \delta \mI)^{-1} \vg$ with damping $\delta > 0$ can be
+decomposed into updates along the eigenvectors of the \ggn $\mG$,
+\begin{equation}
+  \label{vivit::eq:newton-step}
+  -(\mG + \delta \mI)^{-1} \vg
+=
+   \sum_{k=1}^{K} \frac{- \gamma_{k}}{\lambda_{k} + \delta} \ve_{k}
+  + \sum_{k = K + 1}^{D} \frac{-\gamma_{k}}{\delta} \ve_{k}\,.
+\end{equation}
+It corresponds to a Newton update along nontrivial eigendirections that uses the
+first- and second-order directional derivatives described in
+\Cref{vivit::sec:comp-direct-deriv} and a gradient descent step with learning rate
+$\nicefrac{1}{\delta}$ along trivial directions (with $\lambda_k = 0$). In the
+following, we refer to the first summand of \Cref{vivit::eq:newton-step} as Newton
+step. As described in \Cref{vivit::sec:method-complexity}, we can perform the weighted
+sum in the Gram matrix space, rather than the parameter space, by computing
+\begin{equation*}
+  \sum_{k=1}^{K} \frac{- \gamma_{k}}{\lambda_{k} + \delta} \ve_{k}
+  =
+  \sum_{k=1}^{K} \frac{- \gamma_{k}}{\lambda_{k} + \delta} \frac{1}{\sqrt{\lambda_{k}}} \mV \vetilde_{k}
+  =\mV \left(
+    \sum_{k=1}^{K} \frac{- \gamma_{k}}{(\lambda_{k} + \delta)\sqrt{\lambda_{k}}} \vetilde_{k}
+  \right)\,.
+\end{equation*}
+This way, only a single vector needs to be transformed from Gram space into
+parameter space.
+
+\Cref{vivit::tab:performance} shows critical batch sizes for the Newton step
+computation (first term on the right side of \Cref{vivit::eq:newton-step}),
+using Gram matrix eigenvalues larger than $10^{-4}$ and constant damping
+$\delta=1$. Second-order directional derivatives $\lambda_{k}$ are evaluated on
+the same samples as the \ggn eigenvectors, but we \emph{always} use all
+mini-batch samples to compute the directional gradients $\gamma_{n}$. Using our
+approximations, the Newton step computation scales to batch sizes beyond the
+traditional sizes used for training.
+
+\input{figures/vivit/performance_newton_step}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

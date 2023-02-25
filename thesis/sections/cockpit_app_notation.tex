@@ -1,0 +1,146 @@
+\subsection{Additional Notation}\label{cockpit::app:notation}
+
+\subsubsection{Population Properties}
+
+The population risk $\gL_{\pdata}(\vtheta) \in \sR$ and its variance
+$\Lambda(\vtheta) \in \sR$ are given by
+\begin{subequations}
+  \begin{align}
+    \begin{split}\label{cockpit::eq:population-risk}
+      \gL_{\pdata}(\vtheta)
+      &= \E_{(\vx, \vy)\sim \pdata}\left[
+        \ell(f_{\vtheta}(\vx), \vy)
+        \right]
+      \\
+      &= \int \ell(f_{\vtheta}(\vx), \vy) \pdata(\vx, \vy)\diff\vx\diff\vy\,,
+      \\
+    \end{split}
+    \\
+    \begin{split}\label{cockpit::eq:population-risk-variance}
+      \Lambda_{\pdata}(\vtheta)
+      &=
+        \Var_{(\vx, \vy)\sim \pdata}\left[
+        \ell(f_{\vtheta}(\vx), \vy)
+        \right]
+      \\
+      &= \int \left(
+        \ell(f_{\vtheta}(\vx), \vy) - \gL_{\pdata}(\vtheta)
+        \right)^2
+        \pdata(\vx, \vy) \diff\vx\diff\vy\,,
+    \end{split}
+  \end{align}
+\end{subequations}
+and its gradient $\vg_{\pdata}(\vtheta) \in \sR^{D}$ and variance
+$\mSigma_{\pdata}(\vtheta) \in \sR^{D\times D}$ are
+\begin{subequations}
+  \begin{align}
+    \begin{split}\label{cockpit::eq:population-gradient}
+      \vg_{\pdata}(\vtheta)
+      &= \E_{(\vx, \vy)\sim \pdata}\left[
+        \nabla_\vtheta
+        \ell(f_{\vtheta}(\vx), \vy)
+        \right]
+      \\
+      &= \int \nabla_\vtheta\ell(f(\vtheta, \vx), \vy)
+        \pdata(\vx, \vy)\diff\vx\diff\vy\,,
+    \end{split}
+    \\
+    \begin{split}\label{cockpit::eq:population-gradient-variance}
+      \mSigma_{\pdata}(\vtheta)
+      &=
+        \Var_{(\vx, \vy)\sim \pdata}\left[
+        \nabla_\vtheta \ell(f_{\vtheta}(\vx), \vy)
+        \right]
+      \\
+      &=
+        \int \left(
+        \nabla_\vtheta\ell(f_{\vtheta}(\vx), \vy) - \vg_{\pdata}(\vtheta)
+        \right)
+      \\
+      &\qquad
+        \left( \nabla_\vtheta\ell(f_{\vtheta}(\vx), \vy) - \vg_{\pdata}(\vtheta) \right)^\top
+        \pdata(\vx, \vy) \diff\vx\diff\vy\,.
+    \end{split}
+  \end{align}
+\end{subequations}
+
+\subsubsection{Empirical Approximations}
+
+Let $\sD$ denote a set of samples drawn \iid from $\pdata$, \ie $\sD = \{
+(\vx_n, \vy_n) \}_{n=1}^{|\sD|}$. With a slight abuse of notation ($n\in \sD$
+instead of $(\vx_n,\vy_n) \in \sD$) the empirical risk approximated with $\sD$
+is
+\begin{subequations}
+  \begin{equation}
+    \label{cockpit::eq:empirical-risk-approximation}
+    \gL_{\sD}(\vtheta)
+    = \frac{1}{|\sD|} \sum_{n \in \sD}  \ell_n(\vtheta)
+  \end{equation}
+  (later, $\sD$ will represent either a mini-batch $\gB$, or the train set
+  $\Dtrain$). The empirical risk gradient $\vg_{\sD}(\vtheta) \in \sR^{D}$ on
+  $\sD$ is
+  \begin{equation}
+    \label{cockpit::eq:empirical-risk-gradient-approximation}
+    \vg_{\sD}(\vtheta)
+    = \nabla_{\vtheta}\gL_{\sD}(\vtheta)
+    = \frac{1}{|\sD|} \sum_{n \in \sD}  \nabla_{\vtheta}\ell_n(\vtheta)
+    = \frac{1}{|\sD|} \sum_{n \in \sD}  \vg_n(\vtheta)\,,
+  \end{equation}
+\end{subequations}
+with individual gradients $\vg_n(\vtheta) := \nabla_{\vtheta}\ell_n(\vtheta) \in
+\sR^D$ from a sample $n$. Population risk and gradient variances
+$\Lambda_{\pdata}(\vtheta), \mSigma_{\pdata}(\vtheta)$ can be empirically
+estimated on $\sD$ with the sample variances $\hat{\Lambda}_\sD(\vtheta) \in
+\sR, \hat{\mSigma}_\sD(\vtheta) \in \sR^{D\times D}$,
+\begin{subequations}
+  \label{cockpit::equ:population-risk-gradient}
+  \begin{align}
+    \label{cockpit::eq:population-risk-variance-estimator}
+    \Lambda_{\pdata}(\vtheta)
+    &\approx \frac{1}{|S| - 1} \sum_{n\in\sD} \left(
+      \ell_n(\vtheta) - \gL_{\sD}(\vtheta)
+      \right)^2
+      := \hat{\Lambda}_\sD(\vtheta)\,,
+    \\
+    \begin{split}\label{cockpit::eq:population-risk-gradient-variance-estimator}
+      \mSigma_{\pdata}(\vtheta)
+      &\approx
+        \frac{1}{|\sD| - 1}
+        \sum_{n\in\sD} \left(
+        \vg_n(\vtheta) - \vg_{\sD}(\vtheta)
+        \right) \left(
+        \vg_n(\vtheta) - \vg_{\sD}(\vtheta)
+        \right)^\top
+        := \hat{\mSigma}_\sD(\vtheta)
+      \\
+      &\approx
+        \frac{1}{{|\sD| - 1}}
+        \left[ \left(
+        \sum_{n\in\sD} \vg_n(\vtheta) \vg_n(\vtheta)^\top \right)
+        -
+        |\sD| \vg_\sD(\vtheta) \vg_\sD(\vtheta)^\top
+        \right]\,.
+    \end{split}
+  \end{align}
+\end{subequations}
+Often, gradient elements are assumed independent and hence their variance is
+diagonal ($^{\odot 2}$ denotes element-wise square),
+\begin{align}
+  \label{cockpit::eq:cheat-sheet-risk-gradient-diagonal-variance-estimator}
+  \diag\left[\mSigma_P(\vtheta)\right]
+  &\approx \frac{1}{|S| - 1} \sum_{n\in\sD}
+    \left(
+    \vg_n(\vtheta) - \vg_{\sD}(\vtheta)
+    \right)^{\odot 2}
+    = \diag\left[\hat{\mSigma}_\sD(\vtheta)\right] \in \sR^D\,.
+\end{align}
+
+\subsubsection{Slicing}
+
+To avoid confusion between $\vtheta_t$ (parameter at iteration $t$) and
+$\evtheta_j$ ($j$-th parameter entry), we denote the latter as $[\vtheta]_j$.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

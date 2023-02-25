@@ -1,0 +1,62 @@
+One design principle of \cockpit is its easy integration with conventional
+\pytorch training loops. \Cref{fig:cockpit::Codeblock} shows a working example
+of a standard training loop with \cockpit. More examples and tutorials are
+described in the documentation. \cockpit's syntax is inspired by \backpack: it
+can be used interchangeably with the library responsible for most back-end
+computations. Changes to the code are straightforward:
+
+\lstinputlisting[ language=Python,
+caption={\textbf{Complete training loop with
+    \cockpittitle in \pytorch.} Line changes are highlighted in blue
+  (\textcolor{maincolor!25}{\ding{122}}).},
+label=fig:cockpit::Codeblock,
+linebackgroundcolor={\ifnum\value{lstnumber}=5\color{maincolor!25}\fi\ifnum\value{lstnumber}=6\color{maincolor!25}\fi\ifnum\value{lstnumber}=7\color{maincolor!25}\fi\ifnum\value{lstnumber}=10\color{maincolor!25}\fi\ifnum\value{lstnumber}=11\color{maincolor!25}\fi\ifnum\value{lstnumber}=12\color{maincolor!25}\fi\ifnum\value{lstnumber}=15\color{maincolor!25}\fi\ifnum\value{lstnumber}=16\color{maincolor!25}\fi\ifnum\value{lstnumber}=26\color{maincolor!25}\fi\ifnum\value{lstnumber}=27\color{maincolor!25}\fi\ifnum\value{lstnumber}=28\color{maincolor!25}\fi\ifnum\value{lstnumber}=29\color{maincolor!25}\fi\ifnum\value{lstnumber}=30\color{maincolor!25}\fi\ifnum\value{lstnumber}=31\color{maincolor!25}\fi\ifnum\value{lstnumber}=32\color{maincolor!25}\fi\ifnum\value{lstnumber}=33\color{maincolor!25}\fi\ifnum\value{lstnumber}=34\color{maincolor!25}\fi\ifnum\value{lstnumber}=35\color{maincolor!25}\fi\ifnum\value{lstnumber}=36\color{maincolor!25}\fi\ifnum\value{lstnumber}=37\color{maincolor!25}\fi\ifnum\value{lstnumber}=45\color{maincolor!25}\fi\ifnum\value{lstnumber}=46\color{maincolor!25}\fi},
+]{../repos/cockpit-paper/tex/appendix/example_code.py}
+
+\begin{itemize}
+\item \textbf{Importing} (\textit{Lines 5, 6} and \textit{7}): besides importing
+  \cockpit we also need to import \backpack which is required for extending
+  (parts of) the model (see next step).
+\item \textbf{Extending} (\textit{Lines 10} and \textit{11}): when defining the
+  model and the loss function, we need to \emph{extend} both of them using
+  \backpack. This is as trivial as wrapping them in the \inlinecode{extend()}
+  function provided by \backpack and lets \backpack know that additional
+  quantities (such as the individual gradients) should be computed for them.
+  Note, that while applying \backpack is easy, it currently does not support all
+  possible model architectures and layer types. Specifically, \emph{batch norm}
+  layers are not supported since using them results in ill-defined individual
+  gradients.
+\item \textbf{Individual losses} (\textit{Line 12}): for the \inlinecode{Alpha}
+  quantity, \cockpit also requires the individual loss values (to estimate the
+  variance of the loss estimate). This can be computed cheaply but is not
+  usually part of a conventional training loop. Creating this loss is done
+  analogously to creating any other loss, with the only exception of setting
+  \inlinecode{reduction="none"}. Since we don't differentiate this loss, we don't
+  need to extend it.
+\item \textbf{Cockpit configuration} (\textit{Line 15} and \textit{16}):
+  Initializing the \cockpit requires passing them (extended) model parameters as
+  well as a list of quantities that should be tracked.
+  \Cref{cockpit::tab:overview-quantities} provides an overview of all possible
+  quantities. In this example, we use one of the pre-defined configurations
+  offered by \cockpit. Separately, we initialize the plotting part of \cockpit.
+  We deliberately detached the visualization from the tracking to allow greater
+  flexibility.
+\item \textbf{Quantity computation} (\textit{Line 26} to \textit{37}):
+  Performing the training is very similar to a regular training loop, with the
+  only difference being that the backward pass should be surrounded by the
+  \cockpit context (\inlinecode{with cockpit():}). Additionally to the
+  \inlinecode{global\_step} we also pass a few additional information to the
+  \cockpit that are computed anyway and can be re-used, such as the batch size,
+  the individual losses, or the optimizer itself. After the backward pass (when
+  the context is left) all \cockpit quantities are automatically computed.
+\item \textbf{Logging \& visualizing} (\textit{Line 45} and \textit{46}): at any
+  point during training---here at the end---we can write all quantities to a log
+  file. We can use this log file, or alternatively the \cockpit directly, to
+  visualize all quantities in a status screen similar to
+  \Cref{cockpit::fig:showcase}.
+\end{itemize}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

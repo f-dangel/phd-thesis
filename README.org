@@ -1,0 +1,23 @@
+This repository contains the compile-able[fn:1] source code of my PhD thesis.
+
+To compile the document, clone the repository
+
+#+begin_src bash
+  clone git@github.com:f-dangel/phd-thesis.git
+#+end_src
+
+change into the directory,
+
+#+begin_src bash
+  cd phd-thesis/thesis
+#+end_src
+
+and run
+
+#+begin_src bash
+  make thesis-force
+#+end_src
+
+Make sure you have =latexmk= installed on your system.
+
+[fn:1] Tested on Ubuntu 22.04.01 LTS with Latexmk 4.76, GNU Make 4.3, pdfTeX 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian)

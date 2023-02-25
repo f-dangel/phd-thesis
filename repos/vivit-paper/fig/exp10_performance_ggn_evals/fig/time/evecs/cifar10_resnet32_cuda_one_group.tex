@@ -1,0 +1,93 @@
+% This file was created by tikzplotlib v0.9.7.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.937254901960784,0.231372549019608,0.172549019607843}
+\definecolor{color1}{rgb}{0.274509803921569,0.6,0.564705882352941}
+\definecolor{color2}{rgb}{0.870588235294118,0.623529411764706,0.0862745098039216}
+\definecolor{color3}{rgb}{0.501960784313725,0.184313725490196,0.6}
+
+\begin{axis}[
+axis line style={white!80!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.03,0.97)}, anchor=north west, draw=white!80!black},
+tick pos=left,
+title={cifar10\_resnet32, N=128, cuda, one\_group},
+xlabel={top eigenpairs (\(\displaystyle k\))},
+xmin=0.55, xmax=10.45,
+ylabel={time [s]},
+ymin=0.0581892945661985, ymax=17.4373662749464,
+ymode=log,
+zmystyle
+]
+\addplot [, color0, dashed, mark=pentagon*, mark size=3, mark options={solid}]
+table {%
+1 0.317886747012381
+2 2.78040053299628
+3 3.99538965401007
+4 4.95181790099014
+5 5.74813608097611
+6 7.20148194098147
+7 9.61561046703719
+8 10.50072550599
+9 12.5891499459976
+10 13.4557046140544
+};
+\addlegendentry{power iteration}
+\addplot [, black, dashed, mark=*, mark size=3, mark options={solid}]
+table {%
+1 0.646277644962538
+2 0.651712424994912
+3 0.654213111964054
+4 0.655864007014316
+5 0.640351209964138
+6 0.659304711036384
+7 0.661320103972685
+8 0.661268591007683
+9 0.662068961013574
+10 0.660987386014313
+};
+\addlegendentry{mb, exact}
+\addplot [, color1, dashed, mark=diamond*, mark size=3, mark options={solid}]
+table {%
+1 0.131122773047537
+2 0.131278580985963
+3 0.130970751051791
+4 0.130664691037964
+5 0.131307907984592
+6 0.131342619017232
+7 0.131067821988836
+8 0.13155019201804
+9 0.130366104014684
+10 0.131142130005173
+};
+\addlegendentry{sub, exact}
+\addplot [, color2, dashed, mark=square*, mark size=3, mark options={solid}]
+table {%
+1 0.0901080530020408
+2 0.0898521009949036
+3 0.0898170699947514
+4 0.0900665009976365
+5 0.0898881499888375
+6 0.0896032140008174
+7 0.089393840986304
+8 0.0897041920106858
+9 0.0895591279841028
+10 0.0895693419734016
+};
+\addlegendentry{mb, mc}
+\addplot [, color3, dashed, mark=triangle*, mark size=3, mark options={solid,rotate=180}]
+table {%
+1 0.0770514360046946
+2 0.0768451059702784
+3 0.0754080199985765
+4 0.0771796050248668
+5 0.0773291389923543
+6 0.0773030149866827
+7 0.0774055179790594
+8 0.0770304700126871
+9 0.0773624330176972
+10 0.0773117459611967
+};
+\addlegendentry{sub, mc}
+\end{axis}
+
+\end{tikzpicture}

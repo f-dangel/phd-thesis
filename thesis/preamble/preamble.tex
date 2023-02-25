@@ -1,0 +1,525 @@
+% ===================================================================
+% GENERAL PREAMBLE
+
+\documentclass[
+				a4paper,
+				fontsize=11pt,
+				twoside=true,
+				numbers=noenddot,
+        open=any,
+        secnumdepth=2,
+%				draft % Shows black boxes next to overful hboxes (ignore the errors)
+			   ]{preamble/thesis}
+
+\usepackage[ngerman,english]{babel} 		% English language/hyphenation
+\usepackage[dissertation, internal]{preamble/tuetitle}
+
+
+% ===================================================================
+% COLORS
+
+\usepackage{xcolor} 				% To define colors
+\input{preamble/colors.tex}			% Pre-define a bunch of often-used colors
+
+\colorlet{maincolor}{TUblue}		% Main color, used for headings, etc.
+\colorlet{secondcolor}{TUred}		% Secondary color, used for references, etc.
+\colorlet{thirdcolor}{TUgold}		% Tertiary color, used for citations, etc.
+\colorlet{fourthcolor}{TUgold}		% Fourth color, used for URLs, etc.
+\colorlet{lightgraycolor}{TUdark!50}% A gray color, used for lines, etc.
+\colorlet{darkgraycolor}{TUdark!80}	% A dark color, used for numbers, etc.
+
+% Optimizer colors
+\definecolor{adabelief}{HTML}{63FFA4}
+\definecolor{amsbound}{HTML}{FFFF00}
+\definecolor{amsgrad}{HTML}{A63D08}
+\definecolor{adabound}{HTML}{FF8C00}
+\definecolor{adadelta}{HTML}{735859}
+\definecolor{adagrad}{HTML}{F3CC9A}
+\definecolor{adam}{HTML}{F90004}
+\definecolor{lookaheadmomentum}{HTML}{008B8B}
+\definecolor{lookaheadradam}{HTML}{35CC38}
+\definecolor{momentum}{HTML}{00CBFF}
+\definecolor{nag}{HTML}{991bf5}
+\definecolor{nadam}{HTML}{8E8E05}
+\definecolor{radam}{HTML}{FF00FF}
+\definecolor{rmsprop}{HTML}{000000}
+\definecolor{sgd}{HTML}{1E3CFF}
+\definecolor{otheropt}{HTML}{B2B2B2}
+
+% DeepOBS colors
+\colorlet{deepobsclass}{TUgold}
+\colorlet{deepobscli}{TUdark}
+\colorlet{deepobsdata}{TUblue}
+\colorlet{deepobsscript}{TUred}
+
+\colorlet{deepobsimageclass}{TUgold}
+\colorlet{deepobsgenerative}{TUblue}
+\colorlet{deepobsnlp}{TUred}
+\colorlet{deepobstoy}{TUdark}
+
+\colorlet{deepobssmall}{SNSgreen!45}
+\colorlet{deepobslarge}{SNSorange!45}
+
+\colorlet{deepobsgood}{SNSgreen!70}
+\colorlet{deepobsbad}{TUred!70}
+
+% Benchmark colors
+\colorlet{lrschedules}{maincolor}
+\colorlet{lrbg}{lightgraycolor!25}
+
+% ===================================================================
+% GRAPHICS
+
+\usepackage{pifont}					% For special symbols like checkmarks
+\usepackage[labelsep=colon]{caption}				% Options for caption
+\DeclareCaptionFont{labelcolor}{\color{maincolor}}
+\captionsetup{labelfont={labelcolor,bf}} 	% e.g. coloring the word "Figure" in caption
+\usepackage{subcaption}				% For subcaptioning images
+\usepackage{fancybox}				% Allows shadowbox around figure (for screenshot)
+
+% path where the \includegrahics looks for figures
+\graphicspath{
+  {../repos/cockpit-paper/fig/03_scalar_deep/output/}
+  {../repos/vivit-paper/tex/paper/}
+}
+
+\newcommand{\goldenRatio}{1.61803398875}
+\newcommand{\goldenRatioInv}{0.61803398875}
+
+% Tikz
+\usetikzlibrary{
+  shapes,
+  pgfplots.groupplots,
+  shadings,
+  calc,
+  arrows,
+  backgrounds,
+  colorbrewer,
+  shadows.blur,
+  external,
+  shapes,
+  shapes.arrows,
+  shapes.symbols,
+  arrows.meta,
+  fit % For extending the bounding box
+}
+
+% PGFPlot
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots,fillbetween}
+\pgfplotsset{compat=1.15}
+
+% Externalize (disabled by default)
+\usepgfplotslibrary{external}
+\tikzexternalize[prefix=tikz/, mode=list and make]
+\tikzexternaldisable
+
+% Create new lenght for pgfplots
+\newlength\figureheight
+\newlength\figurewidth
+\setlength\figureheight{\textheight}
+\setlength\figurewidth{\textwidth}
+
+% width in figure* environments
+\newlength{\thesiswidewidth}
+\setlength{\thesiswidewidth}{457.8024pt}
+
+\pdfsuppresswarningpagegroup=1		% Surpress the "PDF inclusion: multiple pdfs with apge group..." warning (https://tex.stackexchange.com/questions/76273/multiple-pdfs-with-page-group-included-in-a-single-page-warning)
+
+% Customized shadow color for shadowbox
+\makeatletter
+\newcommand\Cshadowbox{\VerbBox\@Cshadowbox}
+\def\@Cshadowbox#1{%
+	\setbox\@fancybox\hbox{\fbox{#1}}%
+	\leavevmode\vbox{%
+		\offinterlineskip
+		\dimen@=\shadowsize
+		\advance\dimen@ .5\fboxrule
+		\hbox{\copy\@fancybox\kern.5\fboxrule\lower\shadowsize\hbox{%
+				\color{lightgraycolor}\vrule \@height\ht\@fancybox \@depth\dp\@fancybox \@width\dimen@}}%
+		\vskip\dimexpr-\dimen@+0.5\fboxrule\relax
+		\moveright\shadowsize\vbox{%
+			\color{lightgraycolor}\hrule \@width\wd\@fancybox \@height\dimen@}}}
+\makeatother
+
+% ===================================================================
+% FONTS
+
+\usepackage[defaultsans]{lato}		% Sans Font: Lato (would allow for thin)
+%\usepackage{gillius}				% Sans Font: Tufte font
+
+\usepackage{anyfontsize}			% Allows arbitrary font sizes
+
+% Headings should use sans serif font
+\addtokomafont{part}{\normalfont\sffamily\color{maincolor}}
+
+% Colored chapter number but not the chapter title
+\addtokomafont{chapter}{\normalfont\sffamily}
+\addtokomafont{chapterprefix}{\normalfont\sffamily\color{maincolor}}
+\addtokomafont{section}{\normalfont\sffamily\color{maincolor}}
+\addtokomafont{subsection}{\normalfont\sffamily\color{maincolor}}
+\addtokomafont{subsubsection}{\normalfont\sffamily\color{maincolor}}
+
+\addtokomafont{pagehead}{\normalfont\sffamily}	% Also use sans serif font in header
+
+% Checkmarks
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+% Use Computer Modern Symbols for mathcal
+\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\SetMathAlphabet{\mathcal}{bold}{OMS}{cmsy}{b}{n}
+
+% Fixes overful hboxes in references
+% see https://tex.stackexchange.com/questions/171999/overfull-hbox-in-biblatex
+\emergencystretch=1em
+
+
+% ===================================================================
+% REFERENCES
+% ===================================================================
+
+\usepackage{varioref}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink,noabbrev]{cleveref}
+
+% Customization of hyperref options
+\hypersetup{
+	unicode, % Use unicode for links
+	pdfborder={0 0 0}, % Suppress border around pdf
+	bookmarksdepth=section,
+	bookmarksopen=true, % Expand the bookmarks as soon as the pdf file is opened
+	%bookmarksopenlevel=4,
+	%	linktoc=all, % Toc entries and numbers links to pages
+	linktocpage=true,  % Only the page number links to pages
+	breaklinks=true,
+	colorlinks=true,
+	citecolor = thirdcolor,
+	linkcolor = secondcolor,
+	urlcolor = fourthcolor,
+}
+
+
+% ===================================================================
+% MATH
+% ===================================================================
+
+% Fix "Too many math alphabets" error (https://tex.stackexchange.com/a/243541)
+\newcommand\hmmax{0}
+\newcommand\bmmax{0}
+
+\usepackage{amsfonts}				% blackboard math symbols
+\usepackage{amsmath}				% for all basic math operations
+\usepackage{amssymb}
+\usepackage{nicefrac}				% compact symbols for 1/2, etc.
+%\usepackage{ntheorem}				% required by kaobook (otherwise \theoremstyle is not defined)
+\usepackage{siunitx}  				% SI units (used for run times)
+\usepackage{xfrac}					% For slanted fractions "sfrac" like the nicefrac
+\usepackage{bm}						% Offers \bm to create bold math (used by Goodfellow)
+\usepackage{derivative}				% Handy commands for typesetting derivatives
+\usepackage{mathtools}				% for vcentcolon a centered colon used in \eqdef
+% Load mathematical packages for theorems and related environments
+\usepackage[framed=true,definitionbackground=lightgraycolor!25,theorembackground=lightgraycolor!25,
+examplebackground=lightgraycolor!25]{preamble/kaotheorems}
+
+% Bugfix: https://tex.stackexchange.com/questions/262142/thmtools-notebraces-bug
+\makeatletter
+%%% from amsthm.sty
+\def\thmhead@plain#1#2#3{%
+	\thmname{#1}\thmnumber{\@ifnotempty{#1}{ }\@upn{#2}}%
+	%%% the line below had (##3)
+	\thmnote{ {\the\thm@notefont\thm@lparen#3\thm@rparen}}}
+
+%%% from thm-amsthm.sty
+\def\thmt@setheadstyle#1{%
+	\thmt@style@headstyle{%
+		\def\NAME{\the\thm@headfont ##1}%
+		\def\NUMBER{\bgroup\@upn{##2}\egroup}%
+		%%% the line below had (##3)
+		\def\NOTE{\if=##3=\else\bgroup\thmt@space\the\thm@notefont\thm@lparen##3\thm@rparen\egroup\fi}%
+	}%
+	\def\thmt@tmp{#1}%
+	\@onelevel@sanitize\thmt@tmp
+	%\tracingall
+	\ifcsname thmt@headstyle@\thmt@tmp\endcsname
+	\thmt@style@headstyle\@xa{%
+		\the\thmt@style@headstyle
+		\csname thmt@headstyle@#1\endcsname
+	}%
+	\else
+	\thmt@style@headstyle\@xa{%
+		\the\thmt@style@headstyle
+		#1%
+	}%
+	\fi
+	%\showthe\thmt@style@headstyle
+}
+%%% the line below had (#3)
+\def\thmt@embrace#1#2\thm@lparen#3\thm@rparen{#1#3#2}
+%%% added for default
+\def\thm@lparen{(}\def\thm@rparen{)}
+\makeatother
+
+\xspaceaddexceptions{]}
+
+% \declaretheoremstyle[
+% %spaceabove=.5\thm@preskip,
+% %spacebelow=.5\thm@postskip,
+% %headfont=\normalfont\bfseries,%\scshape,
+% notefont=\bfseries,
+% notebraces={ [}{]},
+% bodyfont=\normalfont,
+% %headformat={\NAME\space\NUMBER\space\NOTE},
+% headpunct={},
+% postheadspace=\newline,
+% %prefoothook={\hfill\qedsymbol}
+% ]{mytheoremstyle}
+
+% \theoremstyle{mytheoremstyle}
+% \declaretheorem[
+% name=Definition,
+% %refname={definition,definitions},
+% refname={Definition,Definitions},
+% Refname={Definition,Definitions},
+% numberwithin=section,
+% mdframed={
+% 	style=mdfkao,
+% 	backgroundcolor=lightgraycolor!25,
+% 	%frametitlebackgroundcolor=\@theorembackground,
+% },
+% ]{thesisdefinition}
+
+
+% \declaretheorem[name=Update Rule,
+% refname={update rule,update rules},
+% Refname={Update Rule,Update Rules},
+% numberwithin=section,
+% mdframed={
+% 	style=mdfkao,
+% 	backgroundcolor=lightgraycolor!25,
+% %	%frametitlebackgroundcolor=\@theorembackground,
+% },
+% sibling=thesisdefinition]{thesisupdaterule}
+
+% \declaretheorem[
+% name=Theorem,
+% refname={Theorem,Theorems},
+% Refname={Theorem,Theorems},
+% numberwithin=section,
+% mdframed={
+% 	style=mdfkao,
+% 	backgroundcolor=lightgraycolor!25,
+% 	%	%frametitlebackgroundcolor=\@theorembackground,
+% },
+% sibling=thesisdefinition
+% ]{thesistheorem}
+
+% ===================================================================
+% CODE
+% !!! Important to keep this after the definition of fancybox package
+% 	  as it otherwise will create a weird bug !!!
+
+% Inline code that looks similar to markdown inline code snippets
+\newcommand{\inlinecode}[1]{%
+	\begin{tikzpicture}[baseline=0ex]%
+		\node[anchor=base,%
+		text height=1em,%
+		text depth=1ex,%
+		inner ysep=0pt,%
+		draw=darkgraycolor!30!white,%
+		fill=lightgraycolor!20!white,%
+		rounded corners=2pt] at (0,0) {\footnotesize\texttt{#1}};%
+	\end{tikzpicture}%
+}
+% TikZ code contains fragile commands which throws errors when used in captions
+% and section titles. This robust command can be used as drop-in
+% (https://tex.stackexchange.com/a/56081)
+\DeclareRobustCommand\robustInlinecode[1]{\inlinecode{#1}}
+
+\usepackage{listings}				% For full code blocks
+
+\input{preamble/lstlinebgrd.tex}	% Inclue lstlinebgrd (with some fixes) for highlighting code lines
+
+\lstdefinestyle{thesisstyle}{
+	backgroundcolor=\color{maincolor!5!white},
+	commentstyle=\bfseries\itshape\color{maincolor},
+	keywordstyle=\bfseries\color{maincolor},
+	numberstyle=\tiny\color{maincolor},
+	stringstyle=\bfseries\color{thirdcolor},
+	basicstyle=\ttfamily\footnotesize,
+  xleftmargin=3.2ex,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=t,
+	keepspaces=true,
+	numbers=left,
+	numbersep=7pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=4,
+  escapeinside={(@}{@)},
+  rulecolor=\color{maincolor},
+}
+\lstset{style=thesisstyle}
+
+% ===================================================================
+% CITATION
+
+% CHANGE IN THE KAOBILBIO STYLE!!!
+% DO NOT CLEARFIELD FOR archivePrefix, arxivId, and eprint!!!
+% NEED TO DO THIS IF UPDATE THE KAOBOOK TEMPLATE!!!
+
+\usepackage[
+	bibstyle=numeric,			% Use numeric citations in bibliography, e.g. [5]
+	citestyle=numeric-comp,		% Use compact numeric citations, e.g. [1-5,7]
+	sorting=nyt,				% Sort Bibliography by name then year then title (alternative: none=citation order)
+	maxnames=99,				% Show a maximum of 99 author names in Bibliography
+	mincitenames=1,				% Show at least two author names when citing ...
+	maxcitenames=2,				% ... But never more than two
+	sortcites=true,				% Automatically sort citations numerically, e.g. [5,1,3] -> [1,3,5]
+	date=year,					% Printed dates only show year
+	abbreviate=false,			% Don't abbreviate string such as editor -> ed. or Tech. rep.
+	% Hide some information generally:
+	isbn=false,
+	doi=false,
+	related=false,
+]{preamble/kaobiblio}
+
+\usepackage{xpatch}				% Patch to customize the look of the Bibliography
+
+\addbibresource{bibliography/bibliography.bib}	% Bibliography file
+
+% Customize what appears in the margin citation (removed the ":")
+\renewcommand{\formatmargincitation}[1]{%
+	\parencite{#1} \citeauthor*{#1} (\citeyear{#1}), \citetitle{#1}%
+}
+
+% A custom command for only creating a marginnote with the citation
+\newcommand{\onlysidecite}[2][]{\marginnote[#1]{%
+	\parencite{#2} \citeauthor*{#2} (\citeyear{#2}), \citetitle{#2}%
+}}
+
+\renewbibmacro{in:}{}			% Remove "in:" from Bibliography
+
+% Put quotes around the title of misc entries (e.g. arXiv papers) similar to "regular" paper
+\DeclareFieldFormat[misc,book,techreport]{citetitle}{\mkbibquote{#1\isdot}}
+\DeclareFieldFormat[misc,book,techreport]{title}{\mkbibquote{#1\isdot}}
+
+% Publisher in Book in italics (similar to paper)
+\DeclareListFormat{publisher}{%
+	\usebibmacro{list:delim}{#1}%
+	\mkbibemph{#1\isdot}
+	\usebibmacro{list:andothers}}
+
+% Currently this is missing a period to seperate it from the rest!
+%% Remove paranthesis around the date of article
+%\renewbibmacro*{issue+date}{%
+%	\printfield{issue}%
+%	\setunit*{\addspace}%
+%	\usebibmacro{date}%
+%	\newunit}
+
+
+% ===================================================================
+% TABLES
+
+\usepackage{tabularx}			% Tables with flexible column width
+\usepackage{multirow}			% Allow cells spread over multiple rows
+\usepackage{colortbl}			% define BG colors of cells via \cellcolor
+\usepackage{makecell}			% Multi-lined tabular cells (used in DeepOBS results table)
+
+% Customization of makecell package
+\renewcommand{\cellalign}{tl}
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+
+% New columntypes for centering columns
+\newcolumntype{C}{>{\centering\arraybackslash}p{3cm}}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+
+% ===================================================================
+% TODONOTES
+
+\usepackage{blindtext}
+\usepackage{xargs}				% Use more than one optional parameter in a new commands
+
+\PassOptionsToPackage{colorinlistoftodos,prependcaption}{todonotes}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=secondcolor,backgroundcolor=secondcolor!25,bordercolor=secondcolor,size=\footnotesize,#1]{\textbf{Unsure:}\xspace#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=maincolor,backgroundcolor=maincolor!25,bordercolor=maincolor,size=\footnotesize,#1]{\textbf{Change:}\xspace#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=darkgraycolor,backgroundcolor=darkgraycolor!25,bordercolor=darkgraycolor,size=\footnotesize,#1]{\textbf{Info:}\xspace#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=thirdcolor,backgroundcolor=thirdcolor!25,bordercolor=thirdcolor,size=\footnotesize,#1]{\textbf{Improve:}\xspace#2}}
+
+% ===================================================================
+% CUSTOMIZATIONS
+
+% Only show sections in margin TOC (don't show subsections, etc.)
+\setcounter{margintocdepth}{\sectiontocdepth}
+
+% Move section numbers in margin
+%\newcommand*{\numberinmargin}[1]{%
+%	\makebox[0pt][r]{#1\autodot\hskip\marginparsep}}
+%
+%\renewcommand*{\sectionformat}{\numberinmargin{\textcolor{lightgraycolor}{\thesection}}}
+%\renewcommand*{\subsectionformat}{\numberinmargin{\textcolor{lightgraycolor}{\thesubsection}}}
+
+% OR
+% Color section number in gray
+\renewcommand*{\sectionformat}{\textcolor{maincolor}{\thesection}\enskip}
+\renewcommand*{\subsectionformat}{\textcolor{maincolor}{\thesubsection}\enskip}
+
+% Change style of the headers (chapter and section titles)
+\renewcommand*{\chaptermarkformat}{\textbf{\chapapp~\thechapter}\enskip\color{maincolor}}
+\renewcommand*{\sectionmarkformat}{\textbf{\thesection}\enskip\color{maincolor}}
+
+% Call TOC "Table of Contents" instead of "Contents"
+\addto\captionsenglish{% Replace "english" with the language you use
+	\renewcommand{\contentsname}%
+	{Table of Contents}%
+}
+
+% TOC Style of Parts (add color)
+\newcommand\tocpartstyle[1]
+{\scshape\large\bfseries\textcolor{maincolor}{#1}}
+\DeclareTOCStyleEntries[pagenumberwidth=2.5em, entryformat=\tocpartstyle]{tocline}{part}%
+
+% Rename Listing to Algorithm
+\renewcommand{\lstlistingname}{Procedure}% Listing -> Procedure
+\crefname{listing}{procedure}{Procedure}
+
+
+% ===================================================================
+% OTHER (ordered here for special reasons)
+
+\usepackage{csquotes}				% English quotes
+\usepackage{scrhack}
+\usepackage{xurl}					% Allow line-breaks in URLs (loaded after biblatex)
+
+% ===================================================================
+% INPUT
+
+\input{preamble/hyphenations}	% Custom hyphenations
+\input{preamble/tikz_commands} % Commands for TikZ sketches
+\input{preamble/commands}	% General Abbreviations, code envs, etc.
+\input{preamble/math_commands} % Math Commands from the Deep Learning book
+
+% ===================================================================
+% HOTFIXES
+\renewcommand*{\figureformat}{%
+  \figurename~\thefigure%
+  % \autodot% DELETED
+}
+\renewcommand*{\tableformat}{%
+  \tablename~\thetable%
+  % \autodot% DELETED
+}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

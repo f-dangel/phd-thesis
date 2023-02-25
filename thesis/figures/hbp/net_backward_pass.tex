@@ -1,0 +1,68 @@
+% basic setting of a fully-connected neural network with data flow for
+% forward pass
+
+\begin{tikzpicture}
+  % first two layers
+  \node (in1)
+  [inner sep=0]
+  {\tikz \drawMessagesWithArrows{$\vz^{(0)}$}{ }{ }{\hNodeDistance};};
+  \node (layer1)
+  [anchor=south west, inner sep=0]
+  at (in1.south east)
+  {\tikz \drawModuleWithParams{$f^{(1)}_{\vtheta^{(1)}}$}{16}{$\vtheta^{(1)}$}{$\grad{\vtheta^{(1)}}\ell$}{ };};
+  \node (out1)
+  [inner sep=0, anchor=south west]
+  at (layer1.south east)
+  {\tikz \drawMessagesWithArrows{$\vz^{(1)}$}{$\grad{\vz^{(1)}}\ell$}{ }{\hNodeDistance};};
+  \node (layer2)
+  [inner sep=0pt, anchor=south west]
+  at (out1.south east)
+  {\tikz\drawModuleNoParams{$f^{(2)}$}{5};};
+
+  % third layer and dots
+  \node (in2)
+  [inner sep=0, anchor=south west]
+  at (layer2.south east)
+  {\tikz \drawMessagesWithArrows{$\vz^{(2)}$}{$\grad{\vz^{(2)}}\ell$}{ }{\hNodeDistance};};
+  \node (layer3)
+  [anchor=south west, inner sep=0]
+  at (in2.south east)
+  {\tikz \drawModuleWithParams{$f^{(3)}_{\vtheta^{(3)}}$}{16}{$\vtheta^{(3)}$}{$\grad{\vtheta^{(3)}}\ell$}{ };};
+  \node (out3)
+  [inner sep=0, anchor=south west]
+  at (layer3.south east)
+  {\tikz \drawMessagesWithArrows{$\vz^{(3)}$}{$\grad{\vz^{(3)}}\ell$}{ }{\hNodeDistance};};
+  \node (layer4)
+  [inner sep=0pt, anchor=south west]
+  at (out3.south east)
+  {\tikz\drawModuleNoParams{$f^{(4)}$}{5};};
+
+  % last layer after dots
+  \node (dots)
+  [xshift=2ex, inner sep=0pt, anchor=west]
+  at (layer4.east)
+  {$\dots$};
+  \node (layer5)
+  [xshift=12ex, anchor=south west, inner sep=0]
+  at (out3.south east)
+  {\tikz \drawModuleWithParams{$f^{(L)}_{\vtheta^{(L)}}$}{16}{$\vtheta^{(L)}$}{$\grad{\vtheta^{(L)}}\ell$}{ };};
+  \node (out4)
+  [inner sep=0, anchor=south west]
+  at (layer5.south east)
+  {\tikz \drawMessagesWithArrows{$\vz^{(L)}$}{$\grad{\vz^{(L)}}\ell$}{ }{\hNodeDistance};};
+
+  % loss layer
+  \node (lossLayer)
+  [inner sep=0pt, anchor=south west]
+  at (out4.south east)
+  {\tikz\drawModuleNoParams{$\ell$}{5};};
+  \node (loss)
+  [inner sep=0, anchor=south west]
+  at (lossLayer.south east)
+  {\tikz \drawMessagesWithArrows{$\ell$}{ }{ }{\hNodeDistance};};
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

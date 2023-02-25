@@ -1,0 +1,27 @@
+% NOTE tikzpicture in node of another tikzpicture: how to screen of from
+% inheriting style? (https://tex.stackexchange.com/a/23419)
+\newsavebox\mybox
+\begin{lrbox}{\mybox}
+  \input{figures/background/higher_order_information}
+\end{lrbox}
+
+\begin{tikzpicture}
+  % NOTE without the savebox solution, the inner sep would be inherited by the
+  % sub-tikzpicture
+  \node[inner sep=0pt] (higherOrder) {
+    \usebox\mybox
+  };
+
+  \draw [draw=none, font=\footnotesize] (higherOrder.south west) to node [midway, above, yshift=0.065\linewidth, xshift=0.075\linewidth, anchor=south] (FirstOrder) {$\{ \lVert \grad{\vtheta}\ell_n \rVert_2\}, \, \sum_n (\grad{\vtheta}\ell_n)^{\odot 2}$} (higherOrder.north east);
+
+  \draw [draw=none, font=\footnotesize] (higherOrder.south west) to node [midway, anchor=center, align=center, xshift = -0.0775\linewidth, yshift = 0.0275\linewidth] (DiagonalCurvature) {$\diag(\gradsquared{\vtheta}\gL),$\\ $\diag(\mG), \, \diag(\mG^{(\text{MC})})$} (higherOrder.north east);
+
+  \draw [draw=none, font=\footnotesize] (higherOrder.south west) to node [midway, below, yshift=-0.05\linewidth, xshift=-0.14\linewidth, yshift = 0.0375\linewidth, anchor=north, align = center] (KroneckerCurvature) {$\{\mathrm{KFAC}(\gradsquared{\vtheta^{(l)}}\gL)\},$ \\ $\{\mathrm{KFLR}(\gradsquared{\vtheta^{(l)}}\gL)\}, \, \{\mathrm{KFRA}(\gradsquared{\vtheta^{(l)}}\gL)\}$} (higherOrder.north east);
+
+  \node [anchor = north west, align=left, font=\footnotesize, yshift=0.0275\linewidth, xshift=-0.065\linewidth] (ViViTCurvature) at (DiagonalCurvature.east) {$\hspace{0.13\linewidth}\eig(\mG),$ \\ $\hspace{0.09\linewidth}\mG^{-1}\vv,$ \\ $\{\gamma_{n,k}, \lambda_{n,k}\}$};
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

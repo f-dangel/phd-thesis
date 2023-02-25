@@ -1,0 +1,54 @@
+Here, we provide additional details and derivations for Hessian
+backpropagation (HBP).
+
+\Cref{hbp::sec:matrixDifferentialCalculus} relates the HBP
+\Cref{hbp::equ:hessianBackPropagation} to the chain rule for matrix derivatives
+\citep{magnus1999MatrixDifferentialCalculus}. It relies on the clean definitions
+of generalized Jacobian and Hessian matrices for multi-variate functions
+(\Cref{hbp::equ:generalizedJacobian,hbp::equ:generalizedHessian}), and their
+chain rules (\Cref{hbp::the:chainRuleJacobians,hbp::the:chainRuleHessians}).
+
+With matrix derivatives, the HBP equation for a variety of module functions can
+be derived elegantly.
+\Cref{hbp::sec:examples_fcnn,hbp::sec:examples_loss,hbp::sec:examples_cnn}
+contain the HBP derivations for all operations in
+\Cref{hbp::table:backpropEquations}. We split the considered operations into
+different categories to achieve a cleaner structure.
+\Cref{hbp::sec:examples_fcnn} contains details on operations used for the
+construction of fully-connected neural networks (FCNNs) and skip-connections.
+\Cref{hbp::subsec:relation} illustrates the analytic composition of multiple
+modules by combining the backward passes of a nonlinear elementwise activation
+function and an affine transformation. This yields the recursive schemes of
+\citet{botev2017practical} and \citet{wei2018bdapch}, the latter of which has
+been used in the experiment of \Cref{hbp::sec:experiments}. The analysis of the
+Hessian for common loss functions is provided in \Cref{hbp::sec:examples_loss}.
+Operations occurring in convolutional neural networks (CNNs) are subject of
+\Cref{hbp::sec:examples_cnn}.
+
+\Cref{hbp::sec:experimentalDetails} provides details on model architectures, training
+procedures used in the experiments of \Cref{hbp::sec:experiments}, and an additional
+experiment on a modified test problem of the DeepOBS benchmark library
+\citep{schneider2019deepobs}.
+
+\section{Matrix Derivatives}\label{hbp::sec:matrixDifferentialCalculus}
+\input{sections/hbp_app_matrix_differential_calculus}
+
+\section{HBP for FCNNs}\label{hbp::sec:examples_fcnn}
+\input{sections/hbp_app_examples_fcnn}
+
+\subsection{Relation to Recursive Schemes in Previous Work}\label{hbp::subsec:relation}
+\input{sections/hbp_app_relation}
+
+\section{HBP for Loss Functions}\label{hbp::sec:examples_loss}
+\input{sections/hbp_app_examples_loss}
+
+\section{HBP for CNNs}\label{hbp::sec:examples_cnn}
+\input{sections/hbp_app_examples_cnn}
+
+\section{Experimental Details}\label{hbp::sec:experimentalDetails}
+\input{sections/hbp_app_experiment_details}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

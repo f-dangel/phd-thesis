@@ -1,0 +1,55 @@
+% defines the pgfplots style "eigspacedefault"
+\pgfkeys{/pgfplots/eigspacedefault/.style={
+    width=1.03\linewidth,
+    height=\goldenRatioInv*1.03*\linewidth,
+    every axis plot/.append style={line width = 1pt},
+    tick pos = left,
+    ylabel near ticks,
+    xlabel near ticks,
+    xtick align = inside,
+    ytick align = inside,
+    legend cell align = left,
+    legend columns = 1,
+    legend pos = north east,
+    legend style = {
+      fill opacity = 0.9,
+      text opacity = 1,
+      font = \tiny,
+      % column sep=0.1cm,
+    },
+    legend image post style={scale=2},
+    xticklabel style = {font = \small},
+    xlabel style = {font = \small},
+    axis line style = {black},
+    yticklabel style = {font = \small},
+    ylabel style = {font = \small},
+    title style = {font = \small},
+    grid = major,
+    grid style = {dashed}
+  }
+}
+
+\pgfkeys{/pgfplots/eigspacedefaultapp/.style={
+    eigspacedefault,
+    height=0.6\linewidth,
+    legend columns = 2,
+  }
+}
+
+\pgfkeys{/pgfplots/eigspacenolegend/.style={
+    legend image post style = {scale=0},
+    legend style = {
+      fill opacity = 0,
+      draw opacity = 0,
+      text opacity = 0,
+      font = \small,
+      at={(1, 1.025)},
+      anchor=south east,
+      column sep=0.25cm,
+    },
+  }
+}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

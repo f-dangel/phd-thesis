@@ -1,0 +1,35 @@
+% defines the pgfplots style "lossaccuracydefault"
+\pgfkeys{/pgfplots/lossaccuracydefault/.style={
+    width=1.03\linewidth,
+    height=\goldenRatioInv*1.05*\linewidth,
+    every axis plot/.append style={line width = 1.5pt},
+    tick pos = left,
+    ylabel near ticks,
+    xlabel near ticks,
+    xtick align = inside,
+    ytick align = inside,
+    legend cell align = left,
+    legend columns = 1,
+    legend style = {
+      fill opacity = 0.7,
+      text opacity = 1,
+      font = \small,
+      at = {(0.95, 0.5)},
+      anchor = east
+      % column sep=0.1cm,
+    },
+    legend image post style={scale=2},
+    xticklabel style = {font = \small},
+    xlabel style = {font = \small},
+    axis line style = {black},
+    yticklabel style = {font = \small},
+    ylabel style = {font = \small},
+    title style = {font = \small},
+    grid = major,
+    grid style = {dashed}
+  }
+}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

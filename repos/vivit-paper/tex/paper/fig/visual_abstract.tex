@@ -1,0 +1,81 @@
+\begin{figure}[!tb]
+  \centering
+  \begin{subfigure}{0.55\linewidth}
+    \centering
+    \caption{}
+    \label{subfig:visual_abstract_1}
+  \vspace{-1.3\baselineskip}
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % load "spectrumdefault{left, center, right}" styles
+    \input{fig/spectrum_default_style_main.tex}
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultleft,
+        title={mb, exact}}}
+    \input{fig/visual_abstract/cifar10_3c3d_cpu_one_group_full_batch_exact.tex}
+  \end{minipage}
+  \hspace{1.9ex}
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % load "spectrumdefault{left, center, right}" styles
+    \input{fig/spectrum_default_style_main.tex}
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultcenter,
+        title={sub, exact}}}
+    \input{fig/visual_abstract/cifar10_3c3d_cpu_one_group_frac_batch_exact.tex}
+  \end{minipage}
+  \hspace{-3.5ex}
+  \begin{minipage}[t]{0.33\linewidth}
+    \centering
+    % load "spectrumdefault{left, center, right}" styles
+    \input{fig/spectrum_default_style_main.tex}
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultright,
+        title={mb, mc}}}
+    \input{fig/visual_abstract/cifar10_3c3d_cpu_one_group_full_batch_mc.tex}
+  \end{minipage}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.44\linewidth}
+    \centering
+    \vspace{-4.7ex}
+    \caption{}
+    \label{subfig:visual_abstract_2}
+    \vspace{-0.8\baselineskip}
+    \input{fig/vivit_quantities.tex}
+    \vspace{-0.5\baselineskip}
+  \end{subfigure}
+
+  \vspace{-3.0ex}
+
+  \caption{
+  \textbf{Overview of \vivittitle's quantities:}
+\textbf{(a)} \ggn eigenvalue distribution of \deepobs' \threecthreed architecture on
+\cifarten \cite{schneider2019deepobs}
+% ($D = 895,210$, $C = 10$)
+for settings with different costs on a mini-batch of size $N = 128$.
+From left to right: Exact \ggn,
+% on the mini-batch,
+exact GGN on a mini-batch fraction,
+% ($\nicefrac{1}{8}$, as in \cite{zhang2017blockdiagonal}),
+\mc approximation of the \ggn.
+% on the mini-batch.
+%
+\textbf{(b)} Pictorial illustration: Loss function $\textcolor{oo_rot}{\gL}$
+from \Cref{eq:objective-function} and quadratic model $\textcolor{oo_blau}{q}$
+around $\vtheta_t \in \mathbb{R}^2$ from \Cref{eq:quadratic_model} (both
+represented by their contour lines). The low-rank structure provides efficient
+access to the \ggn{}'s eigenvectors $\{\textcolor{oo_gelb}{\ve_k}\}$, along
+which $\textcolor{oo_blau}{q}$ decouples into one-dimensional parabolas
+characterized by the directional derivatives $\textcolor{oo_blau}{\gamma_k},
+\textcolor{oo_blau}{\lambda_k}$ and per-sample contributions
+$\textcolor{oo_gruen}{\gamma_{nk}}, \textcolor{oo_gruen}{\lambda_{nk}}$
+(\Cref{eq:gammas-lambdas}). $\textcolor{oo_gelb}{\mathcal{E}}$ is the \ggn{}'s
+top-$1$ eigenspace.}
+  \label{fig:visual_abstract}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

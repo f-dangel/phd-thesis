@@ -1,0 +1,347 @@
+% Introduce constants D (number of parameters), N (mini-batch size), C (classes)
+Consider a model $f_{\vtheta}: \sX \rightarrow \sY$ and a dataset
+$\{(\vx_n, \vy_n) \in \sX \times \sY\}_{n=1}^N$. For simplicity we use $N$ for
+both the mini-batch and training set size. The network, parameterized by
+$\vtheta \in \sTheta$, maps a sample $\vx_n$ to a prediction $f_{\vtheta}(\vx_n)
+\in \sF$. Predictions are scored by a convex loss function $\ell : \sF \times
+\sY \rightarrow \R$ (\eg cross-entropy or square loss), which compares to the
+ground truth $\vy_n$. The training objective $\mathcal{L}: \sTheta \rightarrow
+\R$ is the empirical risk
+\begin{equation}
+  \label{vivit::eq:objective-function}
+  \gL(\vtheta) = \frac{1}{N} \sum_{n=1}^N \ell(f_{\vtheta}(\vx_n), \vy_n)\,.
+\end{equation}
+We use $\ell_n(\vtheta) = \ell(f_{\vtheta}(\vx_n), \vy_n)$ and $\vf_n(\vtheta) =
+f_{\vtheta}(\vx_n)$ for per-sample losses and predictions. For gradients, we
+write $\vg_n(\vtheta) = \grad{\vtheta}\ell_n(\vtheta)$ and $\vg(\vtheta) =
+\grad{\vtheta} \gL(\vtheta)$, suppressing $\vtheta$ if unambiguous. We also
+set $\sTheta = \sR^D$ and $\sF = \sR^C$ with $D,C$ the model parameter and
+prediction space dimension, respectively. For classification, $C$ is the number
+of classes.
+
+\subsubsection{Hessian \& \ggn}
+
+Two-fold chain rule application to the split $\ell \circ f$ decomposes the
+Hessian of \Cref{vivit::eq:objective-function} into two parts
+$\gradsquared{\vtheta} \gL(\vtheta) = \mG(\vtheta) + \mR(\vtheta) \in
+\sR^{D\times D}$; the positive semi-definite \ggn
+\begin{equation}
+  \label{vivit::eq:ggn}
+  \mG(\vtheta)
+  =
+  \frac{1}{N}
+  \sum_{n=1}^N
+  % \underbrace{
+  \left(
+    \jac_{\vtheta} \vf_n%(\vtheta)
+  \right)^\top
+  % }_{D\times C}
+  %   \underbrace{
+  % \big(
+  \nabla_{\vf_n}^2\ell_n%(\vtheta)
+  % \big)
+  % }_{C \times C}
+  %   \underbrace{
+  \left(
+    \jac_{\vtheta} \vf_n%(\vtheta)
+  \right)
+  % }_{C\times D}
+  =
+  \frac{1}{N}
+  \sum_{n=1}^N
+  \mG_n(\vtheta)
+\end{equation}
+and a residual $\mR%(\vtheta)
+= \nicefrac{1}{N}\sum_{n=1}^N\sum_{c=1}^C (\gradsquared{\vtheta}
+[\vf_n%(\vtheta)
+]_c) [\grad{\vf_n}\ell_n%(\vtheta)
+]_c$. Here, we use the Jacobian $\jac_{\va} \vb$ that contains partial
+derivatives of $\vb$ \wrt $\va$, $[\jac_{\va} \vb]_{i,j} = \partial \evb_i /
+\partial \eva_j$ (\Cref{def:background::JacobianVectorVector}. As the residual
+may alter the Hessian's definiteness---undesirable in many applications---we
+focus on the \ggn. \Cref{vivit::subsec:approx_quality} provides empirical
+evidence that the curvature's top eigenspace is largely unaffected by this
+simplification.
+
+\subsubsection{Low-rank Structure}
+
+By basic inequalities, \Cref{vivit::eq:ggn} has $\rank(\mG) \le NC$.\sidenote{We
+  assume the overparameterized deep learning setting ($NC < D$) and suppress the
+  trivial rank bound $D$.} To make this explicit, we factorize the positive
+semi-definite Hessian $\gradsquared{\vf_n}\ell_n%(\vtheta)
+= \sum_{c=1}^C \vs_{n,c} \vs_{n,c}^\top$, where $\vs_{n,c} \in \sR^C$ and denote
+its backpropagated version by $\vv_{n,c} = (\jac_{\vtheta} \vf_n)^\top \vs_{n,c}
+\in \sR^D$. Absorbing sums into matrix multiplications, we arrive at the \ggn's
+outer product representation that lies at the heart of the \vivit concept,
+\begin{equation}
+  \label{vivit::eq:ggn-factorization}
+  \mG
+  =
+  \frac{1}{N}
+  \sum_{n=1}^{N}
+  \sum_{c=1}^{C}
+  \vv_{n,c} \vv_{n,c}^\top
+  =
+  \mV \mV^\top
+\end{equation}
+with $\mV = \nicefrac{1}{\sqrt{N}}
+\begin{pmatrix}
+  \vv_{1,1} &  \vv_{1,2} & \dots & \vv_{N,C}
+\end{pmatrix}
+% \begin{pmatrix}
+%   \vv_{11} & \vv_{12} & \dots & \vv_{NC}
+% \end{pmatrix}
+\in \sR^{D\times NC}\,$. $\mV$ allows for \emph{exact} computations with the
+explicit \ggn matrix, at linear rather than quadratic memory cost in $D$. We
+first formulate the extraction of relevant \ggn properties from this
+factorization, before addressing how to further approximate $\mV$ to reduce
+memory and computation costs.
+
+\subsection{Computing the Full \ggn Eigenspectrum}
+\label{vivit::sec:computing-full-ggn-eigenspectrum}
+
+Each \ggn eigenvalue $\lambda \in \sR$ is a root of the characteristic
+polynomial $\det(\mG - \lambda \mI_D)$ with identity matrix $\mI_D \in
+\sR^{D\times D}$. Leveraging the factorization of \Cref{vivit::eq:ggn-factorization}
+and the matrix determinant lemma, the $D$-dimensional eigenproblem reduces to
+that of the much smaller Gram matrix $\mGtilde = \mV^\top \mV \in \sR^{NC \times
+  NC}$ which contains pairwise scalar products of $\vv_{n,c}$ (see
+\Cref{vivit::sec:relation-ggn-gram-eigenvalues}),
+\begin{align}
+  \det(\mG - \lambda \mI_D) = 0
+  \quad
+  \Leftrightarrow
+  \quad
+  \det(\mGtilde - \lambda \mI_{NC}) = 0\,.
+  \label{vivit::eq:ggn-eigenvalues}
+\end{align}
+With at least $D-NC$ trivial solutions,
+% that represent vanishing eigenvalues,
+the \ggn curvature is zero along most directions in parameter space. Nontrivial
+solutions that give rise to curved directions are fully-contained in the Gram
+matrix, and hence \textit{much} cheaper to compute.
+
+Despite various Hessian spectral studies which rely on iterative eigensolvers
+and implicit matrix multiplication \citep{sagun2017eigenvalues,
+  sagun2018empirical, adams2018estimating, ghorbani2019investigation,
+  papyan2019spectrum, yao2020pyhessian, granziol2021deep}, we are not aware of
+works that efficiently extract the \textit{exact} \ggn spectrum from its Gram
+matrix. In contrast to those techniques, this matrix can be computed in parallel
+with gradients in a single backward pass, which results in less sequential
+overhead. We demonstrate in \Cref{vivit::subsec:scalability} that exploiting the
+low-rank structure for computing the leading eigenpairs is superior to a power
+iteration based on matrix-free multiplication in terms of run time.
+
+Eigenvalues themselves can help identify reasonable hyperparameters, like
+learning rates \citep{lecun1993automatic}. But we can also reconstruct the
+associated eigenvectors. These are directions along which curvature information
+is contained in the mini-batch. Let $\tilde{\sS}_+ = \{(\lambda_k,
+\vetilde_k)\:|\: \lambda_k \neq 0, \mGtilde \vetilde_k = \lambda_k \vetilde_k
+\}_{k=1}^K$ denote the nontrivial Gram spectrum\sidenote{In the following, we
+  assume ordered eigenvalues, \ie $\lambda_{1} \ge \lambda_{2} \ge \ldots \ge
+  \lambda_{K}$, for convenience.} with orthonormal eigenvectors $\vetilde_j^\top
+\vetilde_k = \delta_{j,k}$ ($\delta$ represents the Kronecker delta and $K =
+\mathrm{rank}(\mG)$). Then, the transformed vectors $\ve_k =
+\nicefrac{1}{\sqrt{\lambda_k}} \mV \vetilde_k$ $(k=1, ..., K)$ are orthonormal
+eigenvectors of $\mG$ associated to eigenvalues $\lambda_k$ (see
+\Cref{vivit::sec:relation-ggn-gram-eigenvectors}), \ie for all $(\lambda_k,
+\vetilde_k) \in \tilde{\sS}_+$
+\begin{equation}
+  \label{vivit::eq:ggn-eigenvectors}
+  \mGtilde \vetilde_k = \lambda_k \vetilde_k
+  \; \implies \;
+  \mG \ve_k = \lambda_k \ve_k \,.
+\end{equation}
+The eigenspectrum also provides access to the \ggn's pseudo-inverse based on
+$\mV$ and $\tilde{\sS}_+$, required by \eg second-order methods.\sidenote[][-\baselineskip]{
+  \Cref{vivit::sec:implicit-multiplication-inverse} describes implicit
+  multiplication with $\mG^{-1}$.}
+
+\subsection{Computing Directional Derivatives}
+\label{vivit::sec:comp-direct-deriv}
+
+Various algorithms rely on a local quadratic approximation of the loss
+landscape. For instance, optimization methods adapt their parameters by stepping
+into the minimum of the local proxy. Curvature, in the form of the Hessian or
+\ggn, allows to build a quadratic model given by the Taylor expansion. Let
+$m_{\vtheta_t}$ denote the quadratic model for the loss around position
+$\vtheta_t \in \sTheta$ that uses curvature represented by the \ggn,
+\begin{equation}
+  m_{\vtheta_t}(\vtheta)
+  = \text{const}
+  + (\vtheta - \vtheta_t)^\top \vg(\vtheta_t)
+  + \frac{1}{2} (\vtheta - \vtheta_t)^\top \mG(\vtheta_t) (\vtheta - \vtheta_t)\,.
+  \label{vivit::eq:quadratic_model}
+\end{equation}
+At its base point $\vtheta_t$, the shape of $m_{\vtheta_t}$ along an arbitrary normalized
+direction $\ve \in \sTheta$ (\ie $\lVert \ve \rVert_2 = 1$) is determined by the
+local gradient and curvature. Specifically, the projection of
+\Cref{vivit::eq:quadratic_model} onto $\ve$
+% , given by $q(\vtheta_t + s \ve)$ with $s\in \sR$,
+gives rise to the (scalar) first-and second-order directional derivatives
+\begin{subequations}
+  \label{vivit::eq:directional-derivatives}
+  \begin{alignat}{4}
+    \gamma_{\ve}
+    &= \ve^\top \nabla_{\vtheta} m_{\vtheta_t}(\vtheta_t)
+    &&= \ve^\top \vg(\vtheta_t) &&\in \sR\,,
+    \\
+    \label{vivit::eq:directional-derivatives-lambda}
+    \lambda_{\ve}
+    &= \ve^\top \nabla_{\vtheta}^2 m_{\vtheta_t}(\vtheta_t) \, \ve
+    &&= \ve^\top \mG(\vtheta_t) \, \ve &&\in \sR\,.
+  \end{alignat}
+\end{subequations}
+As $\mG$'s characteristic directions are its eigenvectors, they form a natural
+basis for the quadratic model. Denoting $\gamma_k = \gamma_{\ve_k}$ and
+$\lambda_k = \lambda_{\ve_k}$ the directional gradient and curvature along
+eigenvector $\ve_k$, we see from \Cref{vivit::eq:directional-derivatives-lambda} that
+the directional curvature indeed coincides with the \ggn's eigenvalue.
+
+Analogous to the gradient and \ggn, the directional derivatives $\gamma_k$ and
+$\lambda_k$ inherit the sum structure of the loss function from
+\Cref{vivit::eq:objective-function}, \ie they decompose into contributions from
+individual samples. Let $\gamma_{n,k}$ and $\lambda_{n,k}$ denote these first- and
+second-order derivatives contributions of sample $\vx_n$ in direction $k$, \ie
+\begin{subequations}
+  \label{vivit::eq:gammas-lambdas}
+  \begin{align}
+    \label{vivit::eq:gammas}
+    \gamma_{n,k}
+    &= \ve_k^\top \vg_n
+      = \frac{\vetilde_k^\top \mV^\top \vg_n}{\sqrt{\lambda_k}}\,,
+    \\
+    \label{vivit::eq:lambdas}
+    \lambda_{n,k}
+    &= \ve_k^\top \mG_n \ve_k
+    % = \frac{\vetilde_k^\top \mV^\top \mV_n \mV_n^\top \mV \vetilde_k}{\lambda_k}
+      = \frac{\lVert \mV_n^\top \mV \vetilde_k \rVert^2_2}{\lambda_k}\,,
+  \end{align}
+\end{subequations}
+where $\mV_n \in \sR^{D \times C}$ is
+% the \vivit factor of $\mG_n$ corresponding to
+a scaled sub-matrix of $\mV$ with fixed sample index. Note that directional
+derivatives can be evaluated efficiently with the Gram matrix eigenvectors
+% $\{\vetilde_k\}_{k=1}^K$
+without explicit access to the associated directions in parameter space.
+
+In \Cref{vivit::eq:directional-derivatives}, gradient $\vg$ and curvature $\mG$ are
+sums over $\vg_n$ and $\mG_n$, respectively, from which follows the relationship
+between directional derivatives and per-sample contributions $\gamma_k =
+\nicefrac{1}{N}\sum_{n=1}^N\gamma_{n,k}$ and $\lambda_k = \nicefrac{1}{N}
+\sum_{n=1}^N\lambda_{n,k}$. \Cref{vivit::subfig:visual-abstract2} shows a pictorial view of
+the quantities provided by \vivit.
+
+Access to per-sample directional gradients $\gamma_{n,k}$ and curvatures
+$\lambda_{n,k}$ along $\mG$'s natural directions is a distinct feature of
+\vivit. They provide geometric information about the local loss landscape
+\emph{as well as} about the model's directional curvature stochasticity over the
+mini-batch.
+\subsection{Computational Complexity}
+\label{vivit::sec:method-complexity}
+So far, we have formulated the computation of the \ggn{}'s eigenvalues
+(\Cref{vivit::eq:ggn-eigenvalues}), eigenvectors
+(\Cref{vivit::eq:ggn-eigenvectors}), and per-sample directional derivatives
+(\Cref{vivit::eq:gammas-lambdas}). Now, we analyze their computational complexity in
+more detail to identify critical performance factors. Those limitations can
+effectively be addressed with approximations that allow the costs to be
+decreased in a fine-grained fashion. We substantiate our theoretical analysis
+with empirical performance measurements in \Cref{vivit::subsec:scalability}.
+
+\subsubsection{Relation to Gradient Computation}
+Machine learning libraries are optimized to backpropagate signals
+$\nicefrac{1}{N} \grad{\vf_n} \ell_n$ and accumulate the result into the
+mini-batch gradient $\vg = \nicefrac{1}{N} \sum_{n=1}^N[\jac_{\vtheta} \vf_n
+]^\top \grad{\vf_n} \ell_n$. Each column $\vv_{n,c}$ of $\mV$ also involves
+applying the Jacobian, but to a different vector $\vs_{n,c}$ from the loss
+Hessian's symmetric factorization. For popular loss functions, like square and
+cross-entropy loss, this factorization is analytically known and available at
+negligible overhead. Hence, computing $\mV$ basically costs $C$ gradient
+computations as it involves $NC$ backpropagations, while the gradient requires
+$N$. However, the practical overhead is expected to be smaller: computations can
+re-use information from \backpack's vectorized Jacobians and enjoy additional
+speedup on parallel processors like GPUs.
+
+\subsubsection{Stage-wise Discarding $\mV$}
+
+$\mV$'s columns correspond to backpropagated vectors. During
+backpropagation, sub-matrices of $\mV$, associated to parameters in the current
+layer, become available once at a time and can be discarded immediately after
+their use. This allows for memory savings without any approximations.
+
+One example is the Gram matrix $\mGtilde$ formed by pairwise scalar products of
+$\{\vv_{n,c}\}_{n=1,c=1}^{N, C}$ in $\gO((NC)^2D)$ operations. The spectral
+decomposition $\tilde{\sS}_+$ has additional cost of $\gO((NC)^3)$. Similarly,
+the terms for the directional derivatives in \Cref{vivit::eq:gammas-lambdas} can be
+built up stage-wise: first-order derivatives $\{\gamma_{n,k}\}_{n=1,k=1}^{N,K}$
+require the vectors $\{ \mV^\top \vg_n \in \sR^{NC} \}_{n=1}^N$ that cost
+$\gO(N^2CD)$ operations. Second-order derivatives are basically for free, as $\{
+\mV_n^\top \mV \in \sR^{C\times NC} \}_{n=1}^N$ is available from $\mGtilde$.
+
+\subsubsection{\ggn Eigenvectors}
+
+Transforming an eigenvector $\vetilde_k$ of the Gram matrix to the \ggn
+eigenvector $\ve_k$ through application of $\mV$
+(\Cref{vivit::eq:ggn-eigenvectors}) costs $\gO(NCD)$ operations. However,
+repeated application of $\mV$ can be avoided for sums of the form $\sum_k
+(\nicefrac{c_k}{\sqrt{\lambda_k}}) \ve_k $ with arbitrary weights $c_k \in \sR$.
+The summation can be performed in the Gram space at negligible overhead, and
+only the resulting vector $\sum_k c_k \vetilde_k$ needs to be transformed. For a
+practical example -- computing damped Newton steps -- see
+\Cref{vivit::sec:performance-experiments}.
+
+
+\subsection{Approximations \& Implementation}
+\label{vivit::sec:approximations}
+
+Although the \ggn's representation by $\mV$ has linear memory cost in $D$, it
+requires memory equivalent to $NC$ model copies.\sidenote{Our implementation
+  uses a more memory-efficient approach that avoids expanding $\mV$ for linear
+  layers by leveraging structure in their Jacobian (see
+  \Cref{vivit::sec:optimized-gram-matrix}).} Of course, this is infeasible for
+many networks and datasets, \eg \imagenet ($C=1000$). So far, our formulation
+was concerned with \emph{exact} computations. We now present approximations that
+allow $N$, $C$ and $D$ in the above cost analysis to be replaced by smaller
+numbers, enabling \vivit to trade-off accuracy and performance.
+
+
+\subsubsection{\mc approximation \& Curvature Sub-sampling}
+
+To reduce the scaling in $C$, we can approximate the factorization
+$\nabla^2_{\vf_n}\ell_n(\vtheta) = \sum_{c=1}^C \vs_{n,c} \vs_{n,c}^\top$ by a
+smaller set of vectors. One principled approach is to draw \mc samples
+$\{\vstilde_{n,m}\}$ with $\E_m[ \vstilde_{n,m} \vstilde_{n,m}^\top] =
+\gradsquared{\vf_n}\ell_n(\vtheta)$ as in \cite{dangel2020backpack} or
+\Cref{ex:backpack::symmetricMCDecompositionCE}. This reduces the scaling of
+backpropagated vectors from $C$ to the number of \mc samples $M$ ($=1$ in the
+following if not specified). A common independent approximation to
+reduce the scaling in $N$ is computing curvature on a mini-batch subset
+\citep{byrd2011use, zhang2017blockdiagonal}.
+
+\subsubsection{Parameter Groups (Block-diagonal Approximation)}
+
+Some applications, \eg computing Newton steps, require $\mV$ to be kept in
+memory for performing the transformation from Gram space into the parameter
+space. Still, we can reduce costs by using the \ggn's diagonal blocks
+$\{\mG^{(l)}\}_{l=1}^L$ of each layer, rather than the full matrix $\mG$. Such
+blocks are available during backpropagation and can thus be used and discarded
+step by step. In addition to the previously described approximations for
+reducing the costs in $N$ and $C$, this technique tackles scaling in $D$.
+
+\subsubsection{Implementation Details}
+\backpack's functionality allows us to efficiently compute individual gradients
+and $\mV$ in a single backward pass, using either an exact or \mc-factorization
+of the loss Hessian. To reduce memory consumption, we extend its implementation
+with a protocol to support mini-batch sub-sampling and parameter groups. By
+hooks into the package's extensions, we can discard buffers as soon as possible
+during backpropagation, effectively implementing all discussed approximations
+and optimizations.
+
+In \Cref{vivit::sec:experiments}, we specifically address how the above approximations
+affect run time and memory requirements, and study their impact on structural
+properties of the \ggn.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

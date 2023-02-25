@@ -1,0 +1,71 @@
+The previous chapter highlighted the important structure of deep neural networks
+and the empirical risk used to train them:
+\begin{itemize}
+
+\item \textbf{Sum structure \& noise:} Given a model $f_{\vtheta}$, a convex
+  loss function $\ell$, and a dataset $\sD$, the empirical risk is an average
+  over per-datum losses. Each of these losses is identically computed by feeding
+  a datum through the model and the loss function. Batching these computations
+  allows to efficiently evaluate them in parallel. Doing so on only a random
+  subset of data---a mini-batch---reduces computational cost in exchange for
+  noise.
+
+\item \textbf{Probabilistic interpretation:} For specific loss functions, which
+  include regression and softmax classification, empirical risk minimization can
+  be interpreted as maximum likelihood---or maximum a posteriori---estimation
+  where the model parameterizes a likelihood distribution
+  $q(\giventhat{\vy}{f_{\vtheta}(\vx)})$.
+
+\item \textbf{Layer-structure \& modularity:} Neural networks consist of layers,
+  or modules, which are glued together by function composition. Backpropagation
+  abstract the differentiation by the composition of the module-level
+  derivatives, which simplifies supporting new operations and hides the
+  complexity of AD from practitioners.
+\end{itemize}
+Popular ML libraries allow for efficient and automated gradient computation, but
+combine AD and batching in a way that allows to support more general computation
+graphs than the empirical risk. However, the added optimization complicates
+efficiently assessing the empirical risk's per-sample structure, and
+higher-order information which requires slightly more flexible AD operations,
+like matrix-Jacobian products.
+
+This chapter motivates why relying solely on the gradient has limitations,
+and---based on structure in the empirical risk---proposes quantities in the form
+of higher-order information that go beyond the gradient. It starts by presenting
+currently popular deep learning optimization methods
+(\Cref{sec:background::PopularOptimizers}) which rely heavily on the average
+mini-batch gradient provided through AD in ML libraries. While training
+algorithms that use more information than the gradient have been historically
+mostly unexplored---because the quantities required are not as optimized and
+automated as gradient computations---they have exciting promises.
+
+Second-order methods (\Cref{sec:background::SecondOrderOptimization}) use more
+information than just the gradient. They are known to improve over first-order
+methods in ``classic'' optimization problems (convex optimization, general
+linear models). They incorporate curvature information in form of the Hessian
+(\Cref{sec:background::NewtonMethodAndHessian}), or PSD approximations thereof,
+such as the generalized Gauss-Newton (\Cref{sec:background::ggn}) and Fisher
+information matrix (\Cref{sec:background::naturalGradientDescent}).
+
+While optimization methods for neural networks are one main application in deep
+learning, there are other applications to quantities beyond the gradient.
+\Cref{sec:background:moreApplications} highlights additional use cases which
+underline the relevance of such information beyond optimization.
+\Cref{chap:cockpit} presents another use case focused on improving the
+training of neural networks.
+
+\section{Popular Deep Learning
+  Optimizers}\label{sec:background::PopularOptimizers}
+\input{sections/background_optimizers}
+
+\section{Second-order
+  Optimization}\label{sec:background::SecondOrderOptimization}
+\input{sections/background_second_order}
+
+\section{Other Applications}\label{sec:background:moreApplications}
+\input{sections/background_applications}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

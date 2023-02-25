@@ -1,0 +1,27 @@
+Broadly speaking, ML seeks to find a well-performing algorithm for a given task
+from ``experience''. This thesis considers supervised deep learning, where
+``experience'' is given through annotated examples in form of a dataset. A datum
+$(\vx, \vy)$ consists of \emph{input features} $\vx$ and \emph{targets}, or
+\emph{labels}, $\vy$. The algorithm, or \emph{model}, is a deep neural network
+(\Cref{sec:background::DeepNeuralNetworks}) that tries to predict $\vy$ from
+$\vx$ and is selected by minimizing a performance criterion on the available
+data (the empirical risk, \Cref{sec:background::SupervisedLearning}) using
+optimization methods which rely on automatically computed derivatives
+(\Cref{sec:background::GradientBackpropagation}). This chapter reviews these
+components, highlighting their structure \wrt implementation in ML libraries.
+For a broader introduction to deep learning, see \eg \cite{goodfellow2016deep}.
+
+\section{Empirical Risk Minimization}\label{sec:background::SupervisedLearning}
+\input{sections/background_learning}
+
+\section{Neural Networks}\label{sec:background::DeepNeuralNetworks}
+\input{sections/background_models}
+
+\section{Automatic
+  Differentiation}\label{sec:background::GradientBackpropagation}
+\input{sections/background_autodiff}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

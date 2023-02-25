@@ -1,0 +1,567 @@
+%!TEX root = main.tex
+
+% make tikzplotlib figures work
+\usepackage{pgfplots, pgfplotstable}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{groupplots}
+\usepgfplotslibrary{dateplot}
+
+% The idea of this file:
+% * Export with tikzplotlib leaves a hook to modify the axis parameters of plots
+% * Use by defining the pgfstyle `zmystyle`
+%   (starts with z to be listed last in axis parameters)
+% * This file defines styles for different plots
+%   * loss plots
+%   * accuracy plots
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use? -> See box at the end of the file %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Requirements
+% make tikzplotlib work
+%\usepackage{pgfplots, pgfplotstable}
+%\pgfplotsset{compat=newest}
+%\usepgfplotslibrary{groupplots}
+%\usepgfplotslibrary{dateplot}
+
+
+%%%%%%%%%%%%%%%%%%%%%
+% THE DEFAULT STYLE %
+%%%%%%%%%%%%%%%%%%%%%
+% pgfplots style "BackPACKpaperdefault"
+\pgfkeys{/pgfplots/BackPACKpaperdefault/.style={
+        width=1.0\linewidth,
+        height=0.6\linewidth,
+        every axis plot/.append style={line width = 1.5pt},
+        tick pos = left,
+        ylabel near ticks,
+        xlabel near ticks,
+        xtick align = inside,
+        ytick align = inside,
+        legend cell align = left,
+        legend columns = 2,
+        legend style = {
+        	fill opacity = 0.7,
+            text opacity = 1,
+            font = \footnotesize,
+        },
+    	xticklabel style = {font = \footnotesize},
+    	xlabel style = {font = \footnotesize},
+    	yticklabel style = {font = \footnotesize, minimum width = 4.5ex},
+    	ylabel style = {font = \footnotesize},
+    	grid = major,
+      grid style = {dashed}
+    }
+}
+
+% set y axis to logarithmic
+\newcommand{\setTikzplotlibLogY}{
+  % NOTE This is dangerous as it globally affects axis environments
+	\pgfplotsset{every axis/.style = {ymode=log}}
+}
+
+% set y axis to linear
+\newcommand{\setTikzplotlibLinearY}{
+  % NOTE This is dangerous as it globally affects axis environments
+	\pgfplotsset{every axis/.style = {ymode=linear}}
+}
+
+% Clear the hook for specification of tikzplotlib plots
+\newcommand{\resetTikzplotlibHook}{
+	\pgfkeys{/pgfplots/zmystyle/.style={
+		}
+	}
+    % \setTikzplotlibLinearY
+}
+\resetTikzplotlibHook
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% USEFUL ADDITIONAL STYLES %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% no legend
+\pgfkeys{/pgfplots/nolegend/.style={
+		legend style = {
+			opacity = 0,
+			text opacity = 0,
+		}
+	}
+}
+% no title
+\pgfkeys{/pgfplots/notitle/.style={
+		title = {},
+	}
+}
+% no xticklabels
+\pgfkeys{/pgfplots/noxticklabels/.style={
+		%xticklabels = {},
+		xticklabel style = {font = \footnotesize, opacity = 0},
+	}
+}
+
+%%%%%%%%%%
+% LABELS %
+%%%%%%%%%%
+\pgfkeys{/pgfplots/test_loss_labels/.style={
+		xlabel={},
+		ylabel={Test loss},
+		noxticklabels,
+	}
+}
+
+\pgfkeys{/pgfplots/train_loss_labels/.style={
+		xlabel={},
+		ylabel={Train loss},
+		yticklabel pos=right,
+		noxticklabels,
+	}
+}
+
+\pgfkeys{/pgfplots/test_accuracy_labels/.style={
+		xlabel={Epoch},
+		ylabel={Test accuracy},
+	}
+}
+
+\pgfkeys{/pgfplots/train_accuracy_labels/.style={
+		xlabel={Epoch},
+		ylabel={Train accuracy},
+		yticklabel pos=right,
+	}
+}
+
+\pgfkeys{/pgfplots/damping_labels/.style={
+		xlabel={},
+		ylabel={Damping},
+		noxticklabels,
+	}
+}
+
+\pgfkeys{/pgfplots/batch_loss_improvement_labels/.style={
+		xlabel={},
+		ylabel={Batch loss improvement},
+		yticklabel pos=right,
+		noxticklabels,
+	}
+}
+
+\pgfkeys{/pgfplots/norm_parameter_change_labels/.style={
+		xlabel={Epoch},
+		ylabel={Parameter norm change},
+	}
+}
+
+\pgfkeys{/pgfplots/batch_loss_after_step_labels/.style={
+		xlabel={Epoch},
+		ylabel={Batch loss after step},
+		yticklabel pos=right,
+	}
+}
+
+%%%%%%%%%%%%%%%
+% HOW TO USE? %
+%%%%%%%%%%%%%%%
+
+% 0) To make sure the hook is not messed up from previous plots, reset it
+% \resetTikzplotlibHook
+
+% 1) If you want a logarithmic y axis, run
+% \setTikzplotlibLogY
+% (unfortunately, this cannot be handed in by "zmystyle". It's a limitation of pgfplots)
+
+% 2) before including a picture exported with tikzplotlib, modify "zmystyle"
+% \pgfkeys{/pgfplots/zmystyle/.style={ % insert whatever you want, for instance
+%        % BackPACKpaperdefault,
+%		 % legend pos = north east,
+%	 	 % xmin=1, xmax=20,
+%	  	 % ymin = 1, ymax = 1.2,
+%	  	 % title = {The title},
+%	 }
+% }
+
+% 3) Include the TikZ picture
+% \input{mytikzpicture.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% STYLES FOR MNIST PLOTS %
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Requires commands from ./tikz_commands.tex
+
+%%%%%%%%%%%%%%%%%%
+% X AND Y RANGES %
+%%%%%%%%%%%%%%%%%%
+\pgfkeys{/pgfplots/mnist_logreg_xrange/.style={
+		xmin = 0,
+		xmax = 50,
+	}
+}
+
+\pgfkeys{/pgfplots/mnist_logreg_loss_range/.style={
+		mnist_logreg_xrange,
+		ymin = 0.22,
+		ymax = 0.43,
+	}
+}
+
+\pgfkeys{/pgfplots/mnist_logreg_accuracy_range/.style={
+		mnist_logreg_xrange,
+		ymin = 0.905,
+		ymax = 0.945,
+	}
+}
+
+\pgfkeys{/pgfplots/mnist_logreg_batch_loss_improvement_range/.style={
+		mnist_logreg_xrange,
+		ymin = -0.17,
+		ymax = 0,
+	}
+}
+
+\pgfkeys{/pgfplots/mnist_logreg_batch_loss_after_range/.style={
+		mnist_logreg_xrange,
+		ymin = 0.08,
+		ymax = 1.5,
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%
+% CONCRETE STYLES %
+%%%%%%%%%%%%%%%%%%%
+\pgfkeys{/pgfplots/mnist_logreg_test_loss_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		test_loss_labels,
+		mnist_logreg_loss_range
+	}
+}
+
+\pgfkeys{/pgfplots/mnist_logreg_train_loss_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		train_loss_labels,
+		mnist_logreg_loss_range
+	}
+}
+
+\pgfkeys{/pgfplots/mnist_logreg_test_accuracy_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		test_accuracy_labels,
+		mnist_logreg_accuracy_range
+	}
+}
+
+\pgfkeys{/pgfplots/mnist_logreg_train_accuracy_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		train_accuracy_labels,
+		mnist_logreg_accuracy_range
+	}
+}
+
+\pgfkeys{/pgfplots/mnist_logreg_damping_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		damping_labels,
+		mnist_logreg_xrange
+	}
+}
+
+\pgfkeys{/pgfplots/mnist_logreg_batch_loss_improvement_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		nolegend,
+		batch_loss_improvement_labels,
+		mnist_logreg_batch_loss_improvement_range
+	}
+}
+
+\pgfkeys{/pgfplots/mnist_logreg_norm_parameter_change_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		nolegend,
+		norm_parameter_change_labels,
+		mnist_logreg_xrange
+	}
+}
+
+\pgfkeys{/pgfplots/mnist_logreg_batch_loss_after_step_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		nolegend,
+		batch_loss_after_step_labels,
+		mnist_logreg_batch_loss_after_range
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% STYLES FOR FMNIST PLOTS %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Requires commands from ./tikz_commands.tex
+
+%%%%%%%%%%%%%%%%%%
+% X AND Y RANGES %
+%%%%%%%%%%%%%%%%%%
+\pgfkeys{/pgfplots/fmnist_2c2d_xrange/.style={
+		xmin = 0,
+		xmax = 100,
+	}
+}
+
+\pgfkeys{/pgfplots/fmnist_2c2d_loss_range/.style={
+		fmnist_2c2d_xrange,
+		ymin = -0.05,
+		ymax = 0.5,
+	}
+}
+
+\pgfkeys{/pgfplots/fmnist_2c2d_accuracy_range/.style={
+		fmnist_2c2d_xrange,
+		ymin = 0.83,
+		ymax = 1.01,
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%
+% CONCRETE STYLES %
+%%%%%%%%%%%%%%%%%%%
+\pgfkeys{/pgfplots/fmnist_2c2d_test_loss_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		test_loss_labels,
+		fmnist_2c2d_loss_range,
+		legend pos = south east,
+		legend columns = 2
+	}
+}
+
+\pgfkeys{/pgfplots/fmnist_2c2d_train_loss_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		train_loss_labels,
+		fmnist_2c2d_loss_range
+	}
+}
+
+\pgfkeys{/pgfplots/fmnist_2c2d_test_accuracy_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		test_accuracy_labels,
+		fmnist_2c2d_accuracy_range
+	}
+}
+
+\pgfkeys{/pgfplots/fmnist_2c2d_train_accuracy_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		train_accuracy_labels,
+		fmnist_2c2d_accuracy_range
+	}
+}
+
+
+\pgfkeys{/pgfplots/fmnist_2c2d_damping_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		damping_labels,
+		fmnist_2c2d_xrange
+	}
+}
+
+\pgfkeys{/pgfplots/fmnist_2c2d_batch_loss_improvement_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		nolegend,
+		batch_loss_improvement_labels,
+		fmnist_2c2d_xrange,
+	}
+}
+
+\pgfkeys{/pgfplots/fmnist_2c2d_norm_parameter_change_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		nolegend,
+		norm_parameter_change_labels,
+		fmnist_2c2d_xrange
+	}
+}
+
+\pgfkeys{/pgfplots/fmnist_2c2d_batch_loss_after_step_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		nolegend,
+		batch_loss_after_step_labels,
+		fmnist_2c2d_xrange,
+	}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% STYLES FOR CIFAR10 PLOTS %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Requires commands from ./tikz_commands.tex
+
+%%%%%%%%%%%%%%%%%%
+% X AND Y RANGES %
+%%%%%%%%%%%%%%%%%%
+\pgfkeys{/pgfplots/cifar10_3c3d_xrange/.style={
+		xmin = 0,
+		xmax = 99,
+	}
+}
+
+\pgfkeys{/pgfplots/cifar10_3c3d_loss_range/.style={
+		cifar10_3c3d_xrange,
+		ymin = 0.5,
+		ymax = 1.8,
+	}
+}
+
+\pgfkeys{/pgfplots/cifar10_3c3d_accuracy_range/.style={
+		cifar10_3c3d_xrange,
+		ymin = 0.65,
+		ymax = 0.95,
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%
+% CONCRETE STYLES %
+%%%%%%%%%%%%%%%%%%%
+\pgfkeys{/pgfplots/cifar10_3c3d_test_loss_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		test_loss_labels,
+		cifar10_3c3d_loss_range,
+		legend pos = north east,
+	}
+}
+
+\pgfkeys{/pgfplots/cifar10_3c3d_train_loss_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		train_loss_labels,
+		cifar10_3c3d_loss_range
+	}
+}
+
+\pgfkeys{/pgfplots/cifar10_3c3d_test_accuracy_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		test_accuracy_labels,
+		cifar10_3c3d_accuracy_range
+	}
+}
+
+\pgfkeys{/pgfplots/cifar10_3c3d_train_accuracy_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		train_accuracy_labels,
+		cifar10_3c3d_accuracy_range
+	}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% STYLES FOR cifar100 PLOTS %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Requires commands from ./tikz_commands.tex
+
+%%%%%%%%%%%%%%%%%%
+% X AND Y RANGES %
+%%%%%%%%%%%%%%%%%%
+\pgfkeys{/pgfplots/cifar100_allcnnc_xrange/.style={
+		xmin = 0,
+		xmax = 350,
+	}
+}
+
+\pgfkeys{/pgfplots/cifar100_allcnnc_loss_range/.style={
+		cifar100_allcnnc_xrange,
+		ymin = 0.9,
+		ymax = 3.5,
+	}
+}
+
+\pgfkeys{/pgfplots/cifar100_allcnnc_accuracy_range/.style={
+		cifar100_allcnnc_xrange,
+		ymin = 0.4,
+		ymax = 0.85,
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%
+% CONCRETE STYLES %
+%%%%%%%%%%%%%%%%%%%
+\pgfkeys{/pgfplots/cifar100_allcnnc_test_loss_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		test_loss_labels,
+		cifar100_allcnnc_loss_range,
+		legend pos = south east,
+	}
+}
+
+\pgfkeys{/pgfplots/cifar100_allcnnc_train_loss_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		train_loss_labels,
+		cifar100_allcnnc_loss_range
+	}
+}
+
+\pgfkeys{/pgfplots/cifar100_allcnnc_test_accuracy_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		test_accuracy_labels,
+		cifar100_allcnnc_accuracy_range
+	}
+}
+
+\pgfkeys{/pgfplots/cifar100_allcnnc_train_accuracy_plot/.style={
+		BackPACKpaperdefault,
+		notitle,
+		train_accuracy_labels,
+		cifar100_allcnnc_accuracy_range
+	}
+}
+
+% #1 problem string #2 model string, #3 damping string, #4 best mode, #5,6 best metric
+\newcommand{\plotDifferentCurvatures}[6]{
+	\centering
+%	DeepOBS problem: \texttt{#1\_#2}, damping: \texttt{#3}, Best run definition \texttt{#4 #5\_#6} (varying curvature matrices)
+%
+	\begin{minipage}{0.49\linewidth}
+	\begin{flushright}
+		\resetTikzplotlibHook
+		\pgfkeys{/pgfplots/zmystyle/.style={
+				#1_#2_test_loss_plot,
+			}
+		}
+		\input{../repos/backpack-paper/tex/paper/figs/#1_#2/curvatures_#3_#4_#5_#6/0_test_losses_processed.tex}
+		\resetTikzplotlibHook
+		\pgfkeys{/pgfplots/zmystyle/.style={
+				#1_#2_test_accuracy_plot,
+			}
+		}
+		\input{../repos/backpack-paper/tex/paper/figs/#1_#2/curvatures_#3_#4_#5_#6/2_test_accuracies_processed.tex}
+	\end{flushright}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.49\linewidth}
+	\begin{flushleft}
+		\resetTikzplotlibHook
+		\pgfkeys{/pgfplots/zmystyle/.style={
+				#1_#2_train_loss_plot,
+			}
+		}
+		\input{../repos/backpack-paper/tex/paper/figs/#1_#2/curvatures_#3_#4_#5_#6/1_train_losses_processed.tex}
+		\resetTikzplotlibHook
+		\pgfkeys{/pgfplots/zmystyle/.style={
+				#1_#2_train_accuracy_plot,
+			}
+		}
+		\input{../repos/backpack-paper/tex/paper/figs/#1_#2/curvatures_#3_#4_#5_#6/3_train_accuracies_processed.tex}
+	\end{flushleft}
+	\end{minipage}
+}

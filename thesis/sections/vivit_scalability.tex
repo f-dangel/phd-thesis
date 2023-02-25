@@ -1,0 +1,112 @@
+We now complement the theoretical computational complexity analysis from
+\Cref{vivit::sec:method-complexity} with empirical studies. Results were generated on a
+workstation with an Intel Core i7-8700K CPU (32\,GB) and one NVIDIA GeForce RTX
+2080 Ti GPU (11\,GB). We use $M=1$ in the following.
+% Furthermore, we set the number of \mc
+% samples to $M=1$ in the following.
+
+
+\input{figures/vivit/performance_cifar10_3c3d_cuda_main}
+
+
+\subsubsection{Memory Performance}
+
+% Describe computation
+We consider two tasks:
+\begin{enumerate}
+\item \textbf{Computing eigenvalues:} The nontrivial eigenvalues
+  $\{\lambda_{k}\,|\, (\lambda_{k}, \vetilde_{k}) \in \tilde{\sS}_+\}$ are
+  obtained by forming and eigen-decomposing the Gram matrix $\mGtilde$, allowing
+  stage-wise discarding of $\mV$ (see
+  \Cref{vivit::sec:computing-full-ggn-eigenspectrum,vivit::sec:method-complexity}).
+  \label{vivit::item:task-eigenvalues}
+
+\item \textbf{Computing the top eigenpair:} For $(\lambda_{1}, \ve_{1})$, we
+  compute the Gram matrix spectrum $\tilde{\sS}_{+}$, extract its top eigenpair
+  $(\lambda_{1}, \vetilde_{1})$, and transform it into parameter space by
+  \Cref{vivit::eq:ggn-eigenvectors}, \ie $(\lambda_{1}, \ve_{1} =
+  \nicefrac{1}{\sqrt{\lambda_{1}}} \mV \vetilde_{1} )$. This requires more
+  memory than task~\ref{vivit::item:task-eigenvalues} as $\mV$ must be stored.
+  \label{vivit::item:task-eigenvectors}
+\end{enumerate}
+As a comprehensive memory performance measure, we use the largest batch size
+before our system runs out of memory---we call this the \emph{critical batch size}
+$N_{\text{crit}}$.
+
+% Describe and explain results
+\Cref{vivit::subfig:performance-cifar10-3c3d-cuda_main1} tabularizes the critical batch
+sizes on GPU for the \threecthreed architecture on \cifarten. As expected,
+computing eigenpairs requires more memory and leads to consistently smaller
+critical batch sizes in comparison to computing only eigenvalues. Yet, they all
+exceed the traditional batch size used for training ($N=128$, see
+\cite{schneider2019deepobs}), even when using the exact \ggn. With \vivit{}'s
+approximations, the memory overhead can be reduced to significantly increase the
+applicable batch size.
+
+We report similar results for more architectures, a block-diagonal approximation
+(as in \citet{zhang2017blockdiagonal}), and on CPU in
+\Cref{vivit::sec:performance-experiments}, where we also benchmark a third
+task---computing damped Newton steps.
+
+% Describe procedure
+\subsubsection{Run Time Performance}
+
+Next, we consider computing the $k$ leading eigenvectors and eigenvalues of a
+matrix. A power iteration that computes eigenpairs iteratively via matrix-vector
+products serves as a reference. For a fixed value of $k$, we repeat both
+approaches $20$ times and report the shortest time.
+
+% Describe computation
+For the power iteration, we adapt the implementation from the \pyhessian library
+\cite{yao2020pyhessian} and replace its Hessian-vector product by a matrix-free
+\ggn-vector product \cite{schraudolph2002fast} through \pytorch's AD. We use the
+same default hyperparameters for the termination criterion.
+%
+Similar to task~\ref{vivit::item:task-eigenvalues}, our method obtains the top-$k$
+eigenpairs\sidenote{In contrast to the power iteration that is restricted to
+  dominating eigenpairs, our approach allows choosing arbitrary eigenpairs.}
+% $\{(\lambda_{1}, \ve_{1}), (\lambda_{2}, \ve_{2}), \ldots, (\lambda_{k},\ve_{k})\}$
+by computing $\tilde{\sS}_{+}$, extracting its leading eigenpairs
+% $\{(\lambda_{1}, \vetilde_{1}), (\lambda_{2},
+% \vetilde_{2}), \ldots, (\lambda_{k}, \vetilde_{k})\}$,
+and transforming the eigenvectors $\vetilde_{1}, \vetilde_{2}, \ldots,
+\vetilde_{k}$ into parameter space by application of $\mV$ (see
+\Cref{vivit::eq:ggn-eigenvectors}).
+
+\begin{figure}
+  \centering
+  \input{figures/vivit/eigspace_default_style}
+  \pgfkeys{/pgfplots/zmystyle/.style={
+      eigspacedefault
+    }}
+  \tikzexternalenable
+  \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_ggn_vs_hessian/cifar10_3c3d_sgd_eigenspace}
+  \tikzexternaldisable
+
+  \caption{ \textbf{Full-batch \ggn versus full-batch Hessian:} Overlap between the
+    top-$C$ eigenspaces of the full-batch \ggn and full-batch Hessian during
+    training of the \threecthreed network on \cifarten with \sgd{}. }
+  \label{vivit::fig:approx_GGN_Hessian}
+\end{figure}
+
+% Describe and explain results
+\Cref{vivit::subfig:performance-cifar10-3c3d-cuda_main2} shows the GPU run time
+for the \threecthreed architecture on \cifarten, using a mini-batch of size
+$N=128$. Without any approximations to the \ggn, our method already outperforms
+the power iteration for $k>1$ and increases \textit{much} slower in run time as
+more leading eigenpairs are requested. This means that, relative to the
+transformation of each eigenvector from the Gram space into the parameter space
+through $\mV$, the run time mainly results from computing $\mV,\mGtilde$, and
+eigendecomposing the latter. This is consistent with the computational
+complexity of those operations in $NC$ (compare
+\Cref{vivit::sec:method-complexity}) and allows for efficient extraction of a
+large number of eigenpairs. The run time curves of the approximations confirm
+this behavior by featuring the same flat profile. Additionally, they require
+significantly less time than the exact mini-batch computation. Results for more
+network architectures, a block-diagonal approximation and on CPU are reported in
+\Cref{vivit::sec:performance-experiments}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

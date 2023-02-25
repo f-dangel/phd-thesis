@@ -1,0 +1,23 @@
+\subsection{Hessian Trace
+  (\robustInlinecode{HessTrace})}\label{cockpit::app:hessian-trace}
+
+In comparison to \citet{yao2020pyhessian}, who leverage Hessian-vector products
+\citep{pearlmutter1994fast} to estimate the Hessian trace, we compute the exact
+value $\Tr(\mH_{\sB}(\vtheta))$ with the \inlinecode{HessTrace} quantity in
+\cockpit by aggregating the output of \backpack's
+\href{https://docs.backpack.pt/en/master/extensions.html#backpack.extensions.DiagHessian}{\inlinecode{DiagHessian}}
+extension, which computes the diagonal entries of $\mH_{\sB}(\vtheta)$.
+Alternatively, the trace can also be estimated with the \ggn matrix, or an
+MC-sampled approximation thereof.
+
+\subsubsection{Usage}
+
+The Hessian trace equals the sum of the eigenvalues and thus provides a notion
+of ``average curvature'' of the current loss landscape. It has long been
+theorized and discussed that curvature and generalization performance may be
+linked \cite[\eg]{hochreiter1997flat}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

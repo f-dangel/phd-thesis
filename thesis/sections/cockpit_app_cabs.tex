@@ -1,0 +1,39 @@
+\subsection{\cabs Criterion: Coupling Adaptive Batch Sizes with Learning Rates
+  (\robustInlinecode{CABS})}\label{cockpit::app:cabs}
+
+The \cabs criterion, proposed by \citet{balles2017coupling}, can be used to adapt the
+mini-batch size during training with \sgd. It relies on the gradient noise and
+approximately optimizes the objective's expected gain per cost. The adaptation
+rule is (with learning rate $\eta$)
+\begin{equation}
+  \label{cockpit::eq:cabs-theoretical}
+  |\sB| \leftarrow \eta \frac{\Tr(\mSigma_{\pdata}(\vtheta))}{\gL_{{\pdata}}(\vtheta)}\,,
+\end{equation}
+and the practical implementation approximates $ \gL_{{\pdata}}(\vtheta) \approx
+\gL_{\sB}(\vtheta)$and $\Tr(\mSigma_{\pdata}(\vtheta)) \approx
+\nicefrac{(|\sB|-1)}{|\sB|} \Tr(\hat{\mSigma}_\sB(\vtheta))$ (compare equations
+(10, 22) and first paragraph of Section 4 in \citep{balles2017coupling}). This
+yields the quantity computed in \cockpit's \inlinecode{CABS} instrument,
+\begin{align}
+  \label{cockpit::eq:cabs-feature-table}
+  |\sB| &\leftarrow \eta \frac{
+          \frac{1}{|\sB|}
+          \sum_{j=1}^D \sum_{n\in\sB}
+          \left[
+          \vg_n(\vtheta) - \vg_{\sB}(\vtheta)
+          \right]_j^2
+          }{
+          \gL_{\sB}(\vtheta)
+          }\,.
+\end{align}
+
+\subsubsection{Usage}
+
+The \cabs criterion suggests a batch size which is optimal
+under certain assumptions. This suggestion can support practitioners in the
+batch size selection for their deep learning task.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

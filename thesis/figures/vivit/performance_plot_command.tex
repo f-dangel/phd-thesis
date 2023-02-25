@@ -1,0 +1,99 @@
+% expects (dataset, model, device, tables(0 or 1), caption)
+\newcommand{\plotViViTPerformance}[5]{
+\begin{figure*}[tb]
+  \centering
+  \begin{minipage}[t]{0.49\linewidth}
+    \centering
+    \begin{footnotesize}
+      \textbf{Full network}
+    \end{footnotesize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.49\linewidth}
+    \centering
+    \begin{footnotesize}
+      \textbf{Block-diagonal approximation}
+    \end{footnotesize}
+  \end{minipage}
+
+  \vspace{-2ex}
+\ifthenelse{\equal{#4}{1}}{
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \caption{Memory performance}\label{vivit::subfig:performance-#1-#2-#3-1}
+    \begin{minipage}[t]{0.49\linewidth}
+      \centering
+      \begin{footnotesize}
+        $N_{\text{crit}}$ (eigenvalues)
+
+        \vspace{0.15\baselineskip}
+        \input{../repos/vivit-paper/fig/exp10_performance_ggn_evals/fig/N_crit/evals/tab_#1_#2_#3_one_group}
+      \end{footnotesize}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.49\linewidth}
+      \centering
+      \begin{footnotesize}
+        $N_{\text{crit}}$ (top eigenpair)
+
+        \vspace{0.15\baselineskip}
+        \input{../repos/vivit-paper/fig/exp10_performance_ggn_evals/fig/N_crit/evecs/tab_#1_#2_#3_one_group}
+      \end{footnotesize}
+    \end{minipage}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \caption{Memory performance}\label{vivit::subfig:performance-#1-#2-#3-2}
+    \begin{minipage}[t]{0.49\linewidth}
+      \centering
+      \begin{footnotesize}
+        $N_{\text{crit}}$ (eigenvalues)
+
+        \vspace{0.15\baselineskip}
+        \input{../repos/vivit-paper/fig/exp10_performance_ggn_evals/fig/N_crit/evals/tab_#1_#2_#3_layerwise_group}
+      \end{footnotesize}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.49\linewidth}
+      \centering
+      \begin{footnotesize}
+        $N_{\text{crit}}$ (top eigenpair)
+
+        \vspace{0.15\baselineskip}
+        \input{../repos/vivit-paper/fig/exp10_performance_ggn_evals/fig/N_crit/evecs/tab_#1_#2_#3_layerwise_group}
+      \end{footnotesize}
+    \end{minipage}
+  \end{subfigure}
+}{}
+
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \ifthenelse{\equal{#4}{1}}{}{
+      \addtocounter{subfigure}{2}
+    }
+    \caption{Run time performance}\label{vivit::subfig:performance-#1-#2-#3-3}
+    % load "performancedefault" style
+    \input{figures/vivit/performance_default_style}
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={performancedefault, legend columns = 2}}
+    \input{../repos/vivit-paper/fig/exp10_performance_ggn_evals/fig/time/evecs/#1_#2_#3_one_group}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\linewidth}
+    \centering
+    \caption{Run time performance}\label{vivit::subfig:performance-#1-#2-#3-4}
+    % load "performancedefault" style
+    \input{figures/vivit/performance_default_style}
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={performancedefault, legend columns = 2}}
+    \input{../repos/vivit-paper/fig/exp10_performance_ggn_evals/fig/time/evecs/#1_#2_#3_layerwise_group}
+  \end{subfigure}
+  \caption{#5}\label{vivit::fig:performance-#1-#2-#3}
+\end{figure*}
+}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

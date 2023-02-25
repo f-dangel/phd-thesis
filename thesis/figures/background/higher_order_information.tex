@@ -1,0 +1,39 @@
+\begin{tikzpicture}
+  \pgfmathsetmacro{\figwidth}{\linewidth}
+  \pgfmathsetmacro{\figheight}{0.35\linewidth}
+  \pgfmathsetmacro{\skew}{0.3}
+  \clip (0, 0) rectangle (\figwidth pt, \figheight pt);
+
+  \node [anchor=south west, font=\footnotesize] (hessian)
+  at (0, 0)
+  {$\gradsquared{\vtheta}\gL(\vtheta)$};
+  \node [anchor=north east, font=\footnotesize, yshift=-1ex] (gradientNoise)
+  at (\figwidth pt, \figheight pt)
+  {$\{ \grad{\vtheta}\ell_n(\vtheta) \}$};
+
+  \node [anchor=north, font=\footnotesize, yshift=-1ex] (gradient)
+  at ($(hessian.south)+(\skew*\figwidth pt, \figheight pt)$)
+  {$\grad{\vtheta}\gL(\vtheta)$};
+  \node [anchor=south, font=\footnotesize, yshift=1ex] (hessianNoise)
+  at ($(gradientNoise.north)-(\skew*\figwidth pt, \figheight pt)$)
+  {$\{ \gradsquared{\vtheta}\ell_n(\vtheta) \}$};
+
+  \draw[->, >=stealth, ultra thick, maincolor] (gradient.south) to
+  node [midway, above, sloped, anchor=south, font=\bfseries\footnotesize] {geometrical info}
+  (hessian.north);
+
+  \draw[->, >=stealth, ultra thick, maincolor] (gradient.east) to
+  node [midway, below, sloped, anchor=south, font=\bfseries\footnotesize] {statistical info}
+  (gradientNoise.west);
+
+  \draw[->, >=stealth, ultra thick, dotted, maincolor] (hessian.east) to (hessianNoise.west);
+  \draw[->, >=stealth, ultra thick, dotted, maincolor] (gradientNoise.south) to (hessianNoise.north);
+
+  \path [fill=thirdcolor!25] (gradient.south east) to (gradientNoise.south west) to (hessianNoise.north west) to (hessian.north east) -- cycle;
+  \path [fill=secondcolor!25] (gradient.south east) to ($(gradient.south east)!0.15!(gradientNoise.south west)$) to ($(gradient.south east)!0.15!(hessian.east)$) -- cycle;
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

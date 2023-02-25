@@ -1,0 +1,341 @@
+% ===================================================================
+% NOTATION
+% ===================================================================
+\chapter{Notation}
+
+The notation is influenced by \citet{goodfellow2016deep}.
+
+\section*{Tensors, Matrices, Vectors, Numbers}
+
+\begin{longtable}{p{.2\linewidth}p{.8\linewidth}}
+  $a$ & A scalar
+  \\
+  $\va$ & A column vector
+  \\
+  $\mA$ & A matrix
+  \\
+  $\tA$ & A tensor
+  \\
+  $\eva_{i}$ or $[\va]_i$& The $i$th entry of the vector $\va$
+  \\
+  $A_{i,j}$ or $[\mA]_{i,j}$ & The $(i,j)$th entry of the matrix $\mA$ (row $i$,
+  column $j$)
+  \\
+  $[\mA]_{i,:}$ (or $[\mA]_{:,j}$) & The $i$th row (or $j$th column) of the matrix $\mA$
+  \\
+  $\mathsfit{A}_{i,j,k}$ or $ [\tA]_{i,j,k}$ & The $(i,j,k)$th entry of the tensor
+  $\tA$
+  \\
+  $\vec(\mA), \vec(\tA)$ & Matrix/tensor flattened into a vector; convention
+  implies $\vec(\mA\mB\mC) = ( \mC^\top \otimes \mA ) \vec(\mB)$
+  \\
+  $\diag(\va)$ & The square matrix with vector $\va$ on the diagonal and zeros
+  elsewhere
+  \\
+  $\diag(\mA)$ & The vector containing the diagonal elements of the matrix $\mA$
+  \\
+  $\diag(\mA_{1}, \dots, \mA_{L})$ & A block-diagonal matrix with diagonal
+  blocks given by square matrices $\mA_{1}, \dots, \mA_{L}$
+  \\
+  $\Tr(\mA), \det(\mA)$ & Trace and determinant of a matrix $\mA$
+  \\
+  $\lVert \va \rVert_2$ & $L_2$ norm of vector $\va$, \ie $\lVert \va \rVert_2^2
+  = \va^{\top}\va$
+  \\
+  $\eig(\mA) := \{ (\lambda_{k}, \ve_{k})\}_{k}$ & Eigendecomposition of the matrix
+  $\mA$, eigenpairs $(\lambda_{k}, \ve_{k})$ satisfy $\mA \ve_{k} = \lambda_{k}
+  \ve_{k}$
+  \\
+  $(\lambda_{k}(\mA), \ve_{k}(\mA))$ & $k$th eigenpair (eigenvalue, eigenvector)
+  of matrix $\mA$
+  \\
+  $\mA \otimes \mB$ & Kronecker product of two matrices, For two vectors $\va,
+  \vb$, one has $\va \otimes \vb^{\top} = \va \vb^{\top}$
+  \\
+  $\tA \odot \tB, \mA \odot \mB, \va \odot \vb$ & Elementwise multiplication
+  (Hadamard product) of two tensors, matrices, vectors
+  \\
+  $\tA \oslash \tB, \mA \oslash \mB, \va \oslash \vb$ & Elementwise division
+  (Hadamard division) of two tensors, matrices, vectors
+  \\
+  $\tA^{\odot 2}, \mA^{\odot 2}, \va^{\odot 2}$ & Elementwise square of a
+  tensor, matrix, vector
+  \\
+  $\tA^{\odot \nicefrac{1}{2}}, \mA^{\odot \nicefrac{1}{2}}, \va^{\odot
+    \nicefrac{1}{2}}$ & Elementwise square root of a tensor, matrix, vector
+  \\
+\end{longtable}
+
+\section*{Empirical Risk Minimization}
+
+A datum is usually indicated by a subscript $_{n}$.
+
+\begin{longtable}{p{.2\linewidth}p{.8\linewidth}}
+  $(\vx, \vy)$ & Labeled datum with input features $\vx$ and target $\vy$
+  \\
+  $(\vx_n, \vy_n)$ & Datum $n$ from a dataset
+  \\
+  $D$ & Total number of parameters in a model
+  \\
+  $\vtheta \in \sTheta := \sR^D$ & Parameter vector of a model
+  \\
+  $\vf:= f_{\vtheta}(\vx)$ & Prediction of a model $f_{\vtheta}$ for input features
+  $\vx$
+  \\
+  $\ell$ or $\ell(\vf, \vy)$ & Loss function to compare prediction and target;
+  convex in $\vf$
+  \\
+  $\sD := \{(\vx_n, \vy_n)\}_{n=1}^{|\sD|}$ & A dataset containing instances of
+  labeled data $(\vx_n, \vy_n)$ indexed by $n$
+  \\
+  $\sB$ & A mini-batch $\sB \subseteq \sD$
+  \\
+  $N$ & Number of data in a mini-batch or a dataset, depending on the context
+  \\
+  $\vf_n := f_{\vtheta}(\vx_n)$ & Model prediction for datum $n$
+  \\
+  $\ell_n$ or $\ell(\vf_n, \vy_n)$ & Loss of datum $n$
+  \\
+  $p_{\sD}(\vx,\vy)$ & Empirical distribution of a dataset $\sD$
+  \\
+  $\gL_{\sD}(\vtheta)$ & Empirical risk implied by the empirical distribution of
+  a dataset $\sD$
+  \\
+  $\gL_{\Dtrain}(\vtheta), \gL_{\sB}(\vtheta), \etc$ & Training loss, mini-batch
+  loss, \etc
+\end{longtable}
+
+\section*{Neural Networks}
+
+The layer number is indicated by parenthesized superscripts $^{(l)}$.
+
+\begin{longtable}{p{.2\linewidth}p{.8\linewidth}}
+  $L$
+  & Total number of layers
+  \\
+  $d^{(l)}$
+  & Number of parameters in layer $l$; total number of parameters is $D =
+  \sum_{l=1}^L d^{(l)}$
+  \\
+  $\vtheta^{(l)} \in \sR^{d^{(l)}}$
+  & Parameter vector of layer $l$, potentially empty
+  for parameter-free layers like activations
+  \\
+  $h^{(l-1)}$
+  & Number of (hidden) inputs fed into layer $l$
+  \\
+  $M := h^{(0)},C := h^{(L)}$ & Input feature dimension, output dimension
+  (number of classes for classification)
+  \\
+  $\vz^{(l-1)} \in \sR^{h^{(l-1)}}$
+  & (Hidden) features fed into layer $l$ (output of layer $l-1$)
+  \\
+  $\vx := \vz^{(0)}, \vf := \vz^{(L)}$
+  & Input to the neural network, and its prediction for input $\vx$
+  \\
+  $f^{(l)}_{\vtheta^{(l)}}$
+  & Layer $l$ parameterized by $\vtheta^{(l)}$, mapping input
+  $\vz^{(l-1)}$ to output $\vz^{(l)}$
+  \\
+  $f_{\vtheta}:= f^{(L)}_{\vtheta^{(L)}} \circ \ldots \circ f^{(1)}_{\vtheta^{(1)}}$
+  & Sequential feedforward neural network parameterized by $\vtheta$, maps input $\vx$ to output $\vf$
+  \\
+  $\vtheta$
+  & Parameter vector, concatenation of parameters over layers
+  $\vtheta := (\vtheta^{(1)\top}, \dots, \vtheta^{(L)\top})^\top$
+  \\
+\end{longtable}
+
+\section*{Derivatives}
+
+$\grad{},\jac$ and $\gradsquared{}$ denote the gradient, Jacobian, and Hessian,
+respectively.
+
+\begin{longtable}{p{.2\linewidth}p{.8\linewidth}}
+  $\jac_{\va}\vb$ & Jacobian matrix of a vector $\vb$ \wrt a vector $\va$,
+  $[\jac_{\va}\vb]_{i,j} = \nicefrac{\partial [\vb]_i}{\partial [\va]_j}$
+  \\
+  $\jac_{\tA}\tB$ & Generalized Jacobian matrix for tensor variables,
+  $[\jac_{\tA}\tB]_{i,j} = \nicefrac{\partial[\vec{\tB}]_i}{\partial
+    [\vec{\tA}]_j}$
+  \\
+  $\grad{\va} b := (\jac_{\va}b)^{\top}$ & Gradient vector of a scalar $b$ \wrt
+  a vector $\va$, $[\grad{\va} b]_{i} = \nicefrac{\partial b}{\partial a_{i}}$
+  \\
+  $\gradsquared{\va} b$ & Hessian matrix of a scalar $b$ \wrt a vector $\va$,
+  $[\gradsquared{\va} b]_{i,j} = \nicefrac{\partial^2 b}{\partial [\va]_i
+    \partial [\va]_j}$ (symmetric)
+  \\
+  $\gradsquared{\va} \vb$, $\gradsquared{\tA} \tB$ & Generalized Hessian matrix
+  (in general not quadratic, hence not symmetric) of a vector $\vb$ \wrt a
+  vector $\va$, or more general tensor variables
+  \\
+  $\vg_{n}(\vtheta):= \grad{\vtheta} \ell_{n}(\vtheta)$ & Gradient of the loss
+  implied by sample $n$
+  \\
+  $\vg_{\sD}(\vtheta):= \grad{\vtheta} \gL_{\sD}(\vtheta)$ & Gradient of the
+  empirical risk implied by a dataset $\sD$
+  \\
+  $\vg_{\sB}(\vtheta):= \grad{\vtheta} \gL_{\sB}(\vtheta)$ & Mini-batch gradient
+  \\
+  $\mH_{n}(\vtheta):= \gradsquared{\vtheta} \ell_{n}(\vtheta)$ & Hessian of the
+  loss implied by sample $n$
+  \\
+  $\mH_{\sD}(\vtheta):= \gradsquared{\vtheta} \gL_{\sD}(\vtheta)$ & Hessian of
+  the empirical risk implied by a dataset $\sD$
+  \\
+  $\mH_{\sB}(\vtheta):= \gradsquared{\vtheta} \gL_{\sB}(\vtheta)$ & Mini-batch
+  Hessian
+  \\
+  $\mH^{(l)}(\vtheta^{(l)})$ or $\mH(\vtheta^{(l)})$ & The block in the Hessian
+  corresponding to layer $l$
+  \\
+  $\mG_{\sD}(\vtheta)$ & Generalized Gauss-Newton matrix on a dataset $\sD$
+  \\
+  $\mG^{(l)}(\vtheta^{(l)})$ or $\mG(\vtheta^{(l)})$ & The block in the
+  generalized Gauss-Newton matrix corresponding to layer $l$
+\end{longtable}
+
+\section*{Statistics}
+
+\begin{longtable}{p{.2\linewidth}p{.8\linewidth}}
+  $\gU(\{1, \dots, N\})$ & Uniform distribution over $\{ 1, \dots, N\}$
+  \\
+  $\gN(\giventhat{x}{\mu, \sigma^2})$ & Uni-variate normal/Gaussian distribution
+  of random variable $x$, with mean $\mu$, positive variance $\sigma^2$, and
+  density $\gN(\giventhat{x}{\mu, \sigma^2}) = \nicefrac{1}{\sigma \sqrt{2\pi}}
+  \exp[- \nicefrac{1}{2} ( \nicefrac{(x - \mu)}{\sigma} )^2 ]$
+  \\
+  $\gN(\giventhat{\vx}{\vmu, \mSigma})$ & Multi-variate normal/Gaussian
+  distribution of random vector $\vx$ with mean vector $\vmu$, PSD covariance
+  matrix $\mSigma$, and density $\gN(\giventhat{\vx}{\vmu, \mSigma}) =
+  \nicefrac{1}{( \sqrt{2\pi \det \mSigma})} \exp[- \nicefrac{1}{2} (\vx -
+  \vmu)^{\top}\mSigma^{-1}(\vx - \vmu) ] $
+  \\
+  $\Cat(\giventhat{c}{\vp})$ & Multinomial/Categorical distribution with
+  probabilities $\vp$ for categories $c$
+\end{longtable}
+
+\section*{Miscellaneous}
+
+\begin{longtable}{p{.2\linewidth}p{.8\linewidth}}
+  $\log$ & The natural logarithm (base $\mathrm{e}$, \ie $\log(\mathrm{e}) = 1$)
+  \\
+  $\onehot(c)$ & One-hot vector of class $c$ with
+  $\onehot(c) = \delta_{i,c}$
+  \\
+  $\softmax(\va)$ & Softmax probabilities of the logits $\va$,
+  $[\softmax(\va)]_c = \nicefrac{\exp(\eva_{c})}{\sum_{i=1} \exp(\eva_{i})}\,.$
+  \\
+  $\delta_{i,j}$, $\delta(\vx - \va)$ & Kronecker delta ($\delta_{i,i} = 1$ and $\delta_{i,j\neq i} =
+  0$), Dirac delta distribution
+  \\
+  $(\sX \to \sY)$ & Signature of a function that maps between $\sX$ and $\sY$
+  \\
+  $\{ \vx_n \}$ or $\{\vx_n\}_n$ & A set/collection of vectors $\vx_1, \vx_2, \dots$ over the
+  index set implied by $n$
+  % \\
+  % $\mathrm{id}$ & Identity operation
+  \\
+  $\vehat_i$
+  &
+  Unit vector in direction $i$, \ie $\vehat_{i} = \onehot(i)$
+  \\
+  $\vone_{m}$
+  &
+  An $m$-dimensional vector containing ones everywhere
+  \\
+  $\log(\va), \exp(\va)$
+  &
+  Elementwise natural logarithm and exponential function of a vector
+  \\
+  $m_{\vtheta_t}(\vtheta)$
+  &
+  Local approximation of the loss in around $\vtheta_t$
+  \\
+\end{longtable}
+
+\section*{Acronyms \& Abbreviations}
+
+\begin{longtable}{p{.2\linewidth}p{.8\linewidth}}
+  \Eg or \eg  & For example (\emph{exempli gratia})
+  \\
+  \Etc or \etc & And so on (\emph{et cetera})
+  \\
+  \Ie or \ie & That is (\emph{id est})
+  \\
+  \Iid or \iid & Independent and identically distributed
+  \\
+  \Wrt or \wrt & With respect to
+  \\
+  AD & Automatic differentiation
+  \\
+  API & Application Programming Interface
+  \\
+  BDA & Block diagonal approximation
+  \\
+  CG & Conjugate gradients
+  \\
+  CNN & Convolutional neural network
+  \\
+  CPU & Central processing unit
+  \\
+  DNN & Deep neural network
+  \\
+  DP & Differential privacy
+  \\
+  FCNN & Fully-connected neural network
+  \\
+  GGN & Generalized Gauss-Newton (matrix)
+  \\
+  GN & Gauss-Newton (matrix)
+  \\
+  GPU & Graphics processing unit
+  \\
+  HBP & Hessian backpropagation
+  \\
+  JMP & Jacobian-matrix product
+  \\
+  JVP & Jacobian-vector product
+  \\
+  KFAC & Kronecker-factored curvature
+  \\
+  KFC & Kronecker factors for convolution
+  \\
+  KFLR & Kronecker-factored low rank
+  \\
+  KFRA & Kronecker-factored recursive approximation
+  \\
+  MAP & Maximum a posteriori (estimation)
+  \\
+  MC & Monte Carlo
+  \\
+  MJP & Matrix-Jacobian product
+  \\
+  ML & Machine learning
+  \\
+  MLE & Maximum likelihood estimation
+  \\
+  MLP & Multi-layer perceptron
+  \\
+  NGD & Natural gradient descent
+  \\
+  PCH & Positive-curvature Hessian
+  \\
+  PD & Positive definite
+  \\
+  PSD & Positive semi-definite
+  \\
+  ResNet & Residual (neural) network
+  \\
+  SNR & Signal-to-noise ratio
+  \\
+  TPU & Tensor processing unit
+  \\
+  VJP & Vector-Jacobian product
+\end{longtable}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

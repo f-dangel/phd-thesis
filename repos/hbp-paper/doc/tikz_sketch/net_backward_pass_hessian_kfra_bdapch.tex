@@ -1,0 +1,53 @@
+% HBP scheme for KFRA and BDA-PCH
+
+\begin{tikzpicture}
+    % first layers
+    \node (in1)
+        [inner sep=0]
+        {\tikz \drawMessagesWithArrows{$z^{(0)}$}{ }{ }{\hNodeDistance};};
+    \node (layer1)
+        [anchor=south west, inner sep=0]
+         at (in1.south east)
+         {\tikz \drawModuleWithParams{$f^{(1)}$}{16}{$\theta^{(1)}$}{$\delta \theta^{(1)}$}{$\HeCal \theta^{(1)}$};};
+    \node (out1)
+        [inner sep=0, anchor=south west]
+        at (layer1.south east)
+        {\tikz \drawMessagesWithArrows{$z^{(1)}$}{$\delta z^{(1)}$}{$\HeCal  z^{(1)}$}{\hNodeDistance};};
+    \node (layer2)
+        [inner sep=0pt, anchor=south west]
+        at (out1.south east)
+        {\tikz\drawModuleNoParams{$\phi$}{5};};
+    \node (layer3)
+        [anchor=south west, inner sep=0]
+        at (layer2.south east)
+        {\tikz \drawModuleWithParams{$f^{(2)}$}{16}{$\theta^{(2)}$}{$\delta \theta^{(2)}$}{$\HeCal \theta^{(2)}$};};
+    \node (out3)
+        [inner sep=0, anchor=south west]
+        at (layer3.south east)
+        {\tikz \drawMessagesWithArrows{$z^{(2)}$}{$\delta z^{(2)}$}{$\HeCal  z^{(2)}$}{\hNodeDistance};};
+    \node (dots) [xshift=1.5ex, inner sep=0pt, anchor=west] at (out3.east) {$\dots$};
+    
+    % layers after dot
+    \node (layer4)
+        [xshift=7ex, inner sep=0pt, anchor=south west]
+        at (out3.south east)
+        {\tikz\drawModuleNoParams{$\phi$}{5};};	
+    \node (layer5)
+        [anchor=south west, inner sep=0]
+        at (layer4.south east)
+        {\tikz \drawModuleWithParams{$f^{(\ell)}$}{16}{$\theta^{(\ell)}$}{$\delta \theta^{(\ell)}$}{$\HeCal \theta^{(\ell)}$};};
+    \node (out4)
+        [inner sep=0, anchor=south west]
+        at (layer5.south east)
+         {\tikz \drawMessagesWithArrows{$z^{(\ell)}$}{$\delta z^{(\ell)}$}{$\HeCal  z^{(\ell)}$}{\hNodeDistance};};
+    
+    % loss layer
+    \node (lossLayer)
+        [inner sep=0pt, anchor=south west]
+        at (out4.south east)
+        {\tikz\drawModuleNoParams{$E$}{5};};
+    \node (loss)
+        [inner sep=0, anchor=south west]
+        at (lossLayer.south east)
+        {\tikz \drawMessagesWithArrows{$E$}{ }{ }{\hNodeDistance};};	
+\end{tikzpicture}	

@@ -1,0 +1,164 @@
+\input{figures/vivit/performance_plot_command}
+
+% ---------------------------------
+% FMNIST 2C2D
+% ---------------------------------
+
+\tikzexternalenable
+\plotViViTPerformance{fmnist}{2c2d}{cuda}{1}{ \textbf{GPU memory and run time
+    performance for the \twoctwod architecture on \fmnist.} Left and right
+  columns show results with the full network's \ggn ($D = 3,\!274,\!634$,
+  $C=10$) and a per-layer block-diagonal approximation, respectively.
+  \subfigref{vivit::subfig:performance-fmnist-2c2d-cuda-1},\subfigref{vivit::subfig:performance-fmnist-2c2d-cuda-2}
+  Critical batch sizes $N_{\text{crit}}$ for computing eigenvalues and the top
+  eigenpair.
+  \subfigref{vivit::subfig:performance-fmnist-2c2d-cuda-3},\subfigref{vivit::subfig:performance-fmnist-2c2d-cuda-4}
+  Run time comparison with a power iteration for extracting the $k$ leading
+  eigenpairs using a mini-batch of size $N=128$.}
+\tikzexternaldisable
+
+\tikzexternalenable
+\plotViViTPerformance{fmnist}{2c2d}{cpu}{1}{ \textbf{CPU memory and run time
+    performance for the \twoctwod architecture on \fmnist.} Left and right
+  columns show results with the full network's \ggn ($D = 3,\!274,\!634$,
+  $C=10$) and a per-layer block-diagonal approximation, respectively.
+  \subfigref{vivit::subfig:performance-fmnist-2c2d-cpu-1},\subfigref{vivit::subfig:performance-fmnist-2c2d-cpu-2}
+  Critical batch sizes $N_{\text{crit}}$ for computing eigenvalues and the top
+  eigenpair.
+  \subfigref{vivit::subfig:performance-fmnist-2c2d-cpu-3},\subfigref{vivit::subfig:performance-fmnist-2c2d-cpu-4}
+  Run time comparison with a power iteration for extracting the $k$ leading
+  eigenpairs using a mini-batch of size $N=128$.}
+\tikzexternaldisable
+
+% ---------------------------------
+% CIFAR10 3C3D
+% ---------------------------------
+
+\tikzexternalenable
+\plotViViTPerformance{cifar10}{3c3d}{cuda}{1}{ \textbf{GPU
+    memory and run time performance for the \threecthreed architecture on
+    \cifarten.} Left and right columns show results with the full network's \ggn
+  ($D = 895,\!210$, $C=10$) and a per-layer block-diagonal approximation,
+  respectively.
+  \subfigref{vivit::subfig:performance-cifar10-3c3d-cuda-1},\subfigref{vivit::subfig:performance-cifar10-3c3d-cuda-2}
+  Critical batch sizes $N_{\text{crit}}$ for computing eigenvalues and the top
+  eigenpair.
+  \subfigref{vivit::subfig:performance-cifar10-3c3d-cuda-3},\subfigref{vivit::subfig:performance-cifar10-3c3d-cuda-4}
+  Run time comparison with a power iteration for extracting the $k$ leading
+  eigenpairs using a mini-batch of size $N=128$.}
+\tikzexternaldisable
+
+\tikzexternalenable
+\plotViViTPerformance{cifar10}{3c3d}{cpu}{1}{ \textbf{CPU
+    memory and run time performance for the \threecthreed architecture on
+    \cifarten.} Left and right columns show results with the full network's \ggn
+  ($D = 895,\!210$, $C=10$) and a per-layer block-diagonal approximation,
+  respectively.
+  \subfigref{vivit::subfig:performance-cifar10-3c3d-cpu-1},\subfigref{vivit::subfig:performance-cifar10-3c3d-cpu-2}
+  Critical batch sizes $N_{\text{crit}}$ for computing eigenvalues and the top
+  eigenpair.
+  \subfigref{vivit::subfig:performance-cifar10-3c3d-cpu-3},\subfigref{vivit::subfig:performance-cifar10-3c3d-cpu-4}
+  Run time comparison with a power iteration for extracting the $k$ leading
+  eigenpairs using a mini-batch of size $N=128$.}
+\tikzexternaldisable
+
+% ---------------------------------
+% CIFAR10 RESNET32
+% ---------------------------------
+
+\tikzexternalenable
+\plotViViTPerformance{cifar10}{resnet32}{cuda}{1}{ \textbf{GPU
+    memory and run time performance for the \resnetthirtytwo architecture on \cifarten.}
+  Left and right columns show results with the full network's \ggn ($D =
+  464,\!154$, $C=10$) and a per-layer block-diagonal approximation,
+  respectively.
+  \subfigref{vivit::subfig:performance-cifar10-resnet32-cuda-1},\subfigref{vivit::subfig:performance-cifar10-resnet32-cuda-2}
+  Critical batch sizes $N_{\text{crit}}$ for computing eigenvalues and the top
+  eigenpair.
+  \subfigref{vivit::subfig:performance-cifar10-resnet32-cuda-3},\subfigref{vivit::subfig:performance-cifar10-resnet32-cuda-4}
+  Run time comparison with a power iteration for extracting the $k$ leading
+  eigenpairs using a mini-batch of size $N=128$. }
+\tikzexternaldisable
+
+\tikzexternalenable
+\plotViViTPerformance{cifar10}{resnet32}{cpu}{0}{ \textbf{CPU
+    memory and run time performance for the \resnetthirtytwo architecture on \cifarten.}
+  Left and right columns show results with the full network's \ggn ($D =
+  464,\!154$, $C=10$) and a per-layer block-diagonal approximation,
+  respectively.
+  % \subfigref{vivit::subfig:performance-cifar10-resnet32-cpu-1},\subfigref{vivit::subfig:performance-cifar10-resnet32-cpu-2}
+  % Critical batch sizes $N_{\text{crit}}$ for computing eigenvalues and the top
+  % eigenpair.
+  \subfigref{vivit::subfig:performance-cifar10-resnet32-cpu-3},\subfigref{vivit::subfig:performance-cifar10-resnet32-cpu-4}
+  Run time comparison with a power iteration for extracting the $k$ leading
+  eigenpairs using a mini-batch of size $N=128$. }
+\tikzexternaldisable
+
+% ---------------------------------
+% CIFAR10 RESNET56
+% ---------------------------------
+
+\tikzexternalenable
+\plotViViTPerformance{cifar10}{resnet56}{cuda}{1}{\textbf{GPU memory and run
+    time performance for the \resnetfiftysix architecture on \cifarten.} Left and right
+  columns show results with the full network's \ggn ($D = 853,\!018$, $C=10$)
+  and a per-layer block-diagonal approximation, respectively.
+  % \subfigref{vivit::subfig:performance-cifar10-resnet56-cuda-1},\subfigref{vivit::subfig:performance-cifar10-resnet56-cuda-2}
+  % Critical batch sizes $N_{\text{crit}}$ for computing eigenvalues and the top
+  % eigenpair.
+  \subfigref{vivit::subfig:performance-cifar10-resnet56-cuda-3},\subfigref{vivit::subfig:performance-cifar10-resnet56-cuda-4}
+  Run time comparison with a power iteration for extracting the $k$ leading
+  eigenpairs using a mini-batch of size $N=128$.}
+\tikzexternaldisable
+
+\tikzexternalenable
+\plotViViTPerformance{cifar10}{resnet56}{cpu}{0}{\textbf{CPU memory and run
+    time performance for the \resnetfiftysix architecture on \cifarten.} Left and right
+  columns show results with the full network's \ggn ($D = 853,\!018$, $C=10$)
+  and a per-layer block-diagonal approximation, respectively. (a, b)
+  % \subfigref{vivit::subfig:performance-cifar10-resnet56-cpu-1},\subfigref{vivit::subfig:performance-cifar10-resnet56-cpu-2}
+  % Critical batch sizes $N_{\text{crit}}$ for computing eigenvalues and the top
+  % eigenpair.
+  \subfigref{vivit::subfig:performance-cifar10-resnet56-cpu-3},\subfigref{vivit::subfig:performance-cifar10-resnet56-cpu-4}
+  Run time comparison with a power iteration for extracting the $k$ leading
+  eigenpairs using a mini-batch of size $N=128$.}
+\tikzexternaldisable
+
+% ---------------------------------
+% CIFAR100 ALLCNNC
+% ---------------------------------
+
+\tikzexternalenable
+\plotViViTPerformance{cifar100}{allcnnc}{cuda}{1}{
+  \textbf{GPU memory and run time performance for the \allcnnc
+    architecture on \cifarhun.} Left and right columns show results with the
+  full network's \ggn ($D = 1,\!387,\!108, C=100$) and a per-layer
+  block-diagonal approximation, respectively.
+  \subfigref{vivit::subfig:performance-cifar100-allcnnc-cuda-1},\subfigref{vivit::subfig:performance-cifar100-allcnnc-cuda-2}
+  Critical batch sizes
+  $N_{\text{crit}}$ for computing eigenvalues and the top eigenpair.
+  \subfigref{vivit::subfig:performance-cifar100-allcnnc-cuda-3},\subfigref{vivit::subfig:performance-cifar100-allcnnc-cuda-4}
+  Run time comparison with a power iteration for extracting the $k$ leading
+  eigenpairs using a mini-batch of size $N=64$.
+}
+\tikzexternaldisable
+
+\tikzexternalenable
+\plotViViTPerformance{cifar100}{allcnnc}{cpu}{1}{
+  \textbf{CPU memory and run time performance for the \allcnnc
+    architecture on \cifarhun.} Left and right columns show results with the
+  full network's \ggn ($D = 1,\!387,\!108, C=100$) and a per-layer
+  block-diagonal approximation, respectively.
+  \subfigref{vivit::subfig:performance-cifar100-allcnnc-cpu-1},\subfigref{vivit::subfig:performance-cifar100-allcnnc-cpu-2}
+  Critical batch sizes
+  $N_{\text{crit}}$ for computing eigenvalues and the top eigenpair.
+  \subfigref{vivit::subfig:performance-cifar100-allcnnc-cpu-3},\subfigref{vivit::subfig:performance-cifar100-allcnnc-cpu-4}
+  Run time comparison with a power iteration for extracting the $k$ leading
+  eigenpairs using a mini-batch of size $N=64$.
+}
+\tikzexternaldisable
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

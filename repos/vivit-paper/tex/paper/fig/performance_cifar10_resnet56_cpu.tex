@@ -1,0 +1,127 @@
+\begin{figure*}[tb]
+  \centering
+  \begin{minipage}[t]{0.49\linewidth}
+    \centering
+    \textbf{Full network}
+    % \vspace{-3ex}
+
+    % \begin{minipage}[t]{0.49\linewidth}
+    %   \centering
+
+    %   \begin{flushleft}
+    %     \vspace{1ex}
+    %     (a)
+    %   \end{flushleft}
+
+    %   \vspace{-1.0\baselineskip}
+    %   \begin{small}
+    %     $N_{\text{crit}}$ (eigenvalues)
+    %   \end{small}
+    %   \vspace{0.15\baselineskip}
+
+    %   \begin{small}
+    %     % \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/evals/tab_cifar10_resnet56_cpu_one_group.tex}
+    %   \end{small}
+    % \end{minipage}
+    % \hfill
+    % \begin{minipage}[t]{0.49\linewidth}
+    %   \centering
+
+    %   \begin{flushleft}
+    %     \vspace{1ex}
+    %     \phantom{(a)}
+    %   \end{flushleft}
+    %   \vspace{-1.0\baselineskip}
+
+    %   \begin{small}
+    %     $N_{\text{crit}}$ (top eigenpair)
+    %   \end{small}
+    %   \vspace{0.15\baselineskip}
+
+    %   \begin{small}
+    %     % \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/evecs/tab_cifar10_resnet56_cpu_one_group.tex}
+    %   \end{small}
+    % \end{minipage}
+
+    \begin{flushleft}
+      \vspace{1ex}
+      (c)
+    \end{flushleft}
+
+    % load "performancedefault" style
+    \input{fig/performance_default_style.tex}
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={performancedefault}}
+    \input{../../fig/exp10_performance_ggn_evals/fig/time/evecs/cifar10_resnet56_cpu_one_group.tex}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.49\linewidth}
+    \centering
+    \textbf{Block-diagonal approximation}
+    % \vspace{-3ex}
+
+    % \begin{minipage}[t]{0.49\linewidth}
+    %   \centering
+
+    %   \begin{flushleft}
+    %     \vspace{1ex}
+    %     (b)
+    %   \end{flushleft}
+
+    %   \vspace{-1.0\baselineskip}
+    %   \begin{small}
+    %     $N_{\text{crit}}$ (eigenvalues)
+    %   \end{small}
+    %   \vspace{0.15\baselineskip}
+
+    %   \begin{small}
+    %     % \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/evals/tab_cifar10_resnet56_cpu_layerwise_group.tex}
+    %   \end{small}
+    % \end{minipage}
+    % \hfill
+    % \begin{minipage}[t]{0.49\linewidth}
+    %   \centering
+
+    %   \begin{flushleft}
+    %     \vspace{1ex}
+    %     \phantom{(a)}
+    %   \end{flushleft}
+    %   \vspace{-1.0\baselineskip}
+
+    %   \begin{small}
+    %     $N_{\text{crit}}$ (top eigenpair)
+    %   \end{small}
+    %   \vspace{0.15\baselineskip}
+
+    %   \begin{small}
+    %     % \input{../../fig/exp10_performance_ggn_evals/fig/N_crit/evecs/tab_cifar10_resnet56_cpu_layerwise_group.tex}
+    %   \end{small}
+    % \end{minipage}
+
+    \begin{flushleft}
+      \vspace{1ex}
+      (d)
+    \end{flushleft}
+
+    % load "performancedefault" style
+    \input{fig/performance_default_style.tex}
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={performancedefault}}
+    \input{../../fig/exp10_performance_ggn_evals/fig/time/evecs/cifar10_resnet56_cpu_layerwise_group.tex}
+  \end{minipage}
+
+  \vspace{-2ex}
+  \caption{\textbf{CPU memory and run time performance for the \resnetfiftysix
+      architecture on \cifarten:} Left and right columns show results with the
+    full network's \ggn ($D = 853,\!018$, $C=10$) and a per-layer block-diagonal
+    approximation, respectively.
+    % (a, b) Critical batch sizes $N_{\text{crit}}$ for computing eigenvalues and the top eigenpair.
+    (c, d) Run time comparison with a power iteration for extracting the $k$
+    leading eigenpairs using a mini-batch of size $N=128$.}
+  \label{fig:performance-cifar10-resnet56-cpu}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

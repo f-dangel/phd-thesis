@@ -1,0 +1,57 @@
+% HBP scheme for KFRA and BDA-PCH
+
+\begin{tikzpicture}
+    % first layers
+    \node (in1)
+        [inner sep=0]
+        {\tikz \drawMessagesWithArrows{$\vz^{(0)}$}{ }{ }{\hNodeDistance};};
+    \node (layer1)
+        [anchor=south west, inner sep=0]
+         at (in1.south east)
+         {\tikz \drawModuleWithParams{$f^{(1)}_{\vtheta^{(1)}}$}{16}{$\vtheta^{(1)}$}{$\grad{\vtheta^{(1)}}\ell$}{$\gradsquared{\vtheta^{(1)}}\ell$};};
+    \node (out1)
+        [inner sep=0, anchor=south west]
+        at (layer1.south east)
+        {\tikz \drawMessagesWithArrows{$\vz^{(1)}$}{$\grad{\vz^{(1)}}\ell$}{$\gradsquared{\vz^{(1)}}\ell$}{\hNodeDistance};};
+    \node (layer2)
+        [inner sep=0pt, anchor=south west]
+        at (out1.south east)
+        {\tikz\drawModuleNoParams{$\vphi$}{5};};
+    \node (layer3)
+        [anchor=south west, inner sep=0]
+        at (layer2.south east)
+        {\tikz \drawModuleWithParams{$f^{(2)}_{\vtheta^{(2)}}$}{16}{$\vtheta^{(2)}$}{$\grad{\vtheta^{(2)}}\ell$}{$\gradsquared{\vtheta^{(2)}}\ell$};};
+    \node (out3)
+        [inner sep=0, anchor=south west]
+        at (layer3.south east)
+        {\tikz \drawMessagesWithArrows{$\vz^{(2)}$}{$\grad{\vz^{(2)}}\ell$}{$\gradsquared{\vz^{(2)}}\ell$}{\hNodeDistance};};
+    \node (dots) [xshift=1.5ex, inner sep=0pt, anchor=west] at (out3.east) {$\dots$};
+
+    % layers after dot
+    \node (layer4)
+        [xshift=7ex, inner sep=0pt, anchor=south west]
+        at (out3.south east)
+        {\tikz\drawModuleNoParams{$\vphi$}{5};};
+    \node (layer5)
+        [anchor=south west, inner sep=0]
+        at (layer4.south east)
+        {\tikz \drawModuleWithParams{$f^{(L)}_{\vtheta^{(L)}}$}{16}{$\vtheta^{(L)}$}{$\grad{\vtheta^{(L)}}\ell$}{$\gradsquared{\vtheta^{(L)}}\ell$};};
+    \node (out4)
+        [inner sep=0, anchor=south west]
+        at (layer5.south east)
+        {\tikz \drawMessagesWithArrows{$\vz^{(L)}$}{$\grad{\vz^{(L)}}\ell$}{$\gradsquared{\vz^{(L)}}\ell$}{\hNodeDistance};};
+
+    % loss layer
+    \node (lossLayer)
+        [inner sep=0pt, anchor=south west]
+        at (out4.south east)
+        {\tikz\drawModuleNoParams{$\ell$}{5};};
+    \node (loss)
+        [inner sep=0, anchor=south west]
+        at (lossLayer.south east)
+        {\tikz \drawMessagesWithArrows{$\ell$}{ }{ }{\hNodeDistance};};
+\end{tikzpicture}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

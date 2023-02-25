@@ -1,0 +1,139 @@
+\subsection{Linear Layer (Matrix-vector Multiplication, Matrix-Matrix
+  Multiplication, Addition)}\label{hbp::subsec:linearLayerBackwardPass}
+
+Consider the function $\vf$ of a module applying an affine transformation to a
+vector. Apart from the input $\vx$, additional parameters of the module are given
+by the weight matrix $\mW$ and the bias term $\vb$,
+\begin{align*}
+  \vf:\quad \mathbb{R}^n \times \mathbb{R}^{m\times n} \times \mathbb{R}^m &\to \mathbb{R}^m
+  \\
+  (\vx, \mW, \vb) &\mapsto \vz = \mW \vx + \vb\,.
+\end{align*}
+To compute the Jacobians \wrt each variable, we use the differentials
+\begin{align*}
+  \diff \vz(\vx) &= \mW\diff \vx\,,
+  \\
+  \diff \vz(\vb) &= \diff \vb\,,
+  \\
+  \diff \vz(\mW) &= (\diff \mW) \vx
+                   \ \implies\ \diff \vec \vz(\mW) = \left( \vx^\top \otimes \mI_m\right) \vec (\diff \mW)\,,
+\end{align*}
+using \Cref{hbp::equ:vectorization} to establish the implication in the
+last line. With the \emph{first identification tables} provided in
+\citet[Chapter 9.6]{magnus1999MatrixDifferentialCalculus}, the Jacobians can be
+read off from the differentials as
+\begin{math}
+  \jac_{\vx} \vz = \mW\,,
+  \jac_{\vb} \vz = \mI_m\,,
+  \jac_{\mW} \vz = \vx^\top \otimes \mI_m\,.
+\end{math}
+All second module derivatives $\gradsquared{\vx}\vz$, $\gradsquared{\mW}\vz$,
+and $\gradsquared{\vb}\vz$ vanish since $\vf$ is linear in all inputs. Inserting
+the Jacobians into \Cref{hbp::equ:hessianBackPropagation} results in
+\begin{subequations}
+  \label{hbp::equ:linearHessianBackpropagation}
+  \begin{alignat}{2}
+    \gradsquared{\vx}\ell
+    &=
+      \mW^\top \left(\gradsquared{\vz}\ell\right) \mW\,,
+    \\
+    \gradsquared{\vb}\ell
+    &=
+      \gradsquared{\vz}\ell\,,
+      \label{hbp::equ:biasHessianAddition}
+    \\
+    \begin{split}
+      \gradsquared{\mW}\ell
+      &=
+        \left( \vx^\top \otimes \mI_m \right)^\top \left(\gradsquared{\vz}\ell\right) \left( x^\top
+        \otimes \mI_m\right)
+      \\
+      &= \vx \vx^\top \otimes \gradsquared{\vz}\ell = \vx \otimes \vx^\top
+        \otimes \gradsquared{\vz}\ell\,.
+    \end{split}
+  \end{alignat}
+\end{subequations}
+The HBP relations for matrix-vector multiplication and addition listed in
+\Cref{hbp::table:backpropEquations} are special cases of
+\Cref{hbp::equ:linearHessianBackpropagation}. HBP for matrix-matrix multiplication is
+derived in a completely analogous fashion.
+
+\subsection{Elementwise Activation}\label{hbp::subsec:activationBackwardPass}
+
+Next, consider the elementwise application of a nonlinear function $\phi$,
+\begin{align*}
+  \vphi:\quad\mathbb{R}^m &\to \mathbb{R}^m
+  \\
+  \vx &\mapsto \vz=\vphi(\vx) \quad \text{such that}\quad  [\vphi(\vx)]_k = \phi([\vx]_k)\,,
+\end{align*}
+For the matrix differential \wrt $\vx$, this implies
+\begin{align*}
+  \diff \vphi(\vx) = \vphi'(\vx) \odot \diff \vx = \diag\left[\vphi'(\vx)\right] \diff \vx\,,
+\end{align*}
+where $\vphi'$ means elementwise application of $\phi'$, and consequently, the
+Jacobian is a diagonal matrix
+\begin{math}
+  \jac_{\vx} \vphi(\vx) = \diag\left[\vphi'(\vx)\right]\,.
+\end{math}
+For the Hessian, note that the function value $\phi_{k}(\vx) := [\vphi(\vx)]_k$
+only depends on $x_k := [\vx]_k$ and thus
+\begin{math}
+  \gradsquared{\vx} \phi_k = \phi''(x_k) \vehat_k \vehat_k^\top\,,
+\end{math}
+with the one-hot unit vector $\vehat_k \in \mathbb{R}^m$ in coordinate direction
+$k$. Inserting all quantities into \Cref{hbp::equ:hessianBackPropagation}
+yields
+\begin{align}
+  \label{hbp::equ:nonlinearHessianBackpropagation}
+  \begin{split}
+    \gradsquared{\vx}\ell
+    &=
+      \diag\left[\vphi'(\vx)\right]
+      \left(\gradsquared{\vz}\ell\right)
+      \diag\left[\vphi'(\vx)\right]
+      +
+      \sum_k \phi''(x_k) \vehat_k \vehat_k^\top \left(\grad{z_k}\ell\right)
+    \\
+    &=
+      \diag\left[\vphi'(\vx)\right]
+      \left(\gradsquared{\vz}\ell\right)
+      \diag\left[\vphi'(\vx)\right]
+      +
+      \diag\left[\vphi''(\vx) \odot \grad{\vz}\ell \right]\,,
+  \end{split}
+\end{align}
+where $\vphi''$ means elementwise application of $\phi''$.
+
+\subsection{Skip-connection}\label{hbp::subsec:skipconnectionBackwardPass}
+Residual learning \cite{he2016deep} uses skip-connection units to
+facilitate the training of DNNs. In its simplest form, the
+mapping $\vf: \mathbb{R}^m \to \mathbb{R}^m$ reads
+\begin{align*}
+  \vz(\vx,\vtheta) = \vx + \vs(\vx, \vtheta)\,,
+\end{align*}
+with a potentially nonlinear operation $(\vx,\vtheta) \mapsto \vs$. The input
+and parameter Jacobians are given by $\jac_{\vz} \vz(x) = \mI_m +
+\jac_{\vx}\vs(\vx)$ and $\jac_{\vtheta}\vz(\vtheta) = \jac_{\vtheta}
+\vs(\vtheta)$. Using \Cref{hbp::equ:hessianBackPropagation}, one finds
+\begin{align*}
+  \gradsquared{\vx}\ell
+  &=
+    \left[ \mI_m + \jac_{\vx} \vs(\vx)\right]^\top
+    \left(\gradsquared{\vz}\ell\right)
+    \left[ \mI_m + \jac_{\vx} \vs(\vx) \right]
+    +
+    \sum_k \left[ \gradsquared{\vx} s_k(\vx)\right] \left(\grad{z_k}\ell\right)\,,
+  \\
+  \gradsquared{\vtheta}\ell
+  &=
+    \left[\jac_{\vtheta} \vs(\vtheta)\right]^\top
+    \left(\gradsquared{\vz}\ell\right)
+    \left[\jac_{\vtheta} \vs(\vtheta) \right]
+    +
+    \sum_k \left[\gradsquared{\vtheta} s_k(\vtheta)\right] \left(\grad{z_k}\ell\right)\,.
+\end{align*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

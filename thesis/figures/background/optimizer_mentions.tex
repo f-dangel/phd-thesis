@@ -1,0 +1,94 @@
+\begin{subfigure}[t]{0.66\linewidth}
+  \centering
+  \caption{}\label{subfig:background::ArxivMentions1}
+  \vspace{-1ex}
+  \pgfkeys{/pgfplots/zmystyle/.style={
+      width = 1.0\linewidth,
+      height = 0.6\linewidth,
+      every axis plot/.append style={line width = 1.5pt},
+      tick pos = left,
+      ylabel near ticks,
+      xlabel near ticks,
+      xtick align = inside,
+      ytick align = inside,
+      legend cell align = left,
+      legend style = {
+        fill opacity = 0.7,
+        text opacity = 1,
+        at={(1, 1.025)},
+        anchor = south east,
+        font = \footnotesize,
+        legend columns = 4,
+        column sep=0.25cm,
+      },
+      % Change double bar legend symbols to circles
+      % (https://tex.stackexchange.com/a/224677)
+      ybar legend/.style={
+        legend image code/.code={
+          \draw [fill=#1,draw = none, line width=0pt] (0, 0) circle (0.8ex); },},
+      xticklabel style = {
+        font = \footnotesize,
+        /pgf/number format/1000 sep=,
+      },
+      xlabel style = {font = \footnotesize},
+      axis line style = {black},
+      yticklabel style = {font = \footnotesize},
+      ylabel style = {font = \footnotesize},
+      title style = {font = \footnotesize},
+      grid = major,
+      grid style = {dashed}
+    }
+  }
+  \tikzexternalenable
+  \input{../repos/schmidt2021descending/outputs/arxiv_plot}
+  \tikzexternaldisable
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.33\linewidth}
+  \centering
+  \caption{}\label{subfig:background::ArxivMentions2}
+  \vspace{-1ex}
+  \pgfkeys{/pgfplots/zmystyle/.style={
+      width = 1.0\linewidth,
+      height = 1.595\linewidth,
+      every axis plot/.append style={line width = 1.5pt},
+      tick pos = left,
+      ylabel near ticks,
+      xlabel near ticks,
+      xtick align = inside,
+      ytick align = inside,
+      legend cell align = left,
+      legend style = {
+        fill opacity = 0,
+        text opacity = 0,
+        draw opacity = 0,
+        at={(1, 1.025)},
+        anchor = south west,
+        font = \footnotesize,
+        legend columns = 4,
+        % legend image post style={opacity = 1, yscale = 1.1, line width=-1pt},
+        column sep=0.25cm,
+      },
+      xticklabel style = {
+        font = \footnotesize,
+        /pgf/number format/1000 sep=,
+      },
+      xlabel style = {font = \footnotesize},
+      axis line style = {black},
+      yticklabel style = {font = \footnotesize},
+      ylabel style = {font = \footnotesize},
+      title style = {font = \footnotesize},
+      grid = major,
+      grid style = {dashed}
+    }
+  }
+  \vspace{-2.15cm}
+  \tikzexternalenable
+  \input{../repos/schmidt2021descending/outputs/arxiv_plot_normalized}
+  \tikzexternaldisable
+\end{subfigure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

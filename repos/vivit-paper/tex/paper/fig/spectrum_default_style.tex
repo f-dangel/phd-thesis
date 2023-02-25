@@ -1,0 +1,63 @@
+% defines the pgfplots styles "spectrumdefault", "spectrumdefaultleft",
+% "spectrumdefaultcenter", "spectrumdefaultright"
+% pgfplots style "spectrumdefault"
+\pgfkeys{/pgfplots/spectrumdefault/.style={
+    width=1.38\linewidth,
+    height=\goldenRatio*1.38\linewidth,
+    every axis plot/.append style={line width = 1.2pt},
+    every axis plot post/.append style={
+      mark size=1, mark options={opacity=0.3}
+    },
+    tick pos = left,
+    xmajorticks = true,
+    ymajorticks = true,
+    ylabel near ticks,
+    xlabel near ticks,
+    xtick align = inside,
+    ytick align = inside,
+    legend cell align = left,
+    legend columns = 1,
+    legend pos = north west,
+    legend style = {
+      fill opacity = 0.9,
+      text opacity = 1,
+      font = \small,
+    },
+    xticklabel style = {font = \small, inner xsep = 0ex},
+    xlabel style = {font = \small},
+    axis line style = {black},
+    yticklabel style = {font = \small, inner ysep = 0ex},
+    ylabel style = {font = \small, inner ysep = 0ex},
+    title style = {font = \small, inner ysep = 0ex, yshift = -0.75ex},
+    grid = major,
+    grid style = {dashed}
+  }
+}
+% pgfplots style for left "spectrumdefaultleft"
+\pgfkeys{/pgfplots/spectrumdefaultleft/.style={
+    spectrumdefault,
+    title=\empty,
+    ymax=3e-4,
+    xlabel=\phantom{eigenvalues},
+  }}
+% pgfplots style for center "spectrumdefaultcenter"
+\pgfkeys{/pgfplots/spectrumdefaultcenter/.style={
+    spectrumdefault,
+    ylabel=\empty,
+    yticklabels=\empty,
+    title=\empty,
+    ymax=3e-4,
+  }}
+% pgfplots style for right "spectrumdefaultright"
+\pgfkeys{/pgfplots/spectrumdefaultright/.style={
+    spectrumdefault,
+    ylabel=\empty,
+    yticklabels=\empty,
+    title=\empty,
+    ymax=3e-4,
+    xlabel=\phantom{eigenvalues},
+  }}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

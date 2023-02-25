@@ -1,0 +1,100 @@
+%========== mb and further approximations versus full-batch GGN
+\subsubsection{Procedure (1)}
+
+We use the checkpoints and the definition of overlaps between eigenspaces from
+\Cref{vivit::sec:ggn_vs_hessian}. For the approximation of the \ggn{}, we consider the
+cases listed in \Cref{vivit::tab:cases_full_batch}.
+
+\begin{table*}[ht]
+  \centering
+  \caption{ \textbf{Considered cases for approximation of the eigenspace:} We
+    use a different set of cases for the approximation of the \ggn{}'s
+    full-batch eigenspace depending on the test problem. For the test problems
+    with $C=10$, we use $M=1$ \mc-sample, for the \cifarhun \allcnnc test
+    problem ($C=100$), we use $M=10$ \mc-samples in order to reduce the
+    computational costs by the same factor. }
+  \label{vivit::tab:cases_full_batch}
+  \vspace{1ex}
+  \begin{footnotesize}
+    \begin{tabular}{ll}
+      \toprule
+      \textbf{Problem}
+      & \textbf{Cases} \\
+      \midrule
+      \makecell[tl]{
+      \fmnist \twoctwod \\
+      \cifarten \threecthreed and \\
+      \cifarten \resnetthirtytwo}
+      & \makecell[tl]{
+        \textbf{mb, exact} with mini-batch sizes $N \in \{2, 8, 32, 128\}$\\
+      \textbf{mb, mc} with $N=128$ and $M=1$ \mc{}-sample\\
+      \textbf{sub, exact} using $16$ samples from the mini-batch\\
+      \textbf{sub, mc} using $16$ samples from the mini-batch and $M=1$ \mc{}-sample
+      }
+      \\
+      \midrule
+      \cifarhun \allcnnc
+      & \makecell[tl]{
+        \textbf{mb, exact} with mini-batch sizes $N \in \{2, 8, 32, 128\}$\\
+      \textbf{mb, mc} with $N=128$ and $M=10$ \mc{}-samples\\
+      \textbf{sub, exact} using $16$ samples from the mini-batch\\
+      \textbf{sub, mc} using $16$ samples from the mini-batch and $M=10$ \mc{}-samples
+      }
+      \\
+      \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+\end{table*}
+
+For every checkpoint and case, we compute the top-$C$ eigenvectors of the
+respective approximation to the \ggn{}. The eigenvectors are either computed
+directly using \vivit (by transforming eigenvectors of the Gram matrix into
+parameter space, see \Cref{vivit::sec:computing-full-ggn-eigenspectrum}) or, if not
+applicable (because memory requirements exceed $N_\text{crit}$, see
+\Cref{vivit::subsec:scalability}), using an iterative matrix-free approach. The overlap
+is computed in reference to the \ggn{}'s full-batch top-$C$ eigenspace (see
+\Cref{vivit::sec:ggn_vs_hessian}). We extract $5$ mini-batches from the training data
+and repeat the above procedure for each mini-batch (\ie we obtain $5$ overlap
+measurements for every checkpoint and case). The same $5$ mini-batches are used
+over all checkpoints and cases.
+
+\subsubsection{Results (1)}
+
+The results can be found in
+\Cref{vivit::fig:vivit_vs_full_batch_ggn_1} and \ref{vivit::fig:vivit_vs_full_batch_ggn_2}.
+All test problems show the same characteristics: with decreasing computational
+effort, the approximation carries less and less structure of its full-batch
+counterpart, as indicated by dropping overlaps. In addition, for a fixed
+approximation method, a decrease in approximation quality can be observed over
+the course of training.
+
+\input{figures/vivit/vivit_vs_full_batch_ggn}
+
+% ViViT versus mini-batch GGN
+%
+%========== approximations versus mini-batch GGN
+\subsubsection{Procedure (2)}
+Since \vivit{}'s \ggn approximations using curvature sub-sampling and/or the MC
+approximation (the cases \textbf{mb, mc} as well as \textbf{sub, exact} and
+\textbf{sub, mc} in \Cref{vivit::tab:cases_full_batch}) are based on the
+\textit{mini}-batch \ggn{}, we cannot expect them to perform better than this
+baseline. We thus repeat the analysis from above but use the mini-batch \ggn
+with batch-size $N=128$ as ground truth instead of the full-batch \ggn. Of
+course, the mini-batch reference top-$C$ eigenspace is always evaluated on the
+same mini-batch as the approximation.
+
+\subsubsection{Results (2)}
+
+\Cref{vivit::fig:vivit_vs_mini_batch_ggn} shows the results. Over large parts of
+the optimization (note the log scale for the epoch-axis), the \mc approximation
+seems to be better suited than curvature sub-sampling (which has comparable
+computational cost). For the \cifarhun \allcnnc problem, the \mc approximation
+stands out particularly early from the other approximations and consistently
+yields higher overlaps with the mini-batch \ggn.
+
+\input{figures/vivit/vivit_vs_mini_batch_ggn}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

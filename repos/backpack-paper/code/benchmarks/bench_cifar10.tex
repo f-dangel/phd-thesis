@@ -1,0 +1,322 @@
+% This file was created by tikzplotlib v0.9.7.
+\begin{tikzpicture}
+
+\begin{axis}[
+legend cell align={left},
+legend columns=4,
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.03,0.97)}, anchor=north west, draw=white!80!black},
+tick align=outside,
+tick pos=left,
+title={Benchmark: CIFAR10 on 3C3D},
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=8.5,
+xtick style={color=black},
+xtick={0,1,2,3,4,5,6,7,8},
+xticklabel style = {rotate=30.0},
+xticklabels={Grad (ref.),2nd Moment,Variance,Batch L2,Indiv. Grad,DiagGGN-MC,KFAC,KFLR,DiagGGN},
+y grid style={white!69.0196078431373!black},
+ylabel={Time [ms]},
+ymajorgrids,
+ymin=0, ymax=100,
+ytick style={color=black},
+zmystyle
+]
+\draw[draw=none,fill=white!20!black] (axis cs:-0.4,0) rectangle (axis cs:-0.2,15.0664545000154);
+\addlegendimage{ybar,ybar legend,draw=none,fill=white!20!black};
+\addlegendentry{Batch size 32}
+
+\draw[draw=none,fill=white!20!black] (axis cs:0.6,0) rectangle (axis cs:0.8,14.395405000073);
+\draw[draw=none,fill=white!20!black] (axis cs:1.6,0) rectangle (axis cs:1.8,17.1431455000288);
+\draw[draw=none,fill=white!20!black] (axis cs:2.6,0) rectangle (axis cs:2.8,15.2878979999969);
+\draw[draw=none,fill=white!20!black] (axis cs:3.6,0) rectangle (axis cs:3.8,15.2265290000742);
+\draw[draw=none,fill=white!20!black] (axis cs:4.6,0) rectangle (axis cs:4.8,19.3677970000863);
+\draw[draw=none,fill=white!20!black] (axis cs:5.6,0) rectangle (axis cs:5.8,16.8086539999877);
+\draw[draw=none,fill=white!20!black] (axis cs:6.6,0) rectangle (axis cs:6.8,21.8555310000283);
+\draw[draw=none,fill=white!20!black] (axis cs:7.6,0) rectangle (axis cs:7.8,22.4338249999505);
+\draw[draw=none,fill=white!40!black] (axis cs:-0.2,0) rectangle (axis cs:0,26.3089910000645);
+\addlegendimage{ybar,ybar legend,draw=none,fill=white!40!black};
+\addlegendentry{64}
+
+\draw[draw=none,fill=white!40!black] (axis cs:0.8,0) rectangle (axis cs:1,26.2560775000225);
+\draw[draw=none,fill=white!40!black] (axis cs:1.8,0) rectangle (axis cs:2,33.7196079999558);
+\draw[draw=none,fill=white!40!black] (axis cs:2.8,0) rectangle (axis cs:3,28.7451689999898);
+\draw[draw=none,fill=white!40!black] (axis cs:3.8,0) rectangle (axis cs:4,30.8939720000581);
+\draw[draw=none,fill=white!40!black] (axis cs:4.8,0) rectangle (axis cs:5,32.0420350000177);
+\draw[draw=none,fill=white!40!black] (axis cs:5.8,0) rectangle (axis cs:6,28.0495179999889);
+\draw[draw=none,fill=white!40!black] (axis cs:6.8,0) rectangle (axis cs:7,37.0278835000022);
+\draw[draw=none,fill=white!40!black] (axis cs:7.8,0) rectangle (axis cs:8,47.5826415000711);
+\draw[draw=none,fill=white!60!black] (axis cs:-1.38777878078145e-17,0) rectangle (axis cs:0.2,36.9516649999468);
+\addlegendimage{ybar,ybar legend,draw=none,fill=white!60!black};
+\addlegendentry{96}
+
+\draw[draw=none,fill=white!60!black] (axis cs:1,0) rectangle (axis cs:1.2,34.7700959999884);
+\draw[draw=none,fill=white!60!black] (axis cs:2,0) rectangle (axis cs:2.2,46.8574550000085);
+\draw[draw=none,fill=white!60!black] (axis cs:3,0) rectangle (axis cs:3.2,41.5273834999539);
+\draw[draw=none,fill=white!60!black] (axis cs:4,0) rectangle (axis cs:4.2,38.2485360000828);
+\draw[draw=none,fill=white!60!black] (axis cs:5,0) rectangle (axis cs:5.2,36.1803760000612);
+\draw[draw=none,fill=white!60!black] (axis cs:6,0) rectangle (axis cs:6.2,44.0192479999837);
+\draw[draw=none,fill=white!60!black] (axis cs:7,0) rectangle (axis cs:7.2,58.2748519999541);
+\draw[draw=none,fill=white!60!black] (axis cs:8,0) rectangle (axis cs:8.2,63.0378445000019);
+\draw[draw=none,fill=white!80!black] (axis cs:0.2,0) rectangle (axis cs:0.4,39.0273880000223);
+\addlegendimage{ybar,ybar legend,draw=none,fill=white!80!black};
+\addlegendentry{128}
+
+\draw[draw=none,fill=white!80!black] (axis cs:1.2,0) rectangle (axis cs:1.4,45.6837190000101);
+\draw[draw=none,fill=white!80!black] (axis cs:2.2,0) rectangle (axis cs:2.4,51.7774270000473);
+\draw[draw=none,fill=white!80!black] (axis cs:3.2,0) rectangle (axis cs:3.4,45.8371605000139);
+\draw[draw=none,fill=white!80!black] (axis cs:4.2,0) rectangle (axis cs:4.4,48.839087000033);
+\draw[draw=none,fill=white!80!black] (axis cs:5.2,0) rectangle (axis cs:5.4,48.2085170000346);
+\draw[draw=none,fill=white!80!black] (axis cs:6.2,0) rectangle (axis cs:6.4,47.9439929999899);
+\draw[draw=none,fill=white!80!black] (axis cs:7.2,0) rectangle (axis cs:7.4,67.9199384999833);
+\draw[draw=none,fill=white!80!black] (axis cs:8.2,0) rectangle (axis cs:8.4,75.1368129999719);
+\path [draw=black]
+(axis cs:-0.3,12.3834794024816)
+--(axis cs:-0.3,17.7343707925417);
+
+\path [draw=black]
+(axis cs:0.7,14.136615819998)
+--(axis cs:0.7,14.6515445401565);
+
+\path [draw=black]
+(axis cs:1.7,16.5046094174852)
+--(axis cs:1.7,17.7698787475458);
+
+\path [draw=black]
+(axis cs:2.7,14.8810635449968)
+--(axis cs:2.7,15.6745993650088);
+
+\path [draw=black]
+(axis cs:3.7,14.8880090999683)
+--(axis cs:3.7,15.5642047001948);
+
+\path [draw=black]
+(axis cs:4.7,16.1366353599908)
+--(axis cs:4.7,22.5915559201678);
+
+\path [draw=black]
+(axis cs:5.7,16.4749296399947)
+--(axis cs:5.7,17.1371490799658);
+
+\path [draw=black]
+(axis cs:6.7,20.6265825275852)
+--(axis cs:6.7,23.0693644174755);
+
+\path [draw=black]
+(axis cs:7.7,22.1716848049635)
+--(axis cs:7.7,22.6908955849461);
+
+\path [draw=black]
+(axis cs:-0.1,21.952585769975)
+--(axis cs:-0.1,30.5561806901437);
+
+\path [draw=black]
+(axis cs:0.9,24.8464376049915)
+--(axis cs:0.9,27.6478641850443);
+
+\path [draw=black]
+(axis cs:1.9,28.4214125250426)
+--(axis cs:1.9,39.0110764248598);
+
+\path [draw=black]
+(axis cs:2.9,25.9933433499668)
+--(axis cs:2.9,31.4660139500234);
+
+\path [draw=black]
+(axis cs:3.9,26.8534631799986)
+--(axis cs:3.9,34.9187544601233);
+
+\path [draw=black]
+(axis cs:4.9,26.1298713675203)
+--(axis cs:4.9,37.9058338975128);
+
+\path [draw=black]
+(axis cs:5.9,27.1309214700261)
+--(axis cs:5.9,28.953591589958);
+
+\path [draw=black]
+(axis cs:6.9,36.2614086249877)
+--(axis cs:6.9,37.7855611250126);
+
+\path [draw=black]
+(axis cs:7.9,40.9791705849722)
+--(axis cs:7.9,54.1729612451678);
+
+\path [draw=black]
+(axis cs:0.1,30.1678068599279)
+--(axis cs:0.1,43.728679419952);
+
+\path [draw=black]
+(axis cs:1.1,34.2111146399668)
+--(axis cs:1.1,35.3249260799987);
+
+\path [draw=black]
+(axis cs:2.1,39.4859062950331)
+--(axis cs:2.1,54.1810691149863);
+
+\path [draw=black]
+(axis cs:3.1,34.730935197465)
+--(axis cs:3.1,48.3098354074468);
+
+\path [draw=black]
+(axis cs:4.1,35.6747273000246)
+--(axis cs:4.1,40.8217181001464);
+
+\path [draw=black]
+(axis cs:5.1,35.4518061374517)
+--(axis cs:5.1,36.8960715876563);
+
+\path [draw=black]
+(axis cs:6.1,36.802958312478)
+--(axis cs:6.1,51.2225470624799);
+
+\path [draw=black]
+(axis cs:7.1,53.4657265600416)
+--(axis cs:7.1,62.9664723198644);
+
+\path [draw=black]
+(axis cs:8.1,56.3667028499574)
+--(axis cs:8.1,69.4620184500369);
+
+\path [draw=black]
+(axis cs:0.3,38.9301992999947)
+--(axis cs:0.3,39.1230921000499);
+
+\path [draw=black]
+(axis cs:1.3,44.4048526425092)
+--(axis cs:1.3,46.9146720725064);
+
+\path [draw=black]
+(axis cs:2.3,50.7029387950584)
+--(axis cs:2.3,52.8496616150326);
+
+\path [draw=black]
+(axis cs:3.3,44.9069473499685)
+--(axis cs:3.3,46.7647269500549);
+
+\path [draw=black]
+(axis cs:4.3,46.7753265999761)
+--(axis cs:4.3,50.8352942000954);
+
+\path [draw=black]
+(axis cs:5.3,46.5286422499503)
+--(axis cs:5.3,49.8802952501137);
+
+\path [draw=black]
+(axis cs:6.3,47.3795981499848)
+--(axis cs:6.3,48.5043735499971);
+
+\path [draw=black]
+(axis cs:7.3,66.4202031874771)
+--(axis cs:7.3,69.4089934374898);
+
+\path [draw=black]
+(axis cs:8.3,73.1498095400465)
+--(axis cs:8.3,77.1068053798965);
+
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+-0.3 12.3834794024816
+0.7 14.136615819998
+1.7 16.5046094174852
+2.7 14.8810635449968
+3.7 14.8880090999683
+4.7 16.1366353599908
+5.7 16.4749296399947
+6.7 20.6265825275852
+7.7 22.1716848049635
+};
+\addlegendentry{128}
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+-0.3 17.7343707925417
+0.7 14.6515445401565
+1.7 17.7698787475458
+2.7 15.6745993650088
+3.7 15.5642047001948
+4.7 22.5915559201678
+5.7 17.1371490799658
+6.7 23.0693644174755
+7.7 22.6908955849461
+};
+\addlegendentry{128}
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+-0.1 21.952585769975
+0.9 24.8464376049915
+1.9 28.4214125250426
+2.9 25.9933433499668
+3.9 26.8534631799986
+4.9 26.1298713675203
+5.9 27.1309214700261
+6.9 36.2614086249877
+7.9 40.9791705849722
+};
+\addlegendentry{128}
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+-0.1 30.5561806901437
+0.9 27.6478641850443
+1.9 39.0110764248598
+2.9 31.4660139500234
+3.9 34.9187544601233
+4.9 37.9058338975128
+5.9 28.953591589958
+6.9 37.7855611250126
+7.9 54.1729612451678
+};
+\addlegendentry{128}
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+0.1 30.1678068599279
+1.1 34.2111146399668
+2.1 39.4859062950331
+3.1 34.730935197465
+4.1 35.6747273000246
+5.1 35.4518061374517
+6.1 36.802958312478
+7.1 53.4657265600416
+8.1 56.3667028499574
+};
+\addlegendentry{128}
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+0.1 43.728679419952
+1.1 35.3249260799987
+2.1 54.1810691149863
+3.1 48.3098354074468
+4.1 40.8217181001464
+5.1 36.8960715876563
+6.1 51.2225470624799
+7.1 62.9664723198644
+8.1 69.4620184500369
+};
+\addlegendentry{128}
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+0.3 38.9301992999947
+1.3 44.4048526425092
+2.3 50.7029387950584
+3.3 44.9069473499685
+4.3 46.7753265999761
+5.3 46.5286422499503
+6.3 47.3795981499848
+7.3 66.4202031874771
+8.3 73.1498095400465
+};
+\addlegendentry{128}
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+0.3 39.1230921000499
+1.3 46.9146720725064
+2.3 52.8496616150326
+3.3 46.7647269500549
+4.3 50.8352942000954
+5.3 49.8802952501137
+6.3 48.5043735499971
+7.3 69.4089934374898
+8.3 77.1068053798965
+};
+\addlegendentry{128}
+\end{axis}
+
+\end{tikzpicture}

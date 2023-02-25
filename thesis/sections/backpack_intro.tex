@@ -1,0 +1,132 @@
+The success of deep learning and the applications it fuels can be traced to the
+popularization of automatic differentiation frameworks. Packages like
+\TensorFlow~\citep{abadi2016tensorflow}, \Chainer~\citep{tokui2015chainer},
+\MXNet~\citep{chen2015mxnet}, and \PyTorch~\citep{paszke2019pytorch} provide
+efficient implementations of parallel, GPU-based gradient computations to a wide
+range of users, with elegant syntactic sugar.
+
+However, this specialization also has its shortcomings: it assumes the user only
+wants to compute gradients or, more precisely, the average of gradients across a
+mini-batch of examples. Other quantities can also be computed with AD at a
+comparable cost or minimal overhead to the gradient backpropagation pass; for
+example, approximate second-order information or the variance of gradients
+within the batch. These quantities are valuable to understand the geometry of
+deep neural networks, for the identification of free parameters, and to push the
+development of more efficient optimization algorithms. But researchers who want
+to investigate their use face a chicken-and-egg problem: AD tools required to go
+beyond standard gradient methods are not available, but there is no incentive
+for their implementation in existing deep-learning software as long as no large
+portion of the users need it.
+
+Second-order methods for deep learning have been continuously investigated for
+decades \citep[\eg][]{becker1988improving,amari1998natural,bordes2009sgdqn,
+  martens2015optimizing}. But still, the standard optimizers used in deep
+learning remain some variant of stochastic gradient descent (\SGD); more complex
+methods have not found wide-spread, practical use. This is in stark contrast to
+domains like convex optimization and generalized linear models, where
+second-order methods are the default. There may of course be good scientific
+reasons for this difference; maybe second-order methods do not work well in the
+(non-convex, stochastic) setting of deep learning. And the computational cost
+associated with the high dimensionality of deep models may offset their
+benefits. Whether these are the case remains somewhat unclear though, because a
+much more direct road-block is that these methods are so complex to implement
+that few practitioners ever try them out.
+
+Recent approximate second-order methods such as \KFAC
+\citep{martens2015optimizing} show promising results, even on hard deep learning
+problems \citep{tsuji2019performance}. Their approach, based on the earlier work
+of \citet{schraudolph2002fast}, uses the structure of the network to compute
+approximate second-order information in a way that is similar to gradient
+backpropagation. This work sparked a new line of research to improve the
+second-order approximation \citep{grosse2016kronecker, botev2017practical,
+  martens2018kronecker, george2018fast}. However, all of these methods require
+low-level applications of automatic differentiation to compute quantities other
+than the averaged gradient. It is a daunting task to implement them from
+scratch. Unless users spend significant time familiarizing themselves with the
+internals of their software tools, the resulting implementation is often
+inefficient, which also puts the original usability advantage of those packages
+into question. Even motivated researchers trying to develop new methods, who
+need not be expert software developers, face this problem. They often end up
+with methods that cannot compete in run time, not necessarily because the method
+is inherently bad, but because the implementation is not efficient. New methods
+are also frequently not compared to their predecessors and competitors because
+they are so hard to reproduce. Authors do not want to represent the competition
+in an unfair light caused by a bad implementation.
+
+Another example is offered by a recent string of research to adapt to the
+\emph{stochasticity} induced by mini-batch sampling. An empirical estimate of
+the (marginal) variance of the gradients within the batch has been found to be
+theoretically and practically useful for adapting hyperparameters like learning
+rates \citep{mahsereci2017probabilistic} and batch sizes
+\citep{balles2017coupling}, or regularize first-order optimization
+\citep{leroux2007topmoumoute, balles2018dissecting, katharopoulos2018samples}.
+To get such a variance estimate, one simply has to square, then sum, the
+individual gradients after the backpropagation, but before they are aggregated
+to form the average gradient. Doing so should have negligible cost \emph{in
+  principle}, but is programmatically challenging in the standard packages.
+
+Members of the community have repeatedly asked for such features\sidenote{See
+  \eg the Github issues
+  \href{https://github.com/pytorch/pytorch/issues/1407}{\nolinkurl{github.com/pytorch/pytorch/issues/1407}},
+  \href{https://github.com/pytorch/pytorch/issues/7786}{\nolinkurl{7786}},
+  \href{https://github.com/pytorch/pytorch/issues/8897}{\nolinkurl{8897}} and
+  forum discussions
+  \href{https://discuss.pytorch.org/t/1433}{\nolinkurl{discuss.pytorch.org/t/1433}},
+  \href{https://discuss.pytorch.org/t/8405}{\nolinkurl{8405}},
+  \href{https://discuss.pytorch.org/t/15270}{\nolinkurl{15270}},
+  \href{https://discuss.pytorch.org/t/17204}{\nolinkurl{17204}},
+  \href{https://discuss.pytorch.org/t/19350}{\nolinkurl{19350}},
+  \href{https://discuss.pytorch.org/t/24955}{\nolinkurl{24955}}. } %
+but the established AD frameworks have yet to address such requests, as their
+focus has been---rightly---on improving their technical backbone. Features like
+those outlined above are not generally defined for arbitrary functions, but
+rather emerge from the specific structure of machine learning applications.
+General AD frameworks can not be expected to serve such specialist needs. This
+does not mean, however, that it is impossible to efficiently realize such
+features within these frameworks: in essence, backpropagation is a technique to
+compute multiplications with Jacobians. Methods to extract second-order
+information \citep{mizutani2008secondorder} or individual gradients from a
+mini-batch \citep{goodfellow2015efficient} have been known to a small group of
+specialists; they are just rarely discussed or implemented.
+
+\subsection{Our Contribution}
+To address this need for a specialized framework focused on machine learning, we
+propose a framework for the implementation of generalized backpropagation to
+compute additional quantities. The structure is based on the conceptual work of
+\citet{dangel2020modular} for modular backpropagation. This framework can be
+built on top of existing graph-based backpropagation modules; we provide an
+implementation on top of \PyTorch, coined \BackPACK, available at
+~\\[-1.75em]
+\begin{center}
+  \url{https://f-dangel.github.io/backpack/}.
+\end{center}
+~\\[-1.75em]
+The initial release supports efficient computation of individual gradients from
+a mini-batch, their $L_2$ norm, an estimate of the variance, as well as diagonal
+and Kronecker factorizations of the generalized Gauss-Newton (\GGN) matrix
+(see~\Cref{backpack::tab:features_backpack} for a feature overview). The library
+was designed to be minimally verbose to the user, easy to use
+(see~\Cref{fig:backpack-code-sample}), and to have low overhead (see
+\Cref{backpack::sec:benchmark}). While other researchers are aiming to improve
+the flexibility of AD systems \citep{innes2018flux, innes2018zygote,
+  bradbury2018jax}, our goal with this package is to provide access to
+quantities that are only byproducts of the backpropagation pass, rather than
+gradients themselves.
+
+\input{figures/backpack/fig_backpack_code_sample}
+
+To illustrate the capabilities of \BackPACK, we use it to implement
+preconditioned gradient descent optimizers with diagonal approximations of the
+\GGN and recent Kronecker factorizations \KFAC \citep{martens2015optimizing},
+\KFLR, and \KFRA \citep{botev2017practical}. Our results show that the curvature
+approximations based on Monte Carlo (\MC) estimates of the \GGN, the approach
+used by \KFAC, give similar progress per iteration to their more accurate
+counterparts, but being much cheaper to compute. While the naïve update rule we
+implement does not surpass first-order baselines such as \SGD with momentum and
+Adam \citep{kingma2015adam}, its implementation with various curvature
+approximations is made straightforward.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

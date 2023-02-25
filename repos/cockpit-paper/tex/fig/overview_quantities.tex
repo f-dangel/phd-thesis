@@ -1,0 +1,37 @@
+{\def\arraystretch{1.2}
+\begin{table*}
+	\caption{\textbf{Overview of \cockpittitle quantities}. They range from
+		cheap byproducts, to nonlinear transformations of first-order information
+		and Hessian-based measures. Some quantities have already been proposed,
+		others are first to be considered in this work. They are categorized into
+		configurations \textit{economy $\subseteq$ business $\subseteq$ full} based on their
+		run time overhead (see \Cref{sec:benchmark} for a detailed evaluation).}
+	\label{tab:overview-quantities}
+	\begin{center}
+    \begin{tabularx}{\textwidth}{lXcr}
+    	\toprule
+    	\textbf{Name}       & \textbf{Short Description}                                                                                           & \textbf{Config}   & \textbf{Pos. in \Cref{fig:showcase}}  \\
+    	\midrule
+    	\texttt{Alpha}      & Normalized step size on a noisy quadratic interpolation between two iterates $\vtheta_t$, $\vtheta_{t+1}$            & \textit{economy}  & top \textcolor{sns_blue}{left}        \\
+    	\texttt{Distance}   & Distance from initialization $\lVert \vtheta_{t} -  \vtheta_{0}  \rVert_2$                                           & \textit{economy}  & middle \textcolor{sns_blue}{left}     \\
+    	\texttt{UpdateSize} & Update size $\lVert \vtheta_{t + 1} - \vtheta_{t} \rVert_2$                                                          & \textit{economy}  & middle \textcolor{sns_blue}{left}     \\
+    	\texttt{GradNorm}   & Mini-batch gradient norm $\lVert \vg_{\gB}(\vtheta) \rVert_2$                                                        & \textit{economy}  & bottom \textcolor{sns_blue}{left}     \\
+    	\texttt{NormTest}   & Normalized fluctuations of the residual norms ${\lVert  \vg_{\gB} - \vg_n \rVert_2}$, proposed in \citep{Byrd2012}   & \textit{economy}  & top \textcolor{sns_orange}{center}    \\
+    	\texttt{InnerTest}  & Normalized fluctuations of the $\vg_n$'s parallel components along $\vg_{\gB}$, proposed in \citep{Bollapragada2017} & \textit{economy}  & top \textcolor{sns_orange}{center}    \\
+    	\texttt{OrthoTest}  & Same as \texttt{InnerTest} but using the orthogonal components, proposed in \citep{Bollapragada2017}                 & \textit{economy}  & top \textcolor{sns_orange}{center}    \\
+    	\texttt{GradHist1d} & Histogram of individual gradient elements, $\{\vg_n(\vtheta_j)\}_{n\in \gB}^{j=1,\dots,D}$                           & \textit{economy}  & middle \textcolor{sns_orange}{center} \\
+    	\texttt{TICDiag}    & Relation between (diagonal) curvature and gradient noise, inspired by \citep{Thomas2020}                             & \textit{business} & bottom \textcolor{sns_green}{right}   \\
+    	\texttt{HessTrace}  & Exact or approximate Hessian trace, $\Tr(\mH_{\gB}(\vtheta))$, inspired by \citep{Yao2020}                           & \textit{business} & middle \textcolor{sns_green}{right}   \\
+    	\texttt{HessMaxEV}  & Maximum Hessian eigenvalue, $\lambda_{\text{max}}(\mH_{\gB}(\vtheta))$, inspired by \citep{Yao2020}                  & \textit{full}     & top \textcolor{sns_green}{right}      \\
+    	\texttt{GradHist2d} & Histogram of weights and individual gradient elements, $\{ (\vtheta_j,\vg_n(\vtheta_j))\}_{n\in \gB}^{j=1,\dots,D}$  & \textit{full}     & bottom \textcolor{sns_orange}{center} \\
+    	\bottomrule
+    \end{tabularx}
+	\end{center}
+\end{table*}
+}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../cockpit_paper"
+%%% End:

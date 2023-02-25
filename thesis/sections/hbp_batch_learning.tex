@@ -1,0 +1,99 @@
+In our HBP framework, exact multiplication by the curvature block of a module's
+parameter $\vtheta$ requires one backpropagation to this layer. The
+multiplication is recursively defined in terms of multiplication by the layer
+output Hessian $\gradsquared{\vz}\ell$. If it were possible to have an explicit
+representation of this matrix in memory, the recursive computations hidden in
+$\gradsquared{\vz}\ell $ could be saved during the solution of the linear system
+implied by \Cref{hbp::equ:NewtonUpdate}. Unfortunately, the size of the
+backpropagated exact matrices scales quadratically in both the batch
+size\sidenote{ If samples are processed independently in every module, these
+  matrices have block structure and scale linearly in batch size. Quadratic
+  scaling is caused by transformations across different samples, like batch
+  normalization. } and the number of layer's output features. However, instead
+of propagating back the exact Hessian, a batch-averaged version can be used
+instead to circumvent the batch size scaling (originating from
+\citet{botev2017practical}). In combination with structural information about
+the parameter Hessian, this strategy is used in
+\citet{botev2017practical,wei2018bdapch} to further approximate curvature
+multiplications, using quantities computed in a single backward pass and then
+kept in memory for application of the matrix-vector product. We can embed these
+explicit schemes into our modular approach. To do so, we denote averages over a
+batch $\sB$ by a bar, for instance
+\begin{math}
+  \nicefrac{1}{|\sB|} \sum_{(\vx, \vy) \in \sB}
+  \gradsquared{\vtheta}\ell(f_{\vtheta}(\vx), \vy) =
+  \average{\gradsquared{\vtheta}\ell}.
+\end{math}
+The modified backward pass of curvature information during HBP for a module
+receives a batch average of the Hessian \wrt the output,
+$\average{\gradsquared{\vz}\ell }$, which is used to formulate the matrix-vector
+product with the batch-averaged parameter Hessian
+$\average{\gradsquared{\vtheta} \ell}$. An average of the Hessian \wrt the
+module input, $\average{\gradsquared{\vx} \ell}$, is passed back. Existing work
+\citep{botev2017practical,wei2018bdapch} differs primarily in the specifics of
+how this batch average is computed. In HBP, these approximations can be
+formulated compactly within \Cref{hbp::equ:hessianBackPropagation}. Relations to
+the cited works are discussed in more detail in \Cref{hbp::subsec:relation}. The
+approximations amounting to relations used by \citet{botev2017practical} read
+\begin{align}
+  \label{hbp::equ:hessians_batch_average}
+  \average{\gradsquared{\vx} \ell}
+  \approx
+  \average{\left(\jac_{\vx} \vz \right)^\top
+  \average{\gradsquared{\vz}\ell }
+  \left(\jac_{\vx}\vz\right)}
+  + \sum_k \average{\left(\gradsquared{\vx} z_k\right)
+  \grad{z_k}\ell}\,,
+\end{align}
+and likewise for $\vtheta$. In case of a linear layer $\vz(\vx) = \mW\vx + \vb$, this
+approximation implies the relations $\average{\gradsquared{\mW}\ell} = \average{\vx \otimes
+  \vx^\top} \otimes \average{\gradsquared{\vz}\ell }$, $\average{\gradsquared{\vb}\ell} = \average{\gradsquared{\vz}\ell}$, and $\average{\gradsquared{\vx} \ell} = \mW^\top (\average{\gradsquared{\vz}\ell }) \mW$. Multiplication
+by this weight Hessian approximation with a vector $\vv$ is achieved by storing
+$\average{ \vx \otimes \vx^\top}$, $\average{\gradsquared{\vz}\ell }$ and performing the required
+contractions $\vv\mapsto (\average{\vx \otimes \vx^\top} \otimes \average{\gradsquared{\vz}\ell }) \vv
+$. Note that this approach is not restricted to curvature matrix-vector
+multiplication routines only. Kronecker structure in the approximation gives
+rise to optimization methods relying on direct inversion.
+
+A cheaper approximation, used in~\citet{wei2018bdapch},
+\begin{align}
+  \label{hbp::equ:hessians_batch_average_approximation}
+  \average{\gradsquared{\vx} \ell}
+  &\approx
+    \average{\left(\jac_{\vx}\vz\right)}^\top
+    \average{\gradsquared{\vz}\ell }\ \,
+    \average{\left(\jac_{\vx}\vz\right)}
+    + \sum_k \average{\left(\gradsquared{\vx}z_k\right) \grad{z_{k}}\ell}\,,
+\end{align}
+leads to the modified relation $\average{\gradsquared{\mW}\ell} = \average{\vx} \otimes
+\average{\vx}^\top \otimes \average{\gradsquared{\vz}\ell }$ for a linear layer. As this
+approximation is of the same rank as $\average{\gradsquared{\vz}\ell }$, which is typically
+small, CG requires only a few iterations during optimization. It avoids large
+memory requirements for layers with numerous inputs, since it requires
+$\average{\vx}$ be stored instead of $\average{\vx\otimes \vx^\top}$.
+
+Transformations that are linear in the module parameters (\eg linear and
+convolutional layers), possess constant Jacobians \wrt the module input for each
+sample (see \Cref{hbp::table:backpropEquations}). Hence, in a network consisting
+of only these layers, both
+\Cref{hbp::equ:hessians_batch_average,hbp::equ:hessians_batch_average_approximation}
+yield the same backpropagated Hessians $\average{\gradsquared{\vx} \ell}$. This
+still leaves the degree of freedom for choosing the approximation scheme in the
+analogous equations for $\vtheta$.
+
+\subsubsection{Remark}
+
+Both strategies for obtaining curvature matrix BDAs (implicit exact
+matrix-vector multiplications and explicit propagation of approximated
+curvature) are compatible. Regarding the connection to cited works, we note that
+the maximally modular structure of our framework changes the nature of these
+approximations and allows a more flexible formulation and
+implementation\sidenote{The \backpack library described in
+  \Cref{chap:backpack} uses the insights of this section to implement
+  block-diagonal curvature approximations as extensions of gradient
+  backpropagation on the modular level.}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

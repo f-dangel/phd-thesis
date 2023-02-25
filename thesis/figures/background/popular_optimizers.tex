@@ -1,0 +1,148 @@
+\begin{figure*}[!p]
+  \centering
+  \begin{minipage}[t]{0.495\linewidth}
+    \begin{updaterule}[\textbf{SGD~\cite{robbins1951stochastic}}]\label{opt:background::SGD}
+      \begin{align*}
+        \vtheta_{t+1} &= \vtheta_t - \eta \vg_{\sB_t}(\vtheta_t)
+                        \shortintertext{with}
+        &\text{learning rate $\eta \in \sR^+$}
+      \end{align*}
+    \end{updaterule}
+    \vspace{-1.1ex}
+    \begin{updaterule}[\textbf{Momentum~\cite{polyak1964some}}]\label{opt:background::Momentum}
+      \begin{align*}
+        \vtheta_{t+1} &= \vtheta_t - \vv_{t}
+                        \shortintertext{where}
+                        \vv_t &= \rho \vv_{t-1} + \eta \vg_{\sB_t}(\vtheta_t)
+                                \shortintertext{with}
+        &\text{learning rate $\eta \in \sR^+$}
+        \\
+                      &\text{momentum factor $\rho \in [0;1)$}
+        \\
+                      &\text{initial momentum $\vv_{0} \in \sR^{D}$}
+      \end{align*}
+    \end{updaterule}
+    \vspace{-1.1ex}
+    \begin{updaterule}[\textbf{NAG~\cite{nesterov1983method}}]\label{opt:background::NAG}
+      \begin{align*}
+        \vtheta_{t+1} &= \vtheta_t - \vv_{t}
+                        \shortintertext{where}
+                        \vv_t &= \rho \vv_{t-1} + \eta \vg_{\sB_t}(\vtheta_t - \rho \vv_{t-1})
+                                \shortintertext{with}
+        &\text{learning rate $\eta \in \sR^+$}
+        \\
+                      &\text{momentum factor $\rho \in [0;1)$}
+        \\
+                      &\text{initial momentum $\vv_{0} \in \sR^{D}$}
+      \end{align*}
+    \end{updaterule}
+    \vspace{-1.1ex}
+    \begin{updaterule}[\textbf{AdaGrad~\cite{duchi2011adaptive}}]\label{opt:background::AdaGrad}
+      \begin{align*}
+        \vtheta_{t+1} &= \vtheta_t - \eta \vg_{\sB_t}(\vtheta_t) \oslash (\vs_{t}^{\circ \nicefrac{1}{2}} + \epsilon \vone)
+                        \shortintertext{where}
+                        \vs_t &= \vs_{t-1} + (\vg_{\sB_t}(\vtheta_t))^{\circ 2}
+                                \shortintertext{with}
+        &\text{learning rate $\eta \in \sR^+$}
+        \\
+                      &\text{divide-by-zero safe guard $\epsilon \in \sR^+$}
+        \\
+                      &\text{initial $\vs_{0} \in \sR^{D}$}
+      \end{align*}
+    \end{updaterule}
+    \vspace{-1.1ex}
+    \begin{updaterule}[\textbf{RMSProp~\cite{tieleman2012lecture}}]\label{opt:background::RMSProp}
+      \begin{align*}
+        \vtheta_{t+1} &= \vtheta_t - \eta \vg_{\sB_t}(\vtheta_t) \oslash (\vs_{t}^{\circ \nicefrac{1}{2}} + \epsilon \vone)
+                        \shortintertext{where}
+                        \vs_t &= \rho \vs_{t-1} + (1-\rho) (\vg_{\sB_t}(\vtheta_t))^{\circ 2}
+                                \shortintertext{with}
+        &\text{learning rate $\eta \in \sR^+$}
+        \\
+                      &\text{decay rate $\rho \in [0;1)$}
+        \\
+                      &\text{divide-by-zero safe guard $\epsilon \in \sR^+$}
+        \\
+                      &\text{initial $\vs_{0} \in \sR^{D}$}
+      \end{align*}
+    \end{updaterule}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.495\linewidth}
+    \begin{updaterule}[\textbf{Adadelta~\cite{zeiler2012adadelta}}]\label{opt:background::Adadelta}
+      \begin{align*}
+        \vtheta_{t+1} &= \vtheta_t - \eta \vDelta_{t}
+                        \shortintertext{where}
+                        \vDelta_{t} &= (\vd_{t} + \epsilon \vone)^{\circ \nicefrac{1}{2}} \oslash (\vs_{t} + \epsilon \vone)^{\circ \nicefrac{1}{2}} \odot \vg_{\sB_t}(\vtheta_t)
+                                      \shortintertext{\quad \ \, where}
+        &\vs_t = \rho \vs_{t-1} + (1-\rho) (\vg_{\sB_t}(\vtheta_t))^{\circ 2}
+        \\
+                      &\vd_t = \rho \vd_{t-1} + (1-\rho) \vDelta_{t-1}^{\circ 2}
+                        \shortintertext{with}
+                                    &\text{learning rate $\eta \in \sR^+$}
+        \\
+                      &\text{decay rate $\rho \in [0;1)$}
+        \\
+                      &\text{divide-by-zero safe guard $\epsilon \in \sR^+$}
+        \\
+                      &\text{initial $\vs_{0}, \vd_{0}, \vDelta_{0} \in \sR^{D}$}
+      \end{align*}
+    \end{updaterule}
+    \vspace{-1.1ex}
+    \begin{updaterule}[\textbf{Adam~\cite{kingma2015adam}}]\label{ex:background::Adam}
+      \begin{align*}
+        \vtheta_{t+1} &= \vtheta_t - \eta \vmhat_{t}\oslash ( \vvhat_{t}^{\circ \nicefrac{1}{2}} + \epsilon \vone)
+                        \shortintertext{where}
+                        \vmhat_{t} &= \nicefrac{\vm_{t}}{(1 - \beta_{1}^{t})}
+                                     \shortintertext{\quad \ \, where}
+        &\vm_{t} = \beta_1 \vm_{t-1} + (1 - \beta_{1}) \vg_{\sB_t}(\vtheta_{t})
+        \\
+        \vvhat_t &= \nicefrac{\vv_t}{(1 - \beta_2^t)}
+                   \shortintertext{\quad \ \, where}
+                                   &\vv_t = \beta_2 \vv_{t-1} + (1 - \beta_2) (\vg_{\sB_t}(\vtheta_t))^{\circ 2}
+                                     \shortintertext{with}
+        &\text{learning rate $\eta \in \sR^+$}
+        \\
+                      &\text{decay rates $\beta_1, \beta_2 \in [0;1)$}
+        \\
+                      &\text{divide-by-zero safe guard $\epsilon \in \sR^+$}
+        \\
+                      &\text{initial $\vm_{0}, \vv_{0}, \in \sR^{D}$}
+      \end{align*}
+    \end{updaterule}
+    \vspace{-1.1ex}
+    \begin{updaterule}[\textbf{AMSGrad~\cite{reddi2018on}}]\label{opt:background::AMSGrad}
+      \begin{align*}
+        \vtheta_{t+1} &= \vtheta_t - \eta \vmhat_{t}\oslash ( \vvhat_{t}^{\circ \nicefrac{1}{2}} + \epsilon \vone)
+                        \shortintertext{where}
+                        \vmhat_{t} &= \nicefrac{\vm_{t}}{(1 - \beta_{1}^{t})}
+                                     \shortintertext{\quad \ \, where}
+        &\vm_{t} = \beta_1 \vm_{t-1} + (1 - \beta_{1}) \vg_{\sB_t}(\vtheta_{t})
+        \\
+        \vvhat_t &= \nicefrac{\vv_t}{(1 - \beta_2^t)}
+                   \shortintertext{\quad \ \, where}
+                                   &\vv_t = \max( \beta_2 \vv_{t-1} + (1 - \beta_2) (\vg_{\sB_t}(\vtheta_t))^{\circ 2}, \vv_{t-1})
+                                     \shortintertext{with}
+        &\text{learning rate $\eta \in \sR^+$}
+        \\
+                      &\text{decay rates $\beta_1, \beta_2 \in [0;1)$}
+        \\
+                      &\text{divide-by-zero safe guard $\epsilon \in \sR^+$}
+        \\
+                      &\text{initial $\vm_{0}, \vv_{0}, \in \sR^{D}$}
+      \end{align*}
+    \end{updaterule}
+  \end{minipage}
+  \vspace{-1ex}
+  \caption{\textbf{Popular deep learning optimizers rely on the average
+      mini-batch gradient.} At iteration $t$, they incorporate information in
+    form of the mini-batch average gradient $\vg_{\sB_t}$. This is a
+    representative subset of popular methods; see \cite{schmidt2021descending}
+    for a more complete
+    overview.}\label{fig:background::popularDeepLearningOptimizers}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

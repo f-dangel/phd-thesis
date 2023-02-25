@@ -1,0 +1,69 @@
+% basic setting of a fully-connected neural network with data flow for
+% forward pass
+
+\begin{tikzpicture}
+  % first layer
+  \node (out1)
+  [inner sep=0, anchor=south west]
+  {\tikz \drawMessagesWithArrows{$\mZ^{(0)}$}{ }{ }{\hNodeDistance};};
+  \node (layer2)
+  [inner sep=0pt, anchor=south west]
+  at (out1.south east)
+  {\tikz \drawModuleWithParams{$F^{(1)}_{\vtheta^{(1)}}$}{16}{$\vtheta^{(1)}$}{$\grad{\vtheta^{(1)}}\gL$}{ };};
+
+  % dots with messages
+  \node (in2)
+  [inner sep=0, anchor=south west]
+  at (layer2.south east)
+  {\tikz \drawMessagesWithArrows{$\mZ^{(1)}$}{$\grad{\mZ^{(1)}}\gL$}{ }{\hNodeDistance};};
+  \node (dots)
+  [xshift=0.75ex, inner sep=0pt, anchor=west]
+  at (in2.east)
+  {$\dots$};
+
+  \node (inLast)
+  [xshift=0.75ex, inner sep=0pt, anchor=west]
+  at (dots.east)
+  {\tikz \drawMessagesWithArrows{$\mZ^{(L-1)}$}{$\grad{\mZ^{(L-1)}}\gL$}{ }{\hNodeDistance};};
+
+  \node (layerLast)
+  [anchor=south west, inner sep=0]
+  at (inLast.south east)
+  {\tikz \drawModuleWithParams{$F^{(L)}_{\vtheta^{(L)}}$}{16}{$\vtheta^{(L)}$}{$\grad{\vtheta^{(L)}}\gL$}{ };};
+  \node (outLast)
+  [inner sep=0, anchor=south west]
+  at (layerLast.south east)
+  {\tikz \drawMessagesWithArrows{$\mZ^{(L)}$}{$\grad{\mZ^{(L)}}\gL$}{ }{\hNodeDistance};};
+
+  % loss layer
+  \node (lossLayer)
+  [inner sep=0pt, anchor=south west]
+  at (outLast.south east)
+  {\tikz\drawModuleNoParams{$\vell$}{5};};
+  \node (losses)
+  [inner sep=0, anchor=south west]
+  at (lossLayer.south east)
+  {\tikz \drawMessagesWithArrows{$\vell$}{$\grad{\vell}\gL$}{ }{\hNodeDistance};};
+
+  % label
+  \node (label)
+  [inner sep=0, anchor=south west, rotate=-90, xshift = -96, yshift = -50]
+  at (lossLayer.south east)
+  {\tikz \drawMessagesWithArrows{$\mY$}{ }{ }{\hNodeDistance};};
+
+  % Reduction layer
+  \node (reductionLayer)
+  [inner sep=0pt, anchor=south west]
+  at (losses.south east)
+  {\tikz\drawModuleNoParams{$\gL$}{5};};
+  \node (reducedLoss)
+  [inner sep=0, anchor=south west]
+  at (reductionLayer.south east)
+  {\tikz \drawMessagesWithArrows{$\gL$}{ }{ }{\hNodeDistance};};
+
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

@@ -1,0 +1,47 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{amsmath}
+
+\definecolor{anthrazit}{RGB}{50, 65, 75}
+\tikzset{matrix block/.style={rectangle, outer sep = 0pt, anchor=north west, inner sep = 0}}
+\tikzset{offdiagonal/.style={draw = white, fill = white!10!anthrazit}}
+\tikzset{diagonal/.style={draw = white, fill = white!75!anthrazit}}
+
+\begin{document}
+\begin{tikzpicture}
+  % body
+  \node[text = white] {
+    $\begin{pmatrix}
+      \begin{tikzpicture}
+
+        % alignment
+        \node (placeholder) [rectangle, minimum width = 0.5, minimum height =3, outer sep = 0pt, inner sep = 0pt] {};
+
+        % blocks
+        \node (block11) [diagonal, minimum height = 18, minimum width = 18, matrix block] at (placeholder.south east) {};
+        \node (block12) [offdiagonal, minimum height = 18, minimum width = 12, matrix block] at (block11.north east) {};
+        \node (block13) [offdiagonal, minimum height = 18, minimum width = 6.8, matrix block] at (block12.north east) {};
+        \node (block14) [offdiagonal, minimum height = 18, minimum width = 8, matrix block] at (block13.north east) {};
+
+        \node (block21) [offdiagonal, minimum width = 18, minimum height = 12, matrix block] at (block11.south west) {};
+        \node (block22) [diagonal, minimum width = 12, minimum height = 12, matrix block] at (block12.south west) {};
+        \node (block23) [offdiagonal, minimum width = 6.8, minimum height = 12, matrix block] at (block13.south west) {};
+        \node (block24) [offdiagonal, minimum width = 8, minimum height = 12, matrix block] at (block14.south west) {};
+
+        \node (block31) [offdiagonal, minimum width = 18, minimum height = 6.8, matrix block] at (block21.south west) {};
+        \node (block32) [offdiagonal, minimum width = 12, minimum height = 6.8, matrix block] at (block22.south west) {};
+        \node (block33) [diagonal, minimum width = 6.8, minimum height = 6.8, matrix block] at (block23.south west) {};
+        \node (block34) [offdiagonal, minimum width = 8, minimum height = 6.8, matrix block] at (block24.south west) {};
+
+        \node (block41) [offdiagonal, minimum width = 18, minimum height = 8, matrix block] at (block31.south west) {};
+        \node (block42) [offdiagonal, minimum width = 12, minimum height = 8, matrix block] at (block32.south west) {};
+        \node (block43) [offdiagonal, minimum width = 6.8, minimum height = 8, matrix block] at (block33.south west) {};
+        \node (block44) [diagonal, minimum width = 8, minimum height = 8, matrix block] at (block34.south west) {};
+
+        % dashed line
+        \draw [white, dotted] (block22.south east) to (block44.north west);
+      \end{tikzpicture}
+    \end{pmatrix}$
+  };
+\end{tikzpicture}
+\end{document}

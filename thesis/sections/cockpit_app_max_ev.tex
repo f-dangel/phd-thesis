@@ -1,0 +1,49 @@
+\subsection{Hessian Maximum Eigenvalue
+  (\robustInlinecode{HessMaxEV})}\label{cockpit::app:max-ev}
+
+The Hessian's maximum eigenvalue $\lambda_{\text{max}}(\mH_{\sB}(\vtheta))$ is
+computed with an iterative eigensolver from Hessian-vector products through
+\pytorch's automatic differentiation \citep{pearlmutter1994fast}. Like
+\citet{yao2020pyhessian}, we employ power iterations with similar
+\href{https://github.com/amirgholami/PyHessian/blob/0f7e0f63a0f132998608013351ba19955fc9d861/pyhessian/hessian.py#L111-L158}{default
+  stopping parameters} (stop after at most 100 iterations, or if the iterate
+does converged with a relative and absolute tolerance of $10^{-3}, 10^{-6}$,
+respectively) to compute $\lambda_{\text{max}}(\mH_{\sB}(\vtheta))$ through the
+\inlinecode{HessMaxEV} quantity in \cockpit.
+
+In principle, more sophisticated eigensolvers (for example Arnoldi's method)
+could be applied to converge in fewer iterations or compute eigenvalues other
+than the leading ones. \citet{warsa2004krylov} empirically demonstrate that the
+FLOP ratio between power iteration and implicitly restarted Arnoldi method can
+reach values larger than $100$. While we can use such a beneficial method on a
+CPU through
+\href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html} {\texttt{scipy.sparse.linalg.eigsh}}
+we are restricted to the GPU-compatible power iteration for GPU training. We
+expect that extending the support of popular machine learning libraries like
+\pytorch for such iterative eigensolvers on GPUs can help to save computation
+time.
+
+\begin{equation}
+  \label{cockpit::eq:hess-max-ev-feature-table}
+  \lambda_{\text{max}}(\mH_{\sB}(\vtheta))
+  =
+  \max_{\lVert \vv \rVert_2 = 1} \lVert \mH_{\sB}(\vtheta)\vv \rVert_2
+  =
+  \max_{\vv \in \sR^D} \frac{\vv^\top \mH_{\sB}(\vtheta) \vv}{\vv^\top \vv}.
+\end{equation}
+
+\subsubsection{Usage}
+
+The Hessian's maximum eigenvalue describes the loss surface's sharpest direction
+and thus provides an understanding of the current loss landscape. Additionally,
+in convex optimization, the largest Hessian eigenvalue crucially determines the
+appropriate step size \citep{schmidt2014convergence}. In
+\Cref{cockpit::sec:showcase}, we can observe that although training seems stuck
+in the very first few iterations progress is visible when looking at the maximum
+Hessian eigenvalue.
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

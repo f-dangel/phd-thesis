@@ -1,0 +1,77 @@
+% basic setting of a fully-connected neural network with data flow for
+% forward pass
+
+\begin{tikzpicture}
+  % first two layers
+  % \node (in1)
+  % [inner sep=0]
+  % {\tikz \drawMessagesWithArrows{$\{\vz_{n}^{(0)}\}$}{ }{ }{\hNodeDistance};};
+  % \node (layer1)
+  % [anchor=south west, inner sep=0]
+  % at (in1.south east)
+  % {\tikz \drawModuleWithParams{$\vf^{(1)}_{\vtheta^{(1)}}$}{16}{$\vtheta^{(1)}$}{$\grad{\vtheta^{(1)}}\gL$}{ };};
+  \node (out1)
+  [inner sep=0, anchor=south west]
+  % at (layer1.south east)
+  {\tikz \drawMessagesWithArrows{\scalebox{0.8}{$\{\vz_{n}^{(0)}\}$}}{ }{ }{\hNodeDistance};};
+  \node (layer2)
+  [inner sep=0pt, anchor=south west]
+  at (out1.south east)
+  {\tikz \drawModuleWithParams{$\vf^{(1)}_{\vtheta^{(1)}}$}{16}{$\vtheta^{(1)}$}{$\grad{\vtheta^{(1)}}\gL$}{ \includegraphics[width=3.7ex]{../repos/backpack-paper/tex/logo/backpack_logo_github} };};
+
+  % dots with messages
+  \node (in2)
+  [inner sep=0, anchor=south west]
+  at (layer2.south east)
+  {\tikz \drawMessagesWithArrows{\scalebox{0.8}{$\{\vz_{n}^{(2)}\}$}}{\scalebox{0.75}{$\{\grad{\vz_{n}^{(2)}}\gL\}$}}{ \includegraphics[width=3.7ex]{../repos/backpack-paper/tex/logo/backpack_logo_github} }{\hNodeDistance};};
+  \node (dots)
+  [xshift=0.75ex, inner sep=0pt, anchor=west]
+  at (in2.east)
+  {$\dots$};
+
+  \node (inLast)
+  [xshift=0.75ex, inner sep=0pt, anchor=west]
+  at (dots.east)
+  {\tikz \drawMessagesWithArrows{\,\scalebox{0.8}{$\{\vz_{n}^{(L-1)}\}$}\,}{\,\scalebox{0.75}{$\{\grad{\vz_{n}^{(L-1)}}\gL\}$}\,}{ \includegraphics[width=3.7ex]{../repos/backpack-paper/tex/logo/backpack_logo_github} }{\hNodeDistance};};
+
+  \node (layerLast)
+  [anchor=south west, inner sep=0]
+  at (inLast.south east)
+  {\tikz \drawModuleWithParams{$\vf^{(L)}_{\vtheta^{(L)}}$}{16}{$\vtheta^{(L)}$}{$\grad{\vtheta^{(L)}}\gL$}{ \includegraphics[width=3.7ex]{../repos/backpack-paper/tex/logo/backpack_logo_github} };};
+  \node (outLast)
+  [inner sep=0, anchor=south west]
+  at (layerLast.south east)
+  {\tikz \drawMessagesWithArrows{\scalebox{0.8}{$\{\vz_{n}^{(L)}\}$}}{\scalebox{0.75}{$\{\grad{\vz_{n}^{(L)}}\gL\}$}}{ \includegraphics[width=3.7ex]{../repos/backpack-paper/tex/logo/backpack_logo_github} }{\hNodeDistance};};
+
+  % loss layer
+  \node (lossLayer)
+  [inner sep=0pt, anchor=south west]
+  at (outLast.south east)
+  {\tikz\drawModuleNoParams{$\vell$}{5};};
+  \node (losses)
+  [inner sep=0, anchor=south west]
+  at (lossLayer.south east)
+  {\tikz \drawMessagesWithArrows{\scalebox{1.0}{$\{\ell_n\}$}}{\scalebox{1.0}{$\{\grad{\ell_n}\gL\}$}}{ \includegraphics[width=3.7ex]{../repos/backpack-paper/tex/logo/backpack_logo_github} }{\hNodeDistance};};
+
+  % label
+  \node (label)
+  [inner sep=0, anchor=south west, rotate=-90, xshift = -119, yshift = -63]
+  at (lossLayer.south east)
+  {\tikz \drawMessagesWithArrows{\scalebox{1.0}{$\{\vy_n\}$}}{ }{ }{\hNodeDistance};};
+
+  % Reduction layer
+  \node (reductionLayer)
+  [inner sep=0pt, anchor=south west]
+  at (losses.south east)
+  {\tikz\drawModuleNoParams{$\gL$}{5};};
+  \node (reducedLoss)
+  [inner sep=0, anchor=south west]
+  at (reductionLayer.south east)
+  {\tikz \drawMessagesWithArrows{$\gL$}{ }{ }{\hNodeDistance};};
+
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

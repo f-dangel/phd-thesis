@@ -1,0 +1,135 @@
+\input{preamble/preamble}
+
+\begin{document}
+
+% ===================================================================
+% FRONTMATTER
+% ===================================================================
+
+\frontmatter % start pre-document content, use roman numerals
+\input{frontmatter/coverpage}
+
+% Show page number in footer aligned to the outside of the page (excluding chapter pages)
+\pagestyle{pagenum.scrheadings}
+
+\input{frontmatter/acknowledgments}
+
+\input{frontmatter/abstract}
+
+\input{frontmatter/zusammenfassung}
+
+\input{frontmatter/toc_lof_lot}
+
+\input{frontmatter/notation}
+
+% ===================================================================
+% MAINMATTER
+% ===================================================================
+
+\mainmatter% start main document, reset page numbering, use arabic numbers
+
+% ---------------------------------
+% STRUCTURAL OVERVIEW
+% ---------------------------------
+
+\setchapterpreamble[u]{\margintoc}
+\pagelayout{margin} % restore margins
+\chapter{Overview}\label{chap:overview}
+\input{chapters/overview}
+
+% ---------------------------------
+% BACKGROUND
+% ---------------------------------
+
+\pagelayout{wide} % disable margins
+\part{Background \& Motivation}\label{part:background}
+\pagelayout{margin} % restore margins
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Deep Learning Components}\label{chap:background::Paradigms}
+\input{chapters/background_paradigms}
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Higher-order Information}\label{chap:background::HigherOrder}
+\input{chapters/background_higher}
+
+% ---------------------------------
+% MAIN WORK
+% ---------------------------------
+
+\pagelayout{wide} % disable margins
+\part{Backpropagation Beyond the Gradient}\label{part:papers}
+\pagelayout{margin} % restore margins
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Modular Block-diagonal Curvature Approximations for Feedforward
+  Architectures}\label{chap:hbp}
+\input{chapters/hbp}
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{BackPACK: Packing More into Backprop}\label{chap:backpack}
+\input{chapters/backpack}
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Cockpit: A Practical Debugging Tool for the Training of Deep
+  Neural Networks}\label{chap:cockpit}
+\input{chapters/cockpit}
+
+\setchapterpreamble[u]{\margintoc}
+\chapter[ViViT: Curvature Access Through the \ggn's Low-rank Structure]{ViViT:
+  Curvature Access Through the Generalized Gauss-Newton's Low-rank
+  Structure}\label{chap:vivit}
+\input{chapters/vivit}
+
+% ---------------------------------
+% CONCLUSION
+% ---------------------------------
+
+\pagelayout{wide} % disable margins
+\part{Conclusion \& Future Directions}\label{part:conclusion}
+\pagelayout{margin} % restore margins
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Conclusion \& Future Directions}\label{chap:conclusion}
+\input{chapters/conclusion}
+
+% ---------------------------------
+% APPENDIX
+% ---------------------------------
+
+\appendix % number chapters with letters from here on
+
+\pagelayout{wide} % No margins
+\part{Appendix}\label{part:appendix}
+\pagelayout{margin} % Restore margins
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Additional Material for Chapter \ref{chap:hbp}}
+\input{chapters/hbp_app}
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Additional Material for Chapter \ref{chap:backpack}}
+\input{chapters/backpack_app}
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Additional Material for Chapter \ref{chap:cockpit}}
+\input{chapters/cockpit_app}
+
+\setchapterpreamble[u]{\margintoc}
+\chapter{Additional Material for Chapter \ref{chap:vivit}}
+\input{chapters/vivit_app}
+
+% ===================================================================
+% BACKMATTER
+% ===================================================================
+
+\backmatter% end of the main document content
+
+\input{backmatter/bibliography}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

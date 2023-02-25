@@ -1,0 +1,460 @@
+The previous section focused on structure in the empirical risk---like its sum
+structure, and interpretations of risk-based learning for specific loss
+functions---without assumptions about the model $f_{\vtheta}$. This section
+introduces structure in the model. While DNNs are generally highly
+over-parameterized, they usually rely on relatively simple components and
+construction principles.
+
+This manuscript considers sequential feedforward neural networks that consist of
+layers. They comprise ``classic'' architectures like multi-layer perceptrons
+(MLPs), convolutional neural networks (CNNs), and established architectures like
+VGG~\cite{simonyan2015deep}, and ResNets~\cite{he2016deep}. Most of the
+discussion in this text also applies to other architectures, but would require
+heavier notation.
+
+\subsection{Layer-wise Notation}
+
+\tikzexternalenable
+\begin{figure*}[!t]
+  \centering \resizebox{\linewidth}{!}{ {\footnotesize
+      \input{figures/background/forward_pass_model}}}
+  \caption{\textbf{Forward pass of a sequential feedforward neural network
+      (\Cref{eq:background::neuralNetwork}).} The computational graph indicates
+    the data flow and dependencies of intermediate
+    variables.}\label{fig:background::neuralNetwork}
+\end{figure*}
+\tikzexternaldisable
+
+Sequential feedforward neural networks of depth $L$ consist of \emph{modules},
+or \emph{layers}, $f^{(l)}_{\vtheta^{(l)}}, l = 1, \ldots, L$, stacked on top of
+each other such that
+\begin{subequations}\label{eq:background::neuralNetworkAndModule}
+  \begin{align}
+    \label{eq:background::neuralNetwork}
+    f_{\vtheta}
+    =
+    f^{(L)}_{\vtheta^{(L)}}
+    \circ
+    f^{(L-1)}_{\vtheta^{(L-1)}}
+    \circ
+    \ldots
+    \circ
+    f^{(1)}_{\vtheta^{(1)}}
+  \end{align}
+  They map input features $\vx =: \vz^{(0)}$ to predictions $f_{\vtheta}(\vx) =:
+  \vz^{(L)}$ via a sequence of intermediate hidden features $\vz^{(1)}, \dots,
+  \vz^{(L-1)}$. In a forward pass, a module $f^{(l)}_{\vtheta^{(l)}}$ receives the
+  parental output $\vz^{(l-1)} \in \sR^{h^{(l-1)}}$ and applies an operation with
+  (potentially empty) parameters $\vtheta^{(l)} \in \sR^{d^{(l)}}$,
+  \begin{align}
+    \label{eq:background::Module}
+    \vz^{(l)}
+    =
+    f^{(l)}_{\vtheta^{(l)}}(\vz^{(l-1)})\,.
+  \end{align}
+\end{subequations}
+The
+output features $\vz^{(l)} \in \sR^{h^{(l)}}$ serve as input to the next layer
+$l+1$. This builds up dependencies in form of the computational graph shown in
+\Cref{fig:background::neuralNetwork} that maps the leaf nodes $\vz^{(0)}$ and
+$\vtheta^{(1)}, \dots, \vtheta^{(L)}$ to the prediction $\vz^{(L)}$. The neural
+network parameters are often treated as a single vector $\vtheta \in \sR^{D}$
+which results from layer-wise concatenation,%
+\marginnote{%
+  \begin{definition}[\textbf{Tensor flattening}]\label{def:background::Flattening}
+    Let $\tA \in \sR^{n_1 \times n_2 \times \dots, \times n_m}$ denote a tensor
+    of rank $m$ with dimensions $n_1, n_2, \dots, n_{m}$.
+    The flattened tensor $\vec(\tA) \in \sR^{n_1 n_2 \cdots n_m}$ is a vector
+    that concatenates $\tA$'s elements in a
+    first-index-varies-fastest fashion,
+    \begin{equation}\label{eq:background::Flattening}
+      \vec(\tA)
+      =
+      \begin{pmatrix}
+        \etens{A}_{1,1,1,\dots,1}
+        \\
+        \etens{A}_{2,1,1,\dots,1}
+        \\
+        \vdots
+        \\
+        \etens{A}_{n_1,1,1,\dots,1}
+        \\
+        \etens{A}_{1,2,1,\dots,1}
+        \\
+        \vdots
+        \\
+        \etens{A}_{n_1,2,1,\dots,1}
+        \\
+        \vdots
+        \\
+        \etens{A}_{n_1, n_2, n_3, \dots, n_m}
+      \end{pmatrix}\,.
+    \end{equation}
+    The matrix case $m=2$ corresponds to column-stacking. Flattening a vector
+    $\va$ leaves it unaffected, \ie $\vec(\va) = \va$.
+  \end{definition}}%
+\begin{align}
+  \label{eq:background::neuralNetworkParameters}
+  \vtheta
+  =
+  \begin{pmatrix}
+    \vtheta^{(1)}
+    \\
+    \vtheta^{(2)}
+    \\
+    \vdots
+    \\
+    \vtheta^{(L)}
+  \end{pmatrix}\,.
+\end{align}
+To simplify the presentation, \Cref{eq:background::Module} assumes vector-shaped
+quantities. However, many neural networks process higher-dimensional data like images,
+represented by tensors. Sometimes, the tensor structure is convenient to work
+with. One can convert between the tensor and vector view without loss of
+generality by introducing conventions for tensor flattening
+(\Cref{def:background::Flattening}) and reshaping
+(\Cref{def:background::TensorReshape})%
+\marginnote{%
+  \begin{definition}[\textbf{Vector reshaping}]\label{def:background::TensorReshape}
+    Let $\va\in \sR^{n_1 n_2 \cdots n_m}$ be a vector. Reshaping that vector
+    into a rank-$m$ tensor of shape $S = (n_1, n_2, \dots, n_m)$ happens by
+    filling $\va$'s elements into the tensor in a first-index-varies-fastest
+    fashion,
+    \begin{subequations}\label{eq:background::TensorReshape}
+      \begin{align}
+        \tA &= \reshape_{S}(\va)
+      \end{align}
+      with elements
+      \begin{align}
+        \begin{split}
+          \etA_{1, 1, 1, \dots, 1} &= \eva_1\,,
+          \\
+          \etA_{2, 1, 1, \dots, 1} &= \eva_2\,,
+          \\
+                                   &\vdots
+          \\
+          \etA_{n_1, 1, 1, \dots, 1} &= \eva_{n_1}\,,
+          \\
+          \etA_{1, 2, 1, \dots, 1} &= \eva_{n_1 + 1}\,,
+          \\
+                                   &\vdots
+          \\
+          \etA_{n_1, 2, 1, \dots, 1} &= \eva_{2 n_1}\,,
+          \\
+                                   &\vdots
+          \\
+          \hspace{-2ex}\etA_{n_1, n_2, n_3, \dots, n_m} &= \eva_{n_1 n_2 n_3 \cdots n_m}\,.
+        \end{split}
+      \end{align}
+    \end{subequations}
+    The matrix case $m=2$ corresponds to column-filling. With tensor flattening
+    (\Cref{def:background::Flattening}) this allows to define tensor reshaping:
+    A tensor $\tB_1$ of shape $S_1$ is rearranged into any tensor $\tB_2$ of
+    compatible shape $S_2$ by first flattening, then reshaping it, \ie $\tB_2 :=
+    \reshape_{S_2}(\tB_{1}) := \reshape_{S_2}(\vec \tB_{1})$.
+  \end{definition}
+  }%
+%
+; after all, multi-dimensional arrays are represented in a vector format in
+memory.
+
+However, there exist different flattening conventions. Implementations often
+favor row-major ordering. This manuscript uses (the more common in literature)
+column-major order as it allows for elegant generalizations of derivative
+concepts for multi-variate functions, like the Jacobian
+(\Cref{hbp::def:generalizedJacobian}), the Hessian
+(\Cref{hbp::def:generalizedHessian}), and their chain rules
+(\Cref{hbp::the:chainRuleJacobians,hbp::the:chainRuleHessians}). To translate
+analytical results into implementations, it is crucial to be aware of these
+differing conventions.
+
+\subsection{Modularity \& Common
+  Operations}\label{sec:background::CommonOperations}
+
+An important strength of deep learning is its \emph{modularity}. ML libraries
+provide a large number of operations, or modules, that can be combined in almost
+arbitrary ways through function composition, like in
+\Cref{eq:background::neuralNetwork}. Training the resulting models with
+first-order methods remains simple because their gradient can be automatically
+computed via AD (\Cref{sec:background::GradientBackpropagation}). New operations
+can easily be added because its implementation is decoupled to the modular
+level.
+
+% What is a module?
+Modules are vaguely defined. Often, multiple operations that form a logical
+processing unit in a neural network are grouped into a single module, \eg an MLP
+layer combines affine transformation and elementwise activation (see below). In
+extreme cases, even an entire neural network can be considered a single module
+that can be used in other neural networks; \eg the neural network in
+\Cref{fig:background::ModelLossFunctionSplit} resembles a single layer in
+\Cref{fig:background::neuralNetwork} and could act as one layer in a larger
+network.
+
+% Which perspective are we choosing?
+For theoretical analyses, it is preferable to consider units with a small number
+of operations as modules. This, however, is inconvenient for constructing large
+architectures, where many operations are grouped into higher-level units. This
+text adapts a rather fine-grained view on modules that is close to their
+implementation in ML libraries like \pytorch.
+
+A common categorization for modules distinguishes trainable functions with
+parameters, and parameter-free operations. \Cref{tab:background::forward} lists
+the forward passes of common operations that will be illustrated in the
+following presentation of network architectures. To distringuish more clearly
+between input and output of an operation, the notation uses the symbols $\vx,
+\vz$ for module input and output instead of $\vz^{(l-1)}, \vz^{(l)}$, and
+neglects the layer superscript for the parameters, writing $\vtheta$ instead of
+$\vtheta^{(l)}$.
+
+\begin{table}[!t]
+  \caption{\textbf{Forward pass for common modules used in feedforward
+      networks.} Input and output are denoted $\vx, \vz$ rather than $\vz^{(l)},
+    \vz^{(l+1)}$ to avoid clutter. $\mI$ is the identity matrix. Bold upper-case
+    symbols ($\mW, \mX, \mZ, \dots$) denote matrices and bold upper-case sans
+    serif symbols ($\tW, \tX, \tZ, \dots$) denote tensors. See
+    \Cref{hbp::sec:examples_fcnn,hbp::sec:examples_loss,hbp::sec:examples_cnn}
+    for details, and
+    \Cref{tab:background::Jacobians,hbp::table:backpropEquations} for extended
+    versions of this table for the backward, and Hessian backward, pass.}
+  \label{tab:background::forward}
+  \centering
+  \begin{footnotesize}
+    \begin{tabular}{ll}
+      \toprule
+      \textbf{OPERATION} & \textbf{FORWARD}
+      \\
+      \midrule
+      % matrix-vector multiplication
+      Matrix-vector multiplication & $\vz(\vx, \mW) = \mW\vx$
+      \\
+      % matrix-matrix multiplication
+      Matrix-matrix multiplication & $\mZ(\mX, \mW) = \mW\mX$
+      \\
+      % addition
+      Addition & $\vz(\vx, \vb) = \vx + \vb$
+      \\
+      % elementwise activation
+      Elementwise activation & $\vz(\vx) = \vphi(\vx)$\,,\ \text{s.t.} $z_i(\vx) = \phi(x_i)$
+      \\
+      \midrule
+      % residual unit/skip-connection
+      Skip-connection & $\vz(\vx, \vtheta) = \vx + \vs(\vx, \vtheta)$
+      \\
+      \midrule
+      % reshape/view operation
+      Reshape/view & $\tZ(\tX)= \mathrm{reshape}(\tX)$
+      \\
+      % extraction operator
+      Index select/map $\pi$ & $\vz(\vx) = \mPi \vx\, ,$ $\emPi_{j,\pi(j)} = 1\,, $
+      \\
+      % convolution
+      Convolution & $\tZ(\tX, \tW) = \tX \star \tW$\,,
+      \\
+                         & $\mZ(\mW, \llbracket\tX\rrbracket) = \mW \llbracket \tX \rrbracket$\,,
+      \\
+      \midrule
+      % square loss
+      Square loss & $\ell(\vf, \vy) = \nicefrac{1}{C} (\vy-\vf)^\top (\vy - \vf)$ \\
+      % cross-entropy loss
+      Softmax cross-entropy & $\ell(\vf, y) = - \onehot(y)^\top \log\left[\vp(\vf)\right]$
+      \\
+      \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+\end{table}
+
+\subsubsection{Deep Linear Networks \& Multi-layer Perceptrons (MLPs)}
+
+\emph{Linear layers} process inputs $\vx$ by affine transformation, \ie multiplication
+with a weight matrix $\mW$, followed by addition of a bias vector $\vb$,
+\begin{align}\label{eq:background::LinearLayer}
+  \vz = \mW \vx + \vb
+  \qquad
+  \text{where}
+  \qquad
+  \vtheta =
+  \begin{pmatrix}
+    {(\vec \mW)}^{\top} & {\vb}^{\top}
+  \end{pmatrix}^{\top}\,.
+\end{align}
+They are also referred to as \emph{fully-connected} layers, because each output
+$z_i$ depends on all inputs $\vx$ through $\mW_{i,:}$ and $\evb_i$.
+
+\emph{Deep linear networks} %
+\marginnote{%
+  \begin{example}[\textbf{Deep linear
+      network}]\label{ex:background::deepLinearNetwork}
+    In notation of \Cref{eq:background::neuralNetworkAndModule}, a deep linear
+    network of depth $L$ reads
+    \begin{align*}
+      \vz^{(l)}
+      &=
+        \mW^{(l)} \vz^{(\ell-1)} + \vb^{(l)}
+        \qquad
+        \shortintertext{where}
+        \qquad
+        \vtheta^{(l)}
+      &=
+        \begin{pmatrix}
+          {\left(\vec \mW^{(l)}\right)}^{\top} & {\vb^{(l)}}^{\top}
+        \end{pmatrix}^{\top}\,,
+      \\
+      l &= 1, \dots, L\,.
+    \end{align*}
+  \end{example}
+}%
+(\Cref{ex:background::deepLinearNetwork}) consist of
+only linear layers and are of interest for analytical
+studies~\cite[\eg][]{saxe2014exact,mulayoff2020unique,bernacchia2018exact} as
+they are somewhat tractable. They describe a linear feature map, \ie a linear
+function \wrt the input $\vz^{(0)}$, that is non-linear in the parameters.
+Therefore, such networks are as expressive as a single linear layer, but highly
+overparameterized.
+
+A common technique to turn a deep linear network into a non-linear feature map
+is to interlace affine transformations with non-linear
+activations~\cite{rosenblatt1958perceptron}. An \emph{activation layer} $\vphi$
+acts elementwise on its input, \ie applies the same function $\phi$ to each
+input element,
+\begin{align*}
+  \vz = \vphi(\vx)\qquad \text{such that}\qquad \evz_i = \phi(\evx_i)\,.
+\end{align*}
+There exist many activations (ReLU, sigmoid, $\tanh$, \etc \cite[Chapter
+6]{goodfellow2016deep}), and recent works proposing new choices (\eg squared
+ReLU~\citep{so2021searching}).
+
+\emph{Multi-layer perceptrons} %
+\marginnote{%
+  \begin{example}[\textbf{Multi-layer perceptron (MLP)}]\label{ex:background::MLP}
+    In terms of \Cref{eq:background::neuralNetworkAndModule}, an MLP of depth
+    $L$ reads
+    \begin{align*}
+      \vz^{(l)}
+      &=
+        \vphi^{(l)}\left( \mW^{(l)} \vz^{(\ell-1)} + \vb^{(l)}\right)\,,
+        \shortintertext{where}
+        \vtheta^{(l)}
+      &=
+        \begin{pmatrix}
+          {\left(\vec \mW^{(l)}\right)}^{\top} & {\vb^{(l)}}^{\top}
+        \end{pmatrix}^{\top}\,,
+      \\
+      l &= 1, \dots, L\,,
+      \\
+      \vphi^{(L)} &= \mathrm{id}
+    \end{align*}
+    and $\mathrm{id}$ denotes the identity.
+  \end{example}
+}%
+(MLPs, \Cref{ex:background::MLP}) combine affine transformation and activation
+in a layer. Activation functions $\vphi^{(l)}$ may vary between layers, but are
+often chosen identically, with no activation in the last layer. One way to
+interpret this design is that the mapping $\vz^{(0)} \mapsto \vz^{(L-1)}$ acts
+as non-linear feature transformation, and the last layer $\vz^{(L-1)} \mapsto
+\vz^{(L)}$ as linear classifier for the learned features.
+
+\subsubsection{Convolutional Neural Networks (CNNs)}
+
+CNNs represent an important neural network architecture revolution and were the
+first class of deep neural network to beat ``classical'' methods on the
+\imagenet
+competition~\cite{deng2009imagenet,krizhevsky2012imagenet,russakovsky2015imagenet}.
+Broadly speaking, such networks contain convolutional layers with trainable
+parameters.
+
+\paragraph{Convolutional layers:} Convolutions process multi-channel input
+features such as images and are parameterized by a kernel that can be imagined
+as a filter for patterns like edges, corners, \etc During the convolution
+operation, the kernel slides over the input features and produces an output
+element by contraction with the overlapping elements of the image. In most
+cases, each output channel is also shifted by a bias parameter which will be
+neglected in this presentation for simplicity (detailed discussion in
+\Cref{hbp::sec:examples_cnn}, example in \Cref{hbp::equ:convolutionExample}).
+Because the kernel moves over the image, it can detect patterns irrespective of
+their position. The process can be adjusted with various hyperparameters, such
+as stride, padding, groups, dilation
+(see~\cite{dumoulin2016ConvolutionArithmeticGuide} for a visual guide).
+
+In contrast to the linear layer (\Cref{eq:background::LinearLayer}) where each
+output is connected to all inputs via independent rows of the weight matrix, the
+parameters in the kernel are shared across all outputs. Therefore, convolutions
+usually require less parameters than fully-connected layers.
+
+Nevertheless, both layers are related because convolution is a linear operation
+and can therefore be regarded as matrix multiplication. Due to the weight
+sharing, this matrix is structured by the kernel elements\sidenote{\Eg, in the
+  one-dimensional case, the convolution of two vectors can be computed by
+  expanding one into a Toeplitz matrix, and multiplying that onto the second
+  vector~\cite{wiki2022toeplitz}.}. Alternatively, one can stack patches---input
+elements that overlap with the kernel at each stage---into columns of a matrix,
+which yields the unfolded input, denoted by $\llbracket \tX \rrbracket$ in
+\Cref{tab:background::forward}. Then, convolution is a matrix-matrix product
+between a matrix reshape of the kernel and the unfolded
+input~\cite{chellapilla2006HighPerformanceCNN}
+(see~\Cref{hbp::subfig:convolutionIllustration3} for an illustration).
+
+\paragraph{Padding \& pooling layers:} Convolutions are often combined with
+other modules. \emph{Padding layers} add pixels around the outer dimensions of
+an image, which helps to reduce information loss at the image boundaries during
+convolution. \emph{Pooling layers} down-sample images by summarizing patches of
+pixels and reduce the number of hidden features. Similar to convolution, pooling
+considers patches of an input image. Two common summary operations are
+per-channel averaging and taking the per-channel maximum. They give rise to
+maximum and average pooling.
+
+One can interpret padding and pooling as scatter operations, realized by
+multiplication with a sparse, binary matrix $\mPi$ (compare
+\Cref{tab:background::forward}:
+\begin{itemize}
+\item For padding, $\mPi$ does not dependent on the input, but only its shape
+  and the hyperparameters. A row is empty if its index corresponds to the padded
+  area, and otherwise contains a one at the element's index to be copied from
+  the input.
+
+\item For maximum pooling, $\mPi$ depends on the input. Each row contains a one
+  at the index of the element with maximum value in the patch.
+
+\item For average pooling, $\mPi$ does not dependent on the input, but only its
+  shape and the hyperparameters. Each row contains the inverse patch size at
+  indices of the elements in the current patch.
+\end{itemize}
+
+\subsubsection{Residual Networks (ResNets)}
+
+The inclusion of skip (or residual) connections~\cite{he2016deep} represents
+another revolution in the design of CNNs, and enabled training of deeper
+architectures, with 100 or even 1000 layers. This lead to improved performance
+of such CNNs on tasks like
+\imagenet~\cite{deng2009imagenet,russakovsky2015imagenet}. Skip connections
+branch off a hidden feature and feed it back after the residual block $\vs(\vx,
+\vtheta)$,
+\begin{align*}
+  \vz = \vx + \vs(\vx, \vtheta)\,.
+\end{align*}
+This can be seen as learning a small modification $\vs(\vx, \vtheta)$---a
+residual function---for $\vx$; hence the name \emph{residual connection}.
+
+\subsubsection{Closing Remarks \& Sources of Non-linearity}
+
+This short overview of common neural network layers and architectures is, of
+course, incomplete. Other famous layers include
+dropout~\cite{srivastava2014dropout},
+recursive~\cite{hochreither1997lstm,cho2014properties,elman1990finding},
+normalization~\cite{ioffe2015batch,wu2019group}, attention
+layers~\cite{vaswani2017attention}, \etc
+
+An interesting observation about the operations in
+\Cref{tab:background::forward} is that most of them are linear (linear,
+convolution, padding, and average pooling layers) or piece-wise linear (maximum
+pooling and ReLU activation layer) \wrt both their input and parameters. This
+implies that their second- and higher-order derivatives vanish. Non-linearity is
+often only introduced by activation layers (elementwise) and loss functions
+(after the model's forward pass). While the properties of these components are
+not inherited by the entire neural network, they give rise to structure in a
+network's higher-order derivatives, see \eg \Cref{chap:hbp}.
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

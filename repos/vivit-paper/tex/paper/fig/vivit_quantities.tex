@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+  % PDF Picture. Set the origin to the south west corner
+  \node[inner sep=0pt] (pdf_plot) at (0,0){\includegraphics[width=\linewidth]{fig/visual_abstract/vivit_quantities_transparent.pdf}};
+
+  \coordinate (origin) at (pdf_plot.south west);
+
+  % Text
+  \node[anchor=south west, inner sep=0pt] at ($ (origin) + (0.25*\linewidth, 0.26*\linewidth)$)
+  {$\vtheta_t$};
+
+  \node[anchor=south west, inner sep=0pt] at ($ (origin) + (0.5*\linewidth, 0.26*\linewidth) $)
+  {$\textcolor{oo_gelb}{\ve_k}$};
+
+  \node[anchor=south west, inner sep=0pt] at ($ (origin) + (0.85*\linewidth, 0.6*\linewidth) $)
+  {$\textcolor{oo_rot}{\gL}$};
+
+  \node[anchor=south west, inner sep=0pt] at ($ (origin) + (0.85*\linewidth, 0.37*\linewidth) $)
+  {$\textcolor{oo_blau}{q}$};
+
+  \node[anchor=south west, inner sep=0pt] at ($ (origin) + (0.26*\linewidth, 0.6*\linewidth) $)
+  {$\textcolor{oo_gelb}{\mathcal{E}}$};
+
+  \node[anchor=south west, inner sep=0pt, rotate=21] at ($ (origin) + (0.66*\linewidth, 0.035*\linewidth) $)
+  {$\textcolor{oo_blau}{\gamma_k} ,\textcolor{oo_blau}{\lambda_k}$};
+
+  \node[anchor=south west, inner sep=0pt, rotate=30] at ($ (origin) + (0.8*\linewidth, -0.02*\linewidth) $)
+  {$\textcolor{oo_gruen}{\gamma_{nk}} ,\textcolor{oo_gruen}{\lambda_{nk}}$};
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

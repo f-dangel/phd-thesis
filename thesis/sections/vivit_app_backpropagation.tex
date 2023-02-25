@@ -1,0 +1,64 @@
+\subsubsection{Layer View of Backpropagation}
+
+Consider a single layer $f^{(l)}_{\vtheta^{(l)}}$ that transforms inputs
+$\vz_n^{(l-1)} \in \sR^{h^{(l-1)}}$ into outputs $\vz_n^{(l)} \in \sR^{h^{(l)}}$
+by means of a parameter $\vtheta^{(l)} \in \sR^{d^{(l)}}$. During
+backpropagation for $\mV$, the layer receives vectors $ \vs_{n,c}^{(l)} =
+(\jac_{\vz_n^{(l)}}\vf_n)^\top \vs_{n,c}$
+% for $n=1,\dots, N$, $c=1,\dots,C$
+from the previous stage (recall $\nabla_{\vf_n}^2\ell_n = \sum_{c=1}^C \vs_{n,c}
+\vs_{n,c}^\top$). Parameter contributions $\vv_{nc}^{(l)}$ to $\mV$ are obtained
+by application of its Jacobian,
+\begin{align}
+  \nonumber
+  \vv_{nc}^{(l)}
+  &=
+    \left(
+    \jac_{\vtheta^{(l)}} \vf_n
+    \right)^\top
+    \vs_{n,c}
+  \\
+  \nonumber
+  &=
+    \left(
+    \jac_{\vtheta^{(l)}} \vz_n^{(l)}
+    \right)^\top
+    \left(
+    \jac_{\vz_n^{(l)}} \vf_n
+    \right)^\top
+    \vs_{n,c}
+    \explainmath{(Chain rule)}
+  \\
+  &=
+    \left(
+    \jac_{\vtheta^{(l)}} \vz_n^{(l)}
+    \right)^\top
+    \vs_{n,c}^{(l)}\,.
+    \explainmath{(Definition of $\vs_{n,c}^{(l)}$)}
+    \label{vivit::eq:ggn-vector-layer-i}
+\end{align}
+Consequently, $\vtheta^{(l)}$'s contribution to $\mV$, denoted by
+$\mV^{(l)} \in \sR^{d^{(l)} \times NC}$, is
+\begin{align}
+  \label{vivit::eq:layerwise-ggn-factor}
+  \begin{split}
+    \mV^{(l)}
+    &=
+      \frac{1}{\sqrt{N}}
+      \begin{pmatrix}
+        \vv^{(l)}_{1,1} & \vv^{(l)}_{1,2} & \dots & \vv^{(l)}_{N,C}
+      \end{pmatrix}
+    \\
+    \text{with}\qquad
+    \vv_{nc}^{(l)}
+    &=
+      \left(
+      \jac_{\vtheta^{(l)}} \vf_n\right)^\top
+      \vs_{n,c}\,.
+  \end{split}
+\end{align}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

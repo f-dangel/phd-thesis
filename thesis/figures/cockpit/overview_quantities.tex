@@ -1,0 +1,40 @@
+{\def\arraystretch{1.2}
+  \begin{table*}
+    \caption{\textbf{Overview of \cockpittitle quantities}. They range from
+      cheap byproducts, to nonlinear transformations of first-order information
+      and Hessian-based measures. Some quantities have already been proposed,
+      others are first to be considered in this work. They are categorized into
+      configurations \textit{economy $\subseteq$ business $\subseteq$ full} based on their
+      run time overhead (see \Cref{cockpit::sec:benchmark} for a detailed evaluation).}
+    \label{cockpit::tab:overview-quantities}
+    \begin{center}
+      \footnotesize
+      \begin{tabularx}{\linewidth}{lXcr}
+        \toprule
+        \textbf{Name}       & \textbf{Short Description}                                                                                           & \textbf{Config}   & \textbf{Pos.\,in Fig.\,\ref{cockpit::fig:showcase}}  \\
+        \midrule
+        \inlinecode{Alpha}      & Normalized step size on a noisy quadratic interpolation between $\vtheta_t$, $\vtheta_{t+1}$            & \textit{economy}  & top \textcolor{sns_blue}{left}        \\
+        \inlinecode{Distance}   & Distance from initialization $\lVert \vtheta_{t} -  \vtheta_{0}  \rVert_2$                                           & \textit{economy}  & middle \textcolor{sns_blue}{left}     \\
+        \inlinecode{UpdateSize} & Update size $\lVert \vtheta_{t + 1} - \vtheta_{t} \rVert_2$                                                          & \textit{economy}  & middle \textcolor{sns_blue}{left}     \\
+        \inlinecode{GradNorm}   & Mini-batch gradient norm $\lVert \vg_{\sB}(\vtheta) \rVert_2$                                                        & \textit{economy}  & bottom \textcolor{sns_blue}{left}     \\
+        \inlinecode{NormTest}   & Normalized fluctuations of residual norms ${\lVert  \vg_{\sB} - \vg_n \rVert_2}$, proposed in \citep{byrd2012sample}   & \textit{economy}  & top \textcolor{sns_orange}{center}    \\
+        \inlinecode{InnerTest}  & Normalized fluctuations of $\vg_n$'s parallel to $\vg_{\sB}$, proposed in \citep{bollapragada2017adaptive} & \textit{economy}  & top \textcolor{sns_orange}{center}    \\
+        \inlinecode{OrthoTest}  & Like  \inlinecode{InnerTest} but using the orthogonal components, proposed in \citep{bollapragada2017adaptive}                 & \textit{economy}  & top \textcolor{sns_orange}{center}    \\
+        \inlinecode{GradHist1d} & Histogram of individual gradient elements, $\{[\vg_n]_j\}_{(\vx_{n},
+                              \vy_{n}) \in \sB}^{j=1,\dots,D}$                           & \textit{economy}  & middle \textcolor{sns_orange}{center} \\
+        \inlinecode{TICDiag}    & Relation of (diagonal) curvature and gradient noise, inspired by \citep{thomas2020interplay}                             & \textit{business} & bottom \textcolor{sns_green}{right}   \\
+        \inlinecode{HessTrace}  & Exact or approximate Hessian trace, $\Tr(\mH_{\sB}(\vtheta))$, inspired by \citep{yao2020pyhessian}                           & \textit{business} & middle \textcolor{sns_green}{right}   \\
+        \inlinecode{HessMaxEV}  & Maximum Hessian eigenvalue, $\lambda_{\text{max}}(\mH_{\sB}(\vtheta))$, inspired by \citep{yao2020pyhessian}                  & \textit{full}     & top \textcolor{sns_green}{right}      \\
+        \inlinecode{GradHist2d} & Histogram of weights \& per-sample gradients, $\{
+                              (\evtheta_j,[\vg_n]_j)\}_{(\vx_{n},
+                              \vy_{n}) \in \sB}^{j=1,\dots,D}$  & \textit{full}     & bottom \textcolor{sns_orange}{center} \\
+        \bottomrule
+      \end{tabularx}
+    \end{center}
+  \end{table*}
+}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

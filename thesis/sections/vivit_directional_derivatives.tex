@@ -1,0 +1,44 @@
+\begin{figure}
+  \centering
+  % \textbf{\cifarten \threecthreed \sgd}\\[1mm]
+  \input{figures/vivit/gammas_lambdas_default_style}
+  \pgfkeys{/pgfplots/zmystyle/.style={
+      gammaslambdasdefault
+    }}
+  \tikzexternalenable
+  \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/gammas_lambdas/cifar10_3c3d_sgd_lambdas}
+  \tikzexternaldisable
+  \caption{ \textbf{Directional curvature SNRs:} Curvature SNRs along each of
+    the mini-batch \ggn{}'s top-$C$ eigenvectors during training of the
+    \threecthreed network on \cifarten with \sgd{}. At fixed epoch, the SNR for
+    the most curved direction is shown in
+    {\protect\tikz{\protect\draw[white,fill={light_red},line width=0mm] (0,0)
+        circle (.8ex);}} and the SNR for the direction with the smallest
+    curvature is shown in {\protect\tikz{\protect\draw [white,fill=black] (0,0)
+        circle (.8ex);}}. } \label{vivit::fig:directional_derivatives}
+\end{figure}
+
+A unique feature of \vivit{}'s quantities is that they provide a notion of
+\textit{curvature uncertainty} through \textit{per-sample} first- and
+second-order directional derivatives (\Cref{vivit::eq:gammas-lambdas}). To
+quantify noise in these derivatives, we compute their signal-to-noise ratios
+(SNRs). For each direction $\ve_k$, the SNR is given by the squared empirical
+mean divided by the empirical variance of the $N$ mini-batch samples
+$\{\gamma_{n,k}\}_{n=1}^N$ and $\{\lambda_{n,k}\}_{n=1}^N$, respectively.
+
+\Cref{vivit::fig:directional_derivatives} shows curvature SNRs during training
+the \threecthreed network on \cifarten with \sgd. The curvature signal along the
+top-$C$ eigenvectors decreases from $\text{SNR} > 1$ by two orders of magnitude.
+In comparison, the directional gradients do not exhibit such a pattern (see
+\Cref{vivit::sec:directional_derivatives}). Results for the other test cases can
+be found in \Cref{vivit::sec:directional_derivatives}.
+
+In this section, we have given a glimpse of the \textit{very rich} quantities
+that can be efficiently computed under \vivit's concept. In
+\Cref{vivit::sec:use_cases}, we discuss their practical use---curvature
+uncertainty in particular.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

@@ -1,0 +1,35 @@
+\ifthenelse{\boolean{createDampingPlots}}{
+
+\begin{figure}[t]
+	\plotDifferentDampings{mnist}{logreg}{Zero}
+\end{figure}
+
+\begin{figure}[t]
+	\plotDifferentDampings{mnist}{logreg}{DiagGGN}
+\end{figure}
+
+\begin{figure}[t]
+	\plotDifferentDampings{mnist}{logreg}{SDiagGGN}
+\end{figure}
+
+%\begin{figure}[t]
+%	\plotDifferentDampings{mnist}{logreg}{KFAC}
+%\end{figure}
+%
+%\begin{figure}[t]
+%	\plotDifferentDampings{mnist}{logreg}{KFLR}
+%\end{figure}
+%
+%\begin{figure}[t]
+%	\plotDifferentDampings{mnist}{logreg}{KFRA}
+%\end{figure}
+
+}{
+
+% NOTHING
+
+}
+
+
+
+

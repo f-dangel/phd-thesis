@@ -1,0 +1,16 @@
+\input{figures/background/model_loss_split_command}
+
+\begin{tikzpicture}
+  \foreach \x in {1,2,3} {
+    \pgfmathsetmacro{\xshiftcm}{-0.2 * (\x - 1)}
+    \pgfmathsetmacro{\yshiftcm}{-0.6 * (\x - 1)}
+    \begin{scope}[xshift = \xshiftcm cm, yshift = \yshiftcm cm, opacity = 0.95]
+      \drawModelLossSplit{$\vx_{\x}$}{$\vf_{\x}$}{$\vy_{\x}$}{$\ell_{\x}$}
+    \end{scope}
+   }
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

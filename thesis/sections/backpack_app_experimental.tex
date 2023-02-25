@@ -1,0 +1,224 @@
+\subsection{Protocol}
+The optimizer experiments are performed according to the protocol suggested by
+\DeepOBS:
+\begin{itemize}
+\item Train the neural network with the investigated optimizer and vary its
+  hyperparameters on a specified grid. This training is performed for a single
+  random seed only.
+\item \DeepOBS evaluates metrics during the training procedure. From all runs of
+  the grid search, it selects the best run automatically. The results shown in
+  this work were obtained with the default strategy, favoring highest final
+  accuracy on the validation set.
+\item For a better understanding of the optimizer performance with respect to
+  randomized routines in the training process, \DeepOBS reruns the best
+  hyperparameter setting for ten different random seeds. The results show mean
+  values over these repeated runs, with standard deviations as uncertainty
+  indicators.
+\item Along with the benchmarked optimizers, we show the \DeepOBS base line
+  performances for Adam and momentum \SGD (Momentum). They are provided by
+  \DeepOBS.
+\end{itemize}
+The optimizers built upon \BackPACK's curvature estimates were benchmarked on
+\DeepOBS's image classification problems from
+\Cref{backpack::tab:deepobs_problems}.
+
+\begin{table*}[!bthp]
+  \caption{\textbf{Image classification test problems considered from the
+      \DeepOBS library \citep{schneider2019deepobs}.}}
+  \label{backpack::tab:deepobs_problems}
+  ~\\[-.5em]
+  \centering
+  \begin{footnotesize}
+    \begin{tabular}{lllr}
+      \toprule
+      \textbf{Codename}        & \textbf{Description}                                           & \textbf{Dataset}   & \textbf{\# Parameters} \\
+      \midrule
+      \MNISTNET     & Linear model                                              & \MNIST         &     7,850         \\
+      \FMNISTNET       & 2 convolutional and 2 dense linear layers                 & \FMNIST & 3,274,634         \\
+      \CIFARTENNET       & 3 convolutional and 3 dense linear layers                 & \CIFAR{10}      &   895,210         \\
+      \ALLCNNC    & 9 convolutional layers \citep{springenberg2015striving}   & \CIFAR{100}     & 1,387,108         \\
+      \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+\end{table*}
+
+\subsection{Grid Search \& Best Hyperparameter
+  Setting}\label{backpack::app:grid-search}
+
+Both the learning rate $\eta$ and damping $\lambda$ are tuned over the grid
+\begin{align*}
+  \eta \in \left\{10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}, 1 \right\}\equationPunctuation{,} \quad \lambda \in \left\{10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}, 1, 10 \right\}\equationPunctuation{.}
+\end{align*}
+We use the same batch size ($N=128$ for all problems, except $N=256$ for
+\ALLCNNC on \CIFAR{100}) as the base lines and the optimizers run for the
+identical number of epochs.
+
+The best hyperparameter settings are summarized in
+\Cref{backpack::table:best_runs_hyperparameters}.
+
+\begin{table*}
+  \centering
+  \caption{\textbf{Best hyperparameter settings for optimizers and baselines
+      shown in this work.} In the Momentum
+    %	and Nesterov
+    baselines, the momentum was fixed to $0.9$. Parameters for computation of
+    the running averages in Adam use the default values $(\beta_1, \beta_2) =
+    (0.9, 0.999)$. The symbols\ \cmark\ and\ \xmark \ denote whether the
+    hyperparameter setting is an interior point of the grid or not,
+    respectively.}
+  \label{backpack::table:best_runs_hyperparameters}
+  \vspace{1ex}
+
+  \begin{footnotesize}
+    \begin{tabular}{c|ccc|ccc|ccc|ccc}
+      \toprule
+      \multirow{2}{*}{\textbf{Curvature}} &
+                                            \multicolumn{3}{c}{\inlinecode{mnist\_logreg}} &
+                                                                                         \multicolumn{3}{c}{\inlinecode{fmnist\_2c2d}} &
+                                                                                                                                     \multicolumn{3}{c}{\inlinecode{cifar10\_3c3d}} &
+                                                                                                                                                                                  \multicolumn{3}{c}{\inlinecode{cifar100\_allcnnc}}
+      \\
+                                          & $\eta$ & $\lambda$ & $\mathrm{int}$
+                                                                                                                                                                                & $\eta$ & $\lambda$ & $\mathrm{int}$
+                                                               & $\eta$ & $\lambda$ & $\mathrm{int}$
+                                                                                                                                                                                                     & $\eta$ & $\lambda$ & $\mathrm{int}$
+      \\
+      \midrule
+      \multirow{1}{*}{\DiagGGN}
+                                          & $10^{-3}$ & $10^{-3}$ & \cmark
+                                                                                                                                                                                & $10^{-4}$ & $10^{-4}$ & \xmark
+                                                               & $10^{-3}$ & $10^{-2}$ & \cmark
+                                                                                                                                                                                                     & - & - & -
+      \\
+      \multirow{1}{*}{\DiagGGNMC}
+                                          & $10^{-3}$ & $10^{-3}$ & \cmark
+                                                                                                                                                                                & $10^{-4}$ & $10^{-4}$ & \xmark
+                                                               & $10^{-3}$ & $10^{-2}$ & \cmark
+                                                                                                                                                                                                     & $10^{-3}$ & $10^{-3}$ & \cmark
+      \\
+      \multirow{1}{*}{\KFAC}
+                                          & $10^{-2}$ & $10^{-2}$ & \cmark
+                                                                                                                                                                                & $10^{-3}$ & $10^{-3}$ & \cmark
+                                                               & $1$ & $10$ & \xmark
+                                                                                                                                                                                                     & $1$ & $1$ & \cmark
+      \\
+      \multirow{1}{*}{\KFLR}
+                                          & $10^{-2}$ & $10^{-2}$ & \cmark
+                                                                                                                                                                                & $10^{-2}$ & $10^{-3}$ & \cmark
+                                                               & $1$ & $10$ & \xmark
+                                                                                                                                                                                                     & - & - & -
+      \\
+      \multirow{1}{*}{\KFRA}
+                                          & $10^{-2}$ & $10^{-2}$ & \cmark
+                                                                                                                                                                                & - & - & -
+                                                               & - & - & -
+                                                                                                                                                                                                     & - & - & -
+      \\
+      \midrule
+      \textbf{Baseline}
+                                          & \multicolumn{3}{c}{$\eta$}
+                                                                                       & \multicolumn{3}{c}{$\eta$}
+                                                                                                                                   & \multicolumn{3}{c}{$\eta$}
+                                                                                                                                                                                & \multicolumn{3}{c}{$\eta$}
+      \\
+      \midrule
+      Momentum
+                                          & \multicolumn{3}{c}{$\approx 2.07 \cdot 10^{-2}$}
+                                                                                       & \multicolumn{3}{c}{$\approx 2.07 \cdot 10^{-2}$}
+                                                                                                                                   & \multicolumn{3}{c}{$\approx 3.79 \cdot 10^{-3}$}
+                                                                                                                                                                                & \multicolumn{3}{c}{$\approx 4.83 \cdot 10^{-1}$}
+      \\
+      Adam
+                                          & \multicolumn{3}{c}{$\approx 2.98 \cdot 10^{-4}$}
+                                                                                       & \multicolumn{3}{c}{$\approx 1.27 \cdot 10^{-4}$}
+                                                                                                                                   & \multicolumn{3}{c}{$\approx 2.98 \cdot 10^{-4}$}
+                                                                                                                                                                                & \multicolumn{3}{c}{$\approx 6.95 \cdot 10^{-4}$}
+      \\
+      \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+\end{table*}
+
+\subsection{Update rule}\label{backpack::app:update_rule_details}
+
+We use a simple update rule with a constant damping parameter $\lambda$.
+Consider the parameters $\vtheta$ of a single module in a neural network with
+$L_2$-regularization of strength $\delta$. Let $\mC(\vtheta_t)$ denote the
+curvature matrix and $\nabla_{\vtheta_t}\mathcal{L}(\vtheta_t)$ the gradient at
+step $t$. One iteration applies
+\begin{equation}
+  \vtheta_{t+1}
+  \leftarrow
+  \vtheta_{t}
+  +
+  \left[
+    \mC(\vtheta_t) + (\lambda + \delta) \mI
+  \right]^{-1}
+  \left[
+    \nabla_{\theta_t}\mathcal{L}(\vtheta_t) + \delta \vtheta_{t}
+  \right]\equationPunctuation{.}
+\end{equation}
+The inverse cannot be computed exactly (in reasonable time) for the
+Kronecker-factored curvatures \KFAC, \KFLR, and \KFRA. We use the scheme of
+\cite{martens2015optimizing} to approximately invert $\mC(\vtheta_{t}) +
+(\lambda + \delta) \mI$ if $\mC(\vtheta_{t})$ is Kronecker-factored;
+$\mC(\vtheta_{t}) = \mA(\vtheta_{t}) \otimes \mB(\vtheta_{t})$. It replaces the
+expression $(\lambda + \delta) \mI$ by diagonal terms added to each Kronecker
+factor. In summary, this replaces
+\begin{align}
+  \begin{split}
+    &\left[
+      \mA(\vtheta_{t}) \otimes \mB(\vtheta_{t}) + (\lambda + \delta) \mI
+      \right]^{-1}
+    \\ \text{by}
+    \quad&
+           \left[
+           \mA(\vtheta_{t}) + \pi_t \sqrt{\lambda + \delta} \mI
+           \right]^{-1}
+           \otimes
+           \left[
+           \mB(\vtheta_{t}) + \frac{1}{\pi_t} \sqrt{\lambda + \delta} \mI
+           \right]^{-1}\,.
+  \end{split}
+\end{align}
+A principled choice for the parameter $\pi_t$ is $ \pi_t = \sqrt{ \nicefrac{
+    \lVert \mA(\vtheta_t) \otimes \mI_B \lVert }{ \lVert \mI_A \otimes
+    \mB(\vtheta_{t}) \rVert } } $ for any matrix norm $\lVert \cdot \rVert$. We
+follow \cite{martens2015optimizing} and choose the trace norm,
+\begin{equation}
+  \pi_t = \sqrt{\dfrac{\Tr(\mA(\vtheta_{t})) \dim(\mB)}{\dim(\mA) \otimes \Tr(\mB(\vtheta_{t}))}}\equationPunctuation{.}
+\end{equation}
+
+\subsection{Additional results}\label{backpack::app:additional-results}
+
+This section presents the results for \MNIST using a logistic regression in
+\Cref{backpack::fig:app-mnist} and \FMNIST using the \FMNISTNET network,
+composed of two convolutional and two linear layers, in
+\Cref{backpack::fig:app-fmnist}.
+
+\begin{figure*}[!hp]
+  \centering
+  \begin{subfigure}[t]{1.0\linewidth}
+    \centering
+    \tikzexternalenable
+    \plotDifferentCurvatures{mnist}{logreg}{const}{final}{valid}{accuracies}
+    \tikzexternaldisable
+    \caption{\MNISTNET (7,850 parameters) on \MNIST}\label{backpack::fig:app-mnist}
+  \end{subfigure}
+  \begin{subfigure}[t]{1.0\linewidth}
+    \centering
+    \tikzexternalenable
+    \plotDifferentCurvatures{fmnist}{2c2d}{const}{final}{valid}{accuracies}
+    \tikzexternaldisable
+    \caption{\FMNISTNET (3,274,634 parameters) on \FMNIST}\label{backpack::fig:app-fmnist}
+  \end{subfigure}
+  \caption{%
+    \textbf{Additional results.} Median performance with shaded quartiles of the
+    best hyperparameter settings chosen by \DeepOBS. Solid lines show well-tuned
+    baselines of momentum \SGD and Adam that are provided by \DeepOBS. }
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

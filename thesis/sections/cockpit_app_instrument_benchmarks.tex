@@ -1,0 +1,45 @@
+\subsection{Additional Run Time
+  Benchmarks}\label{cockpit::app:run-time-benchmarks}
+
+\subsubsection{Individual Instrument
+  Overhead}\label{cockpit::app:benchmark-instruments}
+To estimate the computational overhead for individual instruments, we run
+\cockpit with that instrument for $32$ iterations, tracking at every step.
+Training proceeds with the default batch size specified by the \deepobs problem
+and uses \sgd with learning rate $10^{-3}$. We measure the time between
+iterations $1$ and $32$, and average for the overhead per step. Every such
+estimate is repeated over $10$ random seeds to obtain mean and error bars as
+reported in \Cref{cockpit::fig:benchmark-instruments}.
+
+Note that this protocol does \textit{not} include initial overhead for setting
+up data loading and also does \textit{not} include the time for evaluating
+train/test loss on a larger dataset, which is usually done by practitioners.
+Hence, we even expect the shown overheads to be smaller in a conventional
+training loop which includes the above steps.
+
+\subsubsection{Individual Overhead on GPU Versus CPU}
+
+\Cref{cockpit::fig:app_benchmark_instruments_cuda} and
+\Cref{cockpit::fig:app_benchmark_instruments_cpu} show the individual overhead
+for four different \deepobs problems on GPU and CPU, respectively. The left part
+of \Cref{cockpit::fig:app_benchmark_instruments_cuda} (c) corresponds to
+\Cref{cockpit::fig:benchmark-instruments}. Right panels show the expensive
+quantities, which we omitted in the main text as they were expected to be
+expensive due to their computational work (\inlinecode{HessMaxEV}) or
+bottlenecks in the implementation (\inlinecode{GradHist2d}, see
+\Cref{cockpit::app:histograms} for details). We see that they are in many cases
+equally or more expensive than computing all other instruments. Another expected
+feature of the GPU-to-CPU comparison is that parallelism on the CPU is
+significantly less pronounced. Hence, we observe an increased overhead for all
+quantities that contain non-linear transformations and contractions of the
+high-dimensional individual gradients, or require additional backpropagations
+(curvature).
+
+\input{figures/cockpit/01_benchmark/app_gpu_individual_overhead}
+
+\input{figures/cockpit/01_benchmark/app_cpu_individual_overhead}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

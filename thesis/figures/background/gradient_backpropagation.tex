@@ -1,0 +1,60 @@
+\begin{figure*}[!t]
+  \centering
+  \begin{subfigure}[t]{1.0\linewidth}
+    \caption{One datum}\label{subfig:background::gradientBackpropagation1}
+    \centering\resizebox{\linewidth}{!}{
+      {\footnotesize
+        \input{figures/background/backward_pass_datum}
+      }}
+  \end{subfigure}
+  \begin{subfigure}[t]{1.0\linewidth}
+    \caption{Batched data, arbitrary transformations}\label{subfig:background::gradientBackpropagation2}
+    \centering\resizebox{\linewidth}{!}{
+      {\footnotesize
+        \input{figures/background/backward_pass_batched}
+      }}
+  \end{subfigure}
+  \begin{subfigure}[t]{1.0\linewidth}
+    \caption{Batched data, batched instructions}\label{subfig:background::gradientBackpropagation3}
+    \centering\resizebox{\linewidth}{!}{
+      {\footnotesize
+        \input{figures/background/backward_pass_data}
+      }}
+  \end{subfigure}
+  \caption{\textbf{Gradient backpropagation and (un)awareness of per-sample
+      structure in many ML libraries.}
+    \subfigref{subfig:background::gradientBackpropagation1} Computation graph of
+    of a neural network's loss on a single datum $(\vx, \vy)$. Gradients are
+    backpropagated through the graph as described by
+    \Cref{def:background::GradientBackpropagation} to obtain
+    $\grad{\vtheta}\ell$.
+    \subfigref{subfig:background::gradientBackpropagation2} To exploit
+    parallelism in the computations, multiple data are stacked into matrices
+    $(\mX, \mY)$ which are then processed by a sequence of matrix-to-matrix
+    functions $F_{\vtheta^{(l)}}^{(l)}$ into a batch of losses $\vell$, and
+    reduced into a scalar $\gL$ via mean reduction. AD in popular ML libraries
+    like \pytorch tracks variables on the level of batched tensors. Therefore,
+    operations are allowed to build up dependencies between data---such that
+    $\gL = \nicefrac{1}{|\sB|} \sum_{n} [\vell(\mX, \mY, \vtheta)]_n$ where each
+    component of $\vell$ may depend on \emph{all} data (batch
+    normalization~\cite{ioffe2015batch} is such a case)---without breaking
+    gradient backpropagation. ML libraries implement VJPS for the
+    matrix-to-matrix functions $F_{\vtheta^{(l)}}^{(l)}$. This loses structure
+    for operations that treat inputs independently along the batch axis.
+    \subfigref{subfig:background::gradientBackpropagation3} The empirical risk
+    on a mini-batch (\Cref{eq:background::miniBatchRisk} is such a case: all
+    operations in the graph process inputs independently and with the same
+    instructions along the batch axis. The following connections to the single
+    datum case \subfigref{subfig:background::gradientBackpropagation1} hold:
+    $F_{\vtheta^{(l)}}^{(l)} \leftrightarrow \vf_{\vtheta^{(l)}}^{(l)} =
+    \vmap(f_{\vtheta^{(l)}}^{(l)}), \vell = \vmap(\ell)$ with $\vmap$ from
+    \Cref{def:background::vmap}. Due to the more general support of AD in ML
+    libraries for graphs of the form
+    \subfigref{subfig:background::gradientBackpropagation2}, their VJPs cannot
+    be accessed per-sample.}\label{fig:background::gradientBackpropagation}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

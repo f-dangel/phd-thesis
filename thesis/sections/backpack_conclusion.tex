@@ -1,0 +1,113 @@
+\begin{table}[!t]
+  \centering
+  \caption{\textbf{Overview of the features supported in the first release of
+      \BackPACK.}}\label{backpack::tab:features_backpack}
+  \begin{footnotesize}
+    \begin{tabular}{llll}
+      \toprule
+      &
+        \textbf{Feature}
+      &
+        \textbf{Details}
+      \\
+      \midrule
+      &
+        Individual gradients
+      &
+        $\frac{1}{N} \grad{\vtheta^{(l)}}\ell_n(\vtheta), \quad n=1,\dots, N$
+      &
+      \\
+      &
+        Batch variance
+      &
+        $\frac{1}{N}\sum_{n=1}^{N}
+        \left[\grad{\vtheta^{(l)}}\ell_n(\vtheta)\right]_j^2 -
+        \left[\grad{\vtheta^{(l)}}\gL (\vtheta) \right]_j^2$
+      &
+      \\
+      &
+        2\textsuperscript{nd} moment
+      &
+        $\frac{1}{N} \sum_{n=1}^{N}\left[\grad{\vtheta^{(l)}}\ell_n(\vtheta)\right]_j^2, \quad j = 1,\dots,d^{(l)}$.
+      &
+      \\
+      &
+        Indiv. gradient $L_2$ norm
+      &
+        $\left\lVert \frac{1}{N}  \grad{\vtheta^{(l)}}\ell_n(\vtheta) \right\rVert_2^2,\quad n=1,\dots,N$
+      &
+      \\
+      &
+        \DiagGGN
+      &
+        $\diag\left(\mG(\vtheta^{(l)})\right)$
+      &
+      \\
+      &
+        \DiagGGNMC
+      &
+        $\diag\left(\mGtilde(\vtheta^{(l)})\right)$
+      &
+      \\
+      &
+        Hessian diagonal
+      &
+        $\diag\left(\gradsquared{\vtheta}\gL(\vtheta) \right)$
+      &
+      \\
+      &
+        \KFAC
+      &
+        $\mGtilde^{(l)}(\vtheta^{(l)}) \approx \mA^{(l)} \otimes \mB^{(l)}_\text{\KFAC}$
+      &
+      \\
+      &
+        \KFLR
+      &
+        $\mG^{(l)}(\vtheta^{(l)}) \approx \mA^{(l)} \otimes \mB^{(l)}_\text{\KFLR}$
+      &
+      \\
+      &
+        \KFRA
+      &
+        $\mG^{(l)}(\vtheta^{(l)}) \approx \mA^{(l)} \otimes \mB^{(l)}_\text{\KFRA}$
+      &
+      \\
+      \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+\end{table}
+
+Machine learning's coming-of-age has been accompanied, and in part driven, by a
+maturing of the software ecosystem. This has drastically simplified the lives of
+developers and researchers alike, but has also crystallized parts of the
+algorithmic landscape. This has dampened research in cutting-edge areas that are
+far from mature, like second-order optimization for deep neural networks. To
+ensure that good ideas can bear fruit, researchers must be able to compute new
+quantities without an overwhelming software development burden. To support
+research and development in optimization for deep learning, we have introduced
+\BackPACK, an efficient implementation in \PyTorch of recent conceptual advances
+and extensions to backpropagation (\Cref{backpack::tab:features_backpack} lists
+all features). \BackPACK enriches the syntax of AD packages to offer additional
+observables to optimizers beyond the batch-averaged gradient. Our experiments
+demonstrate that \BackPACK's implementation offers drastic efficiency gains over
+the kind of na\"ive implementation within reach of the typical researcher. As a
+demonstrative example, we ``invented'' a few optimization routines that, without
+\BackPACK, would require demanding implementation work and can now be tested
+with ease. We hope that studies like this allow \BackPACK to help mature the ML
+software ecosystem further.
+
+\section*{Acknowledgments}
+
+We would like to thank Aaron Bahde, Ludwig Bald, and Frank Schneider for their help
+with \DeepOBS and Lukas Balles, Simon Bartels, Filip de Roos, Tim Fischer,
+Nicolas Kr\"amer, Agustinus Kristiadi, Frank Schneider, Jonathan Wenger, and
+Matthias Werner for constructive feedback.
+
+
+The authors gratefully acknowledge financial support by the European Research Council through ERC StG Action 757275 / PANAMA; the DFG Cluster of Excellence “Machine Learning - New Perspectives for Science”, EXC 2064/1, project number 390727645; the German Federal Ministry of Education and Research (BMBF) through the T\"ubingen AI Center (FKZ: 01IS18039A); and funds from the Ministry of Science, Research and Arts of the State of Baden-W\"urttemberg. F.\ D.\ is grateful to the International Max Planck Research School for Intelligent Systems (IMPRS-IS) for support.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

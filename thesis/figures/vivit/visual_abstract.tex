@@ -1,0 +1,85 @@
+\begin{figure*}[!tb]
+  \centering
+  \begin{subfigure}[b]{0.47\linewidth}
+    \centering
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{figures/vivit/spectrum_default_style_main.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultleft,
+          title={mb, exact}}}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/tex/paper/fig/visual_abstract/cifar10_3c3d_cpu_one_group_full_batch_exact.tex}
+      \tikzexternaldisable
+    \end{minipage}
+    \hspace{1.1ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{figures/vivit/spectrum_default_style_main.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultcenter,
+          title={sub, exact}}}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/tex/paper/fig/visual_abstract/cifar10_3c3d_cpu_one_group_frac_batch_exact.tex}
+      \tikzexternaldisable
+    \end{minipage}
+    \hspace{-3.6ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{figures/vivit/spectrum_default_style_main.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultright,
+          title={mb, mc}}}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/tex/paper/fig/visual_abstract/cifar10_3c3d_cpu_one_group_full_batch_mc.tex}
+      \tikzexternaldisable
+    \end{minipage}
+    \vspace{-4ex}
+    \caption{Spectral densities}
+    \label{vivit::subfig:visual-abstract1}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.525\linewidth}
+    \centering
+    \tikzexternalenable
+    \input{figures/vivit/vivit_quantities.tex}
+    \tikzexternaldisable
+    % \vspace{-1ex}
+    \caption{Per-sample directional derivatives}
+    \label{vivit::subfig:visual-abstract2}
+  \end{subfigure}
+  \caption{ \textbf{Overview of \vivittitle's quantities:}
+    \subfigref{vivit::subfig:visual-abstract1} \ggn eigenvalue distribution of
+    \deepobs' \threecthreed architecture on \cifarten
+    \cite{schneider2019deepobs}
+    % ($D = 895,210$, $C = 10$)
+    for settings with different costs on a mini-batch of size $N = 128$.
+    From left to right: exact \ggn,
+    % on the mini-batch,
+    exact GGN on a mini-batch fraction,
+    % ($\nicefrac{1}{8}$, as in \cite{zhang2017blockdiagonal}),
+    \mc approximation of the \ggn.
+    % on the mini-batch.
+    %
+    \subfigref{vivit::subfig:visual-abstract2} Pictorial illustration: loss
+    function $\textcolor{oo_rot}{\gL}$ from \Cref{vivit::eq:objective-function},
+    quadratic model $\textcolor{oo_blau}{m_{\vtheta_t}}$ around $\vtheta_t \in
+    \mathbb{R}^2$ from \Cref{vivit::eq:quadratic_model} (both represented by
+    their contour lines). The low-rank structure provides efficient access to
+    the \ggn{}'s eigenvectors $\{\textcolor{oo_gelb}{\ve_k}\}$, along which
+    $\textcolor{oo_blau}{m_{\vtheta_t}}$ decouples into one-dimensional parabolas
+    characterized by the directional derivatives $\textcolor{oo_blau}{\gamma_k},
+    \textcolor{oo_blau}{\lambda_k}$ and per-sample contributions
+    $\textcolor{oo_gruen}{\gamma_{n,k}}, \textcolor{oo_gruen}{\lambda_{n,k}}$
+    (\Cref{vivit::eq:gammas-lambdas}). $\textcolor{oo_gelb}{\mathcal{E}}$ is the
+    \ggn{}'s top-$1$ eigenspace.}
+  \label{vivit::fig:visual_abstract}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

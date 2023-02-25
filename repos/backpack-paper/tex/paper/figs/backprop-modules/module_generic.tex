@@ -1,0 +1,83 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Settings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usetikzlibrary{arrows.meta}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{blueA}{RGB}{54, 75, 154}
+\definecolor{blueB}{RGB}{74, 123, 183}
+\definecolor{blueC}{RGB}{209, 229, 240}
+
+\colorlet{newMessageFill}{blueC}
+\colorlet{newMessageDraw}{blueB}
+\colorlet{messageFill}{white}
+\colorlet{messageDraw}{black}
+\colorlet{moduleFrame}{black!80!white}
+\colorlet{moduleFill}{black!30!white}
+%\colorlet{moduleFill}{blueB}
+\colorlet{moduleContentFill}{black!10!white}
+
+\tikzset{thickArrow/.style={
+		-{Latex[length=1.5mm,width=1.5mm]},
+%		-{Latex[length=1mm,width=2mm]},
+		thick,
+		rounded corners=1ex
+	}
+}
+\tikzset{newThickArrow/.style={
+		thickArrow,
+		very thick,
+		rounded corners=1ex,
+		newMessageDraw,
+	}
+}
+
+\tikzset{module/.style={
+		rounded corners=1ex,
+		draw=moduleFrame,
+		fill=moduleFill,
+		inner sep=0
+	}
+}
+\tikzset{moduleContent/.style={
+		rounded corners=1ex,
+		draw=moduleFrame,
+		fill=moduleContentFill,
+		inner sep=0
+	}
+}
+
+\tikzset{message/.style={
+		rectangle,
+		rounded corners=1ex,
+		minimum width=19ex,
+		minimum height=3.5ex,
+		draw=messageDraw,
+		fill=messageFill
+	}
+}
+\tikzset{newMessage/.style={
+		rectangle,
+		rounded corners=1ex,
+		minimum width=19ex,
+		minimum height=3.5ex,
+		thick,
+		draw=newMessageDraw,
+		fill=newMessageFill
+	}
+}
+
+
+\newcommand{\va}{\bm{a}}
+\newcommand{\vz}{\bm{z}}
+\newcommand{\vb}{\bm{b}}
+\newcommand{\vtheta}{\bm{\theta}}
+\newcommand{\jac}{\mathrm{J}}
+\newcommand{\mS}{\bm{S}}
+
+\newcommand{\mynablasub}[1]{\nabla\raise-0.5ex\hbox{\text{\tiny$\kern -0.5em  #1$}}\kern 0.1em}
+\newcommand{\myjacsub}[1]{\jac\raise-0.25ex\hbox{\text{\tiny$\kern -0.0em  #1$}}\kern 0.1em}

@@ -1,0 +1,286 @@
+Contemporary deep learning is powered by methods that solely rely on the
+gradient. This is reflected in popular machine learning libraries which
+prioritize its computation. However, it narrows research to focus on
+gradient-based algorithms that are not agnostic to the empirical risk's
+stochasticity and geometry beyond first order. To advance the field, we need to
+explore the potential of higher-order information beyond the gradient. One main
+hindrance to further explore its utility has been that it is complicated to
+implement, which makes it difficult for practitioners to try it out. Therefore,
+one major goal of this work was to ease experimentation with higher-order
+information by making it as conveniently accessible as the gradient. This thesis
+demonstrates that rich information beyond the gradient is \emph{affordable}, can
+be made \emph{readily available} in existing machine learning libraries, and is
+\emph{useful} to enable novel approaches for advancing deep learning:
+
+\subsubsection{\ref{enum:background::Q1} \emph{Which information beyond the
+    gradient is efficiently accessible?}}
+
+\Cref{fig:conclusion::higher_order_information} provides an overview of the
+higher-order information made accessible in this work: per-sample
+gradients---whose empirical mean is the mini-batch gradient---can be explicitly
+computed, or reduced into higher-order statistics like the gradient variance.
+Light-weight structural approximations through diagonal and Kronecker matrices
+enable the computation of per-layer second-order derivatives in the Hessian or
+generalized Gauss-Newton. The generalized Gauss-Newton's outer product structure
+allows to go beyond per-layer terms, even to compute with the full matrix, and
+to access curvature noise.
+
+\begin{figure}[!b]
+  \centering
+  \tikzexternalenable%
+  % NOTE Cannot externalize. There is a node that contains another tikzpicture.
+  % This requires a fix via savebox which is not picked up by externalize
+  \tikzexternaldisable%
+  \input{figures/conclusion/higher_order_information}
+  \tikzexternaldisable%
+  \caption{\textbf{Higher-order information made available by this work (extends
+      \Cref{fig:background::higher_order_information}).} Quantities are roughly
+    mapped onto the landscape spanned by the stochasticity and geometry of the
+    loss. They can be categorized as (i) gradient statistics, (ii) diagonal
+    curvature approximations, (iii) Kronecker-factored curvature approximations,
+    and (iv) noise-aware curvature from the generalized Gauss-Newton's low-rank
+    structure.}\label{fig:conclusion::higher_order_information}
+\end{figure}
+
+\subsubsection{\ref{enum:background::Q2} \emph{How to compute this
+    information---conveniently, automatically, and efficiently---re-using the
+    existing backpropagation implementation of ML frameworks?}}
+
+All quantities presented in this thesis are phrased as extensions of a
+standard backward pass.
+
+Therefore, they can be computed \emph{efficiently} and at the same time as the
+gradient (\Cref{fig:conclusion::extensionStandardBackwardPass}). Gradient
+statistics share most computations with the gradient, and can recycle
+information from the standard backward pass. Approximate second-order
+derivatives require sending additional information through the computation
+graph. In runtime, the additional work is often significantly reduced through
+hardware parallelism.
+
+\begin{figure*}[!t]
+  \centering
+  \tikzexternalenable%
+  \resizebox{\linewidth}{!}{%
+    \input{figures/conclusion/backward_pass_data_with_backpack}
+  }%
+  \tikzexternaldisable%
+  \caption{\textbf{All information in
+      \Cref{fig:conclusion::higher_order_information} is an extension of the
+      standard backward pass for the gradient.} Forward
+    ({\protect\tikz[baseline=-0.5ex]{\protect\draw[fill=forwardFill, draw=black,
+        line width = 0.02mm] circle (0.75ex);}}) and backward
+    ({\protect\tikz[baseline=-0.5ex]{\protect\draw[fill=backwardGradientFill,
+        draw=none] circle (0.75ex);}}) pass are implemented by machine learning
+    libraries. Minimal invasion by adding an extended backward pass
+    ({\protect\tikz[baseline=-0.5ex]{\protect\draw[fill=backwardHessianFill,
+        draw=none] circle (0.75ex);}}) allows to compute various other
+    quantities. The specifics
+    ({\protect\tikz[baseline=-0.75ex]{\protect\node[inner sep=0pt, draw=none]
+        {\includegraphics[width=2.5ex]{../repos/backpack-paper/tex/logo/backpack_logo_github}};})}
+    on what and how to backpropagate depend on the
+    quantity of interest.}\label{fig:conclusion::extensionStandardBackwardPass}
+\end{figure*}
+
+\marginnote{
+  \begin{center}
+    \tikzexternalenable%
+    \resizebox{\linewidth}{!}{%
+      \input{figures/conclusion/modularity}
+    }%
+    \tikzexternaldisable%
+  \end{center}
+  \captionof{figure}{\textbf{Modularity is crucial for automation and
+      extensibility.} Given a functioning backpropagation procedure, the
+    extended backward pass in
+    \Cref{fig:conclusion::extensionStandardBackwardPass} reduces to specifying a
+    set of rules for each module and each quantity. This simplifies adding new
+    operations, while preserving automatic
+    computation.}\label{fig:conclusion::Modularity}
+}
+
+Their formulations vary in what, and how, objects are being backpropagated
+through layers, and how the target quantities are extracted for each parameter.
+As these rules are defined on a per-module basis
+(\Cref{fig:conclusion::Modularity}), the approach is extensible and guarantees
+\emph{automatic} computation.
+
+From an implementation perspective, this is achieved through light-weight
+extension of an existing gradient backpropagation implementation without
+implementing a new framework. This enables easy integration into existing
+machine learning libraries, and makes it \emph{convenient} for practitioners to
+extend their code at minimal overhead.
+
+\subsubsection{\ref{enum:background::Q3} \emph{How to use this information to
+    advance gradient-based deep learning?}}
+
+In addition to second-order optimization, various deep learning methods require
+higher-order information: Laplace
+approximations~\cite[\eg\!][]{daxberger2021laplace}, model compression
+(pruning)~\cite[\eg\!][]{singh2020woodfisher}, differential
+privacy~\cite[\eg\!][]{abadi2016deep}, importance
+sampling~\cite[\eg\!][]{katharopoulos2018samples}, variance
+adaptation~\cite[\eg\!][]{balles2022noise}, parameter
+initialization~\cite[\eg\!][]{skorski2021revisiting}, batch size
+adaptation~\cite[\eg\!][]{balles2017coupling}, \etc Some of them were briefly
+outlined in this thesis to motivate the demand that this information be more
+readily available. Easier access to this information enables more efficient and
+creative research in these areas and helps establish the resulting methods
+through user-friendly implementations.
+
+As a use case, this thesis focused on enabling a deeper look into the inner
+workings of neural networks during training through the lens of higher-order
+information. This allows to identify common failure modes, which makes training
+less painful, and thereby highlights the utility of higher-order information for
+deep learning.
+
+Going further, this work also underlines the unexplored nature of higher-order
+information: the developed extended automatic differentiation functionality
+enables novel efficient computational schemes that address shortcomings in
+existing approaches. This allows to build more powerful local approximations of
+the loss landscape which are agnostic to noise, curvature, and even noise in the
+curvature. Such works help to identify important techniques to reduce run time,
+make algorithms that rely on such information more competitive with
+gradient-based methods, and shape the development of future machine learning
+frameworks.
+
+\section{Summary \& Impact}
+
+\subsubsection{Extending Backpropagation to the Hessian}
+
+Gradient backpropagation is efficient, automated, and extensible.
+\Cref{chap:hbp} presented how---for sequential feedforward architectures---this
+carries over to second-order derivatives: just like backpropagation recovers the
+layer-wise gradients, Hessian backpropagation recovers the per-layer Hessians.
+It fully aligns the computation of local Hessians with gradients and unifies the
+view on block-diagonal curvature approximations like the block-diagonal
+generalized Gauss-Newton~\cite{schraudolph2002fast},
+Fisher~\cite{amari1998natural}, and its Kronecker-factorized
+approximations~\cite{martens2015optimizing,grosse2016kronecker,botev2017practical,wei2018bdapch}.
+
+\subsubsection{Packing More into Backprop}
+
+The \backpack library, presented in \Cref{chap:backpack}, provides efficient
+access to various deep learning quantities through implementing the insights on
+extended backpropagation for the Hessian on top of PyTorch. During a standard
+backward pass that computes the average gradient, it extracts (i) per-sample
+gradients and gradient statistics, and (ii) approximate second-order derivatives
+in the form of diagonal and Kronecker-factorized curvature. This often adds only
+little overhead. \backpack easily integrates into existing code and simplifies
+experimentation with the above quantities: it powers other libraries for
+Bayesian applications with Laplace
+approximations~\cite{daxberger2021laplace,immer2021improving},
+out-of-distribution generalization~\cite{gulrajani2021in,rame2022fishr}, and
+differential privacy \cite{yousefpour2021opacus}, as well as the follow-up works
+in this thesis (\cockpit~\cite{schneider2021cockpit},
+\vivit~\cite{dangel2022vivit}). More than two years after its release, the
+library is still actively used, with
+\href{https://pypistats.org/packages/backpack-for-pytorch}{multiple hundred
+  downloads per week} at the time of writing (July 2022).
+
+\subsubsection{Enabling a Closer Look Into Neural Nets}
+Higher-order information as provided by BackPACK is valuable to guide neural
+network training. Common methods for real-time training diagnostics, such as
+monitoring the loss, are limited because they only indicate whether a model is
+training, but not why. The \cockpit library, presented in \Cref{chap:cockpit},
+enables a closer look into neural networks during training. The live-monitoring
+tool visualizes established, recently proposed
+\cite{mahsereci2017early,balles2017coupling,byrd2012sample,bollapragada2017adaptive,yao2020pyhessian,thomas2020interplay,liu2020understanding},
+and novel summary statistics that are efficiently computed by BackPACK. It
+allows to identify common bugs in the machine learning pipeline, such as
+improper data pre-processing or vanishing gradients, but also to guide learning
+rate selection, and to study implicit
+regularization~\cite{mulayoff2020unique,ginsburg2020regularization}. This
+showcases the potential of higher-order information to assist practitioners.
+
+\subsubsection{Enabling Novel Ways to Compute with Curvature}
+
+BackPACK's extended automatic differentiation functionality enables algorithmic
+advances to tackle limitations of existing curvature proxies: diagonal or
+Kronecker-factorized curvatures are (i) not agnostic to noise in the mini-batch,
+(ii) strict approximations that do not become exact in any limit, and (iii)
+restricted to the block diagonal. \vivit's quantities, presented in
+\Cref{chap:vivit}, address this through the generalized Gauss-Newton's low-rank
+structure, which allows for exact computation with the full---rather than
+block-diagonal---matrix, and principled approximations to reduce cost in
+exchange for less accuracy. \vivit enables efficient computation of spectral
+properties, as well as directional gradients and curvatures on a per-sample
+basis that quantify noise. Monitoring this noise through signal-to-noise ratios
+helps understand its characteristics in deep learning~\cite{faghri2020study} and
+to identify challenges for optimization and generalization from the interplay
+between noise and curvature~\cite{thomas2020interplay}.
+
+\section{Future Work}
+
+Deep learning needs more than just the gradient. To leverage the full potential
+of higher-order information, we need to (i) build more---and refine
+existing---tools to (ii) study and better understand algorithmic challenges in
+deep learning, and (iii) amplify the practicality of such next-generation
+algorithms through user-friendly and highly-efficient implementations like
+gradient-based methods.
+
+\subsubsection{Extending Cockpit}
+
+\Cref{chap:cockpit} demonstrated \cockpit's utility for identifying common bugs
+in the machine learning pipeline. These failures were deliberately designed on
+well-known, standardized machine learning problems, to illustrate \cockpit's
+purpose. Since they were implicitly tuned over many years to work well with
+currently popular methods, they rarely exhibit failure modes. \cockpit will be
+even more useful for debugging unknown, non-standardized problems that have
+\emph{not} undergone such tuning, and are therefore extremely likely to exhibit
+failures. We want to establish \cockpit as a tool for practitioners facing such
+problems and are looking forward to its first success stories ``in the wild''.
+
+\cockpit also provides functionality for scientific analyses of neural networks.
+Training such models is often wasteful in computation, \eg using large grid
+searches whose computations are effectively discarded after identifying one
+well-performing set of hyperparameters. \cockpit's summary statistics are
+condensed and could be stored for a large number of training trajectories
+corresponding to different hyperparameter settings. These trajectories could be
+collected into a dataset that could serve for the analysis of optimization
+algorithms to understand their implicit bias, to study properties of neural
+networks that generalize well, or for meta-learning optimization strategies.
+
+To further improve the meaningfulness and interpretability of \cockpit's
+instruments, its control over parts of the network could be made more
+customizable: currently, most quantities can be computed either on all
+parameters, or per parameter. For very large networks, it will be more practical
+to group parameters, and to compute and visualize \cockpit's instruments per
+parameter group.
+
+\subsubsection{Noise-aware Second-order Methods}
+
+Newton steps are powerful, but their stability is strongly affected by noise:
+one corrupted step might undo all previous progress. Improving their stability
+is thus one key challenge to make them work in the mini-batch setting. To do
+that, we need to quantify noise in the mini-batch. But popular curvature proxies
+used in second-order methods are not noise-agnostic. Therefore, we need
+curvature approximations that give access to noise, \eg through per-sample
+information as provided through \vivit. Such information could be used to
+develop noise-aware stabilizing mechanisms for Newton steps, like damping.
+
+\subsubsection{Optimizing Run Time \& Advancing Automatic Differentiation}
+
+In contrast to gradient-based methods, the run time performance of higher-order
+methods can still be significantly improved: \eg BackPACK outperforms naive
+implementations (like for-loops) and achieves practical overheads. But it relies
+on PyTorch's Python API, which is sometimes not flexible enough, and therefore
+realizes some functionality through less efficient workarounds. Recent advances
+in automatic differentiation, like JAX~\cite{bradbury2018jax} and
+functorch~\cite{he2021functorch}, rely on function transformation to achieve a
+clean separation of automatic differentiation and batching, and allow for more
+efficient implementations through just-in-time compilation.
+
+Often, performance improvements are achieved through leveraging linear algebra,
+like properties of the Kronecker product~\cite{loan2000ubiquitous} and matrix
+decompositions~\cite[\eg\!][]{dangel2020backpack,dangel2022vivit}. Recent work
+suggests that there is potential for further improvements, as a number of these
+optimizations are not yet realized~\cite{sankaran2022benchmarking}. Therefore,
+one direction would be to improve the automated optimization of operations in
+second-order methods in these libraries. This would further reduce the overhead
+of second-order methods stemming from poor implementation, and make these
+performance gains widely available to the machine learning community.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

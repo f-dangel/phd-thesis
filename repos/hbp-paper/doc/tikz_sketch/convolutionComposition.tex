@@ -1,0 +1,24 @@
+\tikzstyle{inputNode} = [ellipse, fill=foregroundChannel, rounded corners=1ex,
+draw=black, drop shadow=black]
+\tikzstyle{kernelNode} = [ellipse, fill=centerChannel, rounded corners=1ex, draw=black, drop shadow=black]
+\tikzstyle{outputNode} = [ellipse, fill=foregroundOutput, rounded corners=1ex, draw=black, drop shadow=black]
+\tikzstyle{opNode} = [rectangle, fill=gray!50!white, rounded corners=1ex, draw=black, drop shadow=black]
+ \begin{tikzpicture}
+  \node [inputNode] (input) {input};
+  \node [opNode, right of=input, node distance=2cm, align=center] (im2col) {im2col /\\ unfold};
+  \node [opNode, right of=im2col, node distance=2cm, align=center] (mm) {matmul};
+  \node [opNode, below of=mm, node distance=1.2cm, align=center] (col2im) {col2im /\\ reshape};
+  \node [outputNode, below of=col2im, node distance=1.2cm] (output) {output};
+  \node [opNode, above of=mm, node distance=1cm] (kernelReshape) {reshape};
+  \node [kernelNode, left of=kernelReshape, node distance=2cm] (kernel) {kernel};
+  \node [opNode, left of=col2im, node distance=2cm] (expand) {copy};
+  \node [kernelNode, left of=expand, node distance=2cm] (bias) {bias};
+  \draw [-latex, thick] (input.east) to (im2col);
+  \draw [-latex, thick] (im2col.east) to (mm.west);
+  \draw [-latex, thick] (mm.south) to (col2im.north);
+  \draw [-latex, thick] (col2im.south) to (output.north);
+  \draw [-latex, thick] (kernel.east) to (kernelReshape.west);
+  \draw [-latex, thick] (kernelReshape.south) to (mm.north);
+  \draw [-latex, thick] (bias.east) to (expand.west);
+  \draw [-latex, thick] (expand.north east) to (mm.south west);
+\end{tikzpicture}

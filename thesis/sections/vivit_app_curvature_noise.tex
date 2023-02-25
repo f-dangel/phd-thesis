@@ -1,0 +1,90 @@
+\ggn and Hessian are predominantly used to locally approximate the loss by a
+quadratic model $q$ (see \Cref{vivit::eq:quadratic_model}). Even if the curvature's
+eigenspace is completely preserved in spite of the approximations, they can
+still alter the curvature \textit{magnitude} along the eigenvectors.
+
+\subsubsection{Procedure}
+
+\Cref{vivit::tab:cases_curvature_noise} shows the cases considered in
+this experiment.
+
+\begin{table*}[ht]
+  \centering
+  \caption{ \textbf{Considered cases for approximation of curvature:} We use a
+    different set of cases for the approximation of the \ggn{} depending on the
+    test problem. For the test problems with $C=10$, we use $M=1$ \mc-sample,
+    for the \cifarhun \allcnnc test problem ($C=100$), we use $M=10$ \mc-samples
+    in order to reduce the computational costs by the same factor. }
+  \label{vivit::tab:cases_curvature_noise}
+  \vspace{1ex}
+  \begin{footnotesize}
+    \begin{tabular}{llll}
+      \toprule
+      Problem
+      & Cases \\
+      \midrule
+      \makecell[tl]{
+      \fmnist \twoctwod \\
+      \cifarten \threecthreed and \\
+      \cifarten \resnetthirtytwo}
+      & \makecell[tl]{
+        \textbf{mb, exact} with mini-batch size $N = 128$\\
+      \textbf{mb, mc} with $N=128$ and $M=1$ \mc{}-sample\\
+      \textbf{sub, exact} using $16$ samples from the mini-batch\\
+      \textbf{sub, mc} using $16$ samples from the mini-batch and $M=1$ \mc{}-sample
+      }
+      \\
+      \midrule
+      \cifarhun \allcnnc
+      & \makecell[tl]{
+        \textbf{mb, exact} with mini-batch size $N = 128$\\
+      \textbf{mb, mc} with $N=128$ and $M=10$ \mc{}-samples\\
+      \textbf{sub, exact} using $16$ samples from the mini-batch\\
+      \textbf{sub, mc} using $16$ samples from the mini-batch and $M=10$ \mc{}-samples
+      }
+      \\
+      \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+\end{table*}
+
+Due to the large computational effort for evaluating the full-batch directional
+derivatives, a subset of the checkpoints from \Cref{vivit::sec:ggn_vs_hessian}
+is used for two problems: we use every second checkpoint for \cifarten
+\resnetthirtytwo and every forth checkpoint for \cifarhun \allcnnc.
+
+For each checkpoint and case, we compute the top-$C$ eigenvectors
+$\{\ve_k\}_{k=1}^C$ of the \ggn approximation $\mG^{(\text{ap})}$ either with
+\vivit or using an iterative matrix-free approach (as in
+\Cref{vivit::sec:eigenspace_noise}). The second-order directional derivative of the
+corresponding quadratic model along direction $\ve_k$ is then given by
+$\lambda_k^{(\text{ap})} = \ve_k^\top \mG^{(\text{ap})} \ve_k$ (see
+\Cref{vivit::eq:directional-derivatives}). As a reference, we compute the full-batch
+\ggn $\mG^{(\text{fb})}$ and the resulting directional derivatives along the
+same eigenvectors $\{\ve_k\}_{k=1}^C$, \ie $\lambda_k^{(\text{fb})} =
+\ve_k^\top \mG^{(\text{fb})} \ve_k$. The average (over all $C$ directions)
+relative error is given by
+\begin{equation*}
+  \epsilon = \frac{1}{C} \sum_{k=1}^C \frac{
+    \lvert \lambda_k^{(\text{ap})} - \lambda_k^{(\text{fb})} \rvert
+  }{\lambda_k^{(\text{fb})}} \, .
+\end{equation*}
+The procedure above is repeated on $3$ mini-batches from the training data (\ie
+we obtain $3$ average relative errors for every checkpoint and case) -- except
+for the \cifarhun \allcnnc test problem, where we perform only a single run to
+keep the computational effort manageable.
+
+\subsubsection{Results}
+
+\Cref{vivit::fig:curvature_noise} shows the results. We observe similar results
+as in \Cref{vivit::sec:eigenspace_noise}: with increasing computational effort,
+the approximated directional derivatives become more precise and the overall
+approximation quality decreases over the course of the optimization. For the
+\resnetthirtytwo architecture, the average errors are particularly large.
+
+\input{figures/vivit/vivit_vs_quadratic}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

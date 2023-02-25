@@ -1,0 +1,138 @@
+
+\newcommand{\plotEigspaceVivitvsFB}[4]{
+  \input{fig/eigspace_default_style.tex}
+  \pgfkeys{/pgfplots/zmystyle/.style={
+      eigspacedefault
+    }}
+  \input{../../fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/#1_#2_#3_plot_#4}
+}
+
+\begin{figure}[p]
+\centering
+\textbf{\fmnist \twoctwod \sgd}\\[1mm]
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{fmnist}{2c2d}{sgd}{bs}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/fmnist_2c2d_sgd_plot_bs.pdf}
+\end{minipage}\hfill
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{fmnist}{2c2d}{sgd}{mc_sub}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/fmnist_2c2d_sgd_plot_mc_sub.pdf}
+\end{minipage}
+
+\textbf{\fmnist \twoctwod \adam}\\[1mm]
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{fmnist}{2c2d}{adam}{bs}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/fmnist_2c2d_adam_plot_bs.pdf}
+\end{minipage}\hfill
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{fmnist}{2c2d}{adam}{mc_sub}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/fmnist_2c2d_adam_plot_mc_sub.pdf}
+\end{minipage}
+
+\textbf{\cifarten \threecthreed \sgd}\\[1mm]
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{cifar10}{3c3d}{sgd}{bs}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/cifar10_3c3d_sgd_plot_bs.pdf}
+\end{minipage}\hfill
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{cifar10}{3c3d}{sgd}{mc_sub}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/cifar10_3c3d_sgd_plot_mc_sub.pdf}
+\end{minipage}
+
+\textbf{\cifarten \threecthreed \adam}\\[1mm]
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{cifar10}{3c3d}{adam}{bs}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/cifar10_3c3d_adam_plot_bs.pdf}
+\end{minipage}\hfill
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{cifar10}{3c3d}{adam}{mc_sub}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/cifar10_3c3d_adam_plot_mc_sub.pdf}
+\end{minipage}
+
+\vspace{-2mm}
+
+\caption{\textbf{\bfvivit{} vs. full-batch \ggn (1):} Overlap between the top-$C$ eigenspaces of different \ggn approximations and the full-batch \ggn during training for all test problems.
+Each approximation is evaluated on $5$ different mini-batches.}
+\label{fig:vivit_vs_full_batch_ggn_1}
+\end{figure}
+
+
+
+
+%=================================================================
+
+
+
+\begin{figure}[p]
+\centering
+\textbf{\cifarten \resnetthirtytwo \sgd}\\[1mm]
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{cifar10}{resnet32}{sgd}{bs}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/cifar10_resnet32_sgd_plot_bs.pdf}
+\end{minipage}\hfill
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{cifar10}{resnet32}{sgd}{mc_sub}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/cifar10_resnet32_sgd_plot_mc_sub.pdf}
+\end{minipage}
+
+\vspace{3mm}
+
+\textbf{\cifarten \resnetthirtytwo \adam}\\[1mm]
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{cifar10}{resnet32}{adam}{bs}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/cifar10_resnet32_adam_plot_bs.pdf}
+\end{minipage}\hfill
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{cifar10}{resnet32}{adam}{mc_sub}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/cifar10_resnet32_adam_plot_mc_sub.pdf}
+\end{minipage}
+
+\vspace{3mm}
+
+\textbf{\cifarhun \allcnnc \sgd}\\[1mm]
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{cifar100}{allcnnc}{sgd}{bs}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/cifar100_allcnnc_sgd_plot_bs.pdf}
+\end{minipage}\hfill
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{cifar100}{allcnnc}{sgd}{mc_sub}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/cifar100_allcnnc_sgd_plot_mc_sub.pdf}
+\end{minipage}
+
+\vspace{3mm}
+
+\textbf{\cifarhun \allcnnc \adam}\\[1mm]
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{cifar100}{allcnnc}{adam}{bs}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/cifar100_allcnnc_adam_plot_bs.pdf}
+\end{minipage}\hfill
+\begin{minipage}{0.50\textwidth}
+\centering
+\plotEigspaceVivitvsFB{cifar100}{allcnnc}{adam}{mc_sub}
+% \includegraphics[scale=1.0]{fig/exp13_plots/eigspace_vivit_vs_fb/cifar100_allcnnc_adam_plot_mc_sub.pdf}
+\end{minipage}
+
+\caption{\textbf{\bfvivit{} vs. full-batch \ggn (2):} Overlap between the top-$C$ eigenspaces of different \ggn approximations and the full-batch \ggn during training for all test problems.
+Each approximation is evaluated on $5$ different mini-batches.}
+\label{fig:vivit_vs_full_batch_ggn_2}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

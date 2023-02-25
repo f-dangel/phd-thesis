@@ -1,0 +1,54 @@
+\begin{figure}[tb]
+  \centering
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{Memory performance}
+    \label{vivit::subfig:performance-cifar10-3c3d-cuda_main1}
+    \begin{minipage}[t]{0.49\linewidth}
+      \centering
+      \begin{footnotesize}
+        $N_{\text{crit}}$ (eigenvalues)
+
+        \vspace{0.1\baselineskip}
+        \input{../repos/vivit-paper/fig/exp10_performance_ggn_evals/fig/N_crit/evals/tab_cifar10_3c3d_cuda_one_group}
+      \end{footnotesize}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.49\linewidth}
+      \centering
+      \begin{footnotesize}
+        $N_{\text{crit}}$ (top eigenpair)
+
+        \vspace{0.1\baselineskip}
+        \input{../repos/vivit-paper/fig/exp10_performance_ggn_evals/fig/N_crit/evecs/tab_cifar10_3c3d_cuda_one_group}
+      \end{footnotesize}
+    \end{minipage}
+  \end{subfigure}
+  \vspace{1ex}
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{Run time performance}
+    \label{vivit::subfig:performance-cifar10-3c3d-cuda_main2}
+    % load "performancedefault" style
+    \input{figures/vivit/performance_default_style}
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={performancedefault}}
+    \tikzexternalenable
+    \input{../repos/vivit-paper/fig/exp10_performance_ggn_evals/fig/time/evecs/cifar10_3c3d_cuda_one_group}
+    \tikzexternaldisable
+  \end{subfigure}
+  \vspace{-2ex}
+  \caption{\textbf{GPU memory and run time performance:} Performance
+    measurements for the \threecthreed architecture ($D = 895,\!210$) on
+    \cifarten ($C=10$). \subfigref{vivit::subfig:performance-cifar10-3c3d-cuda_main1}
+    Critical batch sizes $N_{\text{crit}}$ for computing eigenvalues and the top
+    eigenpair. \subfigref{vivit::subfig:performance-cifar10-3c3d-cuda_main2} Run time
+    comparison with a power iteration for extracting the $k$ leading eigenpairs
+    using a batch of size $N=128$.
+  }\label{vivit::fig:performance-cifar10-3c3d-cuda_main}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

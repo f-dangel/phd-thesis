@@ -1,0 +1,113 @@
+% Titelblatt für die Dissertation bei
+% der Mathematisch-Naturwissenschaftlichen Fakultät der Universität Tübingen
+%
+% Without hyphens: grammatically wrong, but the university wants it so...
+%
+% Derived from the original tuetitle package with changes by me (Frank Schneider)
+%
+% Derived by the tuhhtitle.sty file:
+% Titelei fÃ¼r die Technische UniversitÃ¤t Hamburg-Harburg
+% Copyright (c) Markus Kohm, 2007
+%
+% Redefines the \maketitle command to produce university-approved title page.
+% Details and examples are at the end of this file.
+%
+% This work consists of the file tuetitle.sty only.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{preamble/tuetitle}[2018/06/27 v3.2]
+
+\newif\if@internal@titlepage
+\DeclareOption{internal}{\@internal@titlepagetrue}
+\DeclareOption{external}{\@internal@titlepagefalse}
+
+\newif\if@phd
+\DeclareOption{dissertation}{\@phdtrue}
+\DeclareOption{habilitation}{\@phdfalse}
+
+\ExecuteOptions{dissertation,internal}
+\ProcessOptions\relax
+
+\newcommand*{\@birthplace}{%
+	\PackageError{tuetitle}{\string\birthplace\space missing}{%
+		You have to use \string\birthplace\space to set up the author's birthplace.}%
+}
+\newcommand*{\birthplace}[1]{\gdef\@birthplace{#1}}
+
+\newcommand*{\@submissionyear}{\@arabic{\year}%
+	\PackageWarningNoLine{tuetitle}{\string\submissionyear\space missing, current year assumed}}
+\newcommand*{\submissionyear}[1]{\gdef\@submissionyear{#1}}
+
+
+\if@internal@titlepage
+\newcommand*{\@dean}{%
+	\PackageError{tuetitle}{\string\dean\space missing}{%
+		You have to use \string\dean\space to set up the faculty dean.}%
+}
+\newcommand*{\dean}[1]{\gdef\@dean{#1}}
+
+\newcommand*{\@experts}{%
+	\PackageError{tuetitle}{\string\experts\space missing}{%
+		You have to use \string\experts\space to set up the experts,\MessageBreak
+		e.g. `\string\experts{Name of the First Expert\string\and\space
+			Name of the Second Expert}'.}%
+}
+\newcommand*{\experts}[1]{\gdef\@experts{#1}}
+
+\newcommand*{\dateoforalexamination}[1]{\gdef\@date{#1}}
+\else
+\newcommand*{\dean}[1]{\PackageWarning{tuetitle}{No \string\dean\space necessary\MessageBreak in external title page}}
+\newcommand*{\experts}[1]{\PackageWarning{tuetitle}{No \string\experts\space necessary\MessageBreak in external title page}}
+\newcommand*{\dateoforalexamination}[1]%
+{\PackageWarning{tuetitle}{No \string\dateoforalexamination\space necessary\MessageBreak in external title page}}
+\fi
+
+
+\renewcommand*{\maketitle}{%
+	\begin{titlepage}
+		\centering
+		\vspace*{\stretch{.5}}
+		{\Huge\selectfont\sffamily\strut\ignorespaces\@title\strut}\\[0pt]
+		\vspace*{\stretch{2}}
+		\if@phd\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{% code for PhD thesis
+			{\fontsize{14.4}{18}\bfseries\sffamily Dissertation}\\[0pt]
+			\vspace*{5pt}
+			{\fontsize{12}{14}\sffamily \fontseries{l}\selectfont%
+				der Mathematisch-Naturwissenschaftlichen Fakult\"{a}t\\[2.5pt]
+				der Eberhard Karls Universit\"{a}t T\"{u}bingen\\[2.5pt]
+				zur Erlangung des Grades eines\\[2.5pt]
+				Doktors der Naturwissenschaften\\[2.5pt]
+				(Dr.\ rer.\ nat.)}\\}
+		{% code for Habil
+			{\fontsize{14.4}{18}\selectfont\textsc{Habilitationsschrift}}\\[0pt]
+			\vspace*{\stretch{1}}}
+		\vspace*{\stretch{2}}
+		{\fontsize{12}{14}\sffamily \fontseries{l}\selectfont vorgelegt von}\\[0pt]
+		{\Large\sffamily\strut\ignorespaces\@author}\\[2pt]
+		{\fontsize{12}{14}\sffamily \fontseries{l}\selectfont aus \@birthplace}\\[0pt]
+		\vspace*{\stretch{1}}
+		{\fontsize{12}{14}\sffamily \fontseries{l}\selectfont T\"{u}bingen\\[2.5pt] \@submissionyear}
+		\clearpage\normalsize
+		%
+		\if@phd\if@internal@titlepage
+		\thispagestyle{empty}\raggedright\null\vfill
+		Gedruckt mit Genehmigung der Mathematisch-Naturwissenschaftlichen Fakult\"at der
+		Eberhard Karls Universit\"at T\"ubingen.\par\bigskip\bigskip\bigskip\noindent
+		\count@=\@ne
+		\def\and{\unskip\strut\\
+			\global\advance\count@\@ne
+			\the\count@.~Berichterstatter\ifnum\the\count@=3in\fi: & \ignorespaces}%
+		\begin{tabular}{@{}ll}
+			Tag der m\"{u}ndlichen Qualifikation: \qquad & \@date \\
+			&\\
+			Dekan: & \@dean \\
+			1. Berichterstatter: & \@experts
+		\end{tabular}
+		\clearpage
+		\fi\fi
+	\end{titlepage}
+	\global\let\maketitle\relax
+}
+
+\endinput

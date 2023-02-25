@@ -1,0 +1,111 @@
+% Global view and the need for better local models
+% - Why access higher-order statistical/derivative information
+% - Current algorithms are based on gradients, their potential is exhausted
+The large number of trainable parameters in deep neural networks imposes
+computational constraints on the information that can be made available to
+optimization algorithms. Standard machine learning libraries
+\citep{abadi2016tensorflow, paszke2019pytorch} mainly provide access to
+first-order information in the form of \emph{average} mini-batch gradients. This
+is a limitation that complicates the development of novel methods that may
+outperform the state-of-the-art: They must use the same objects to remain easy
+to implement and use, and to rely on the highly optimized code of those
+libraries. There is evidence that this has led to stagnation in the performance
+of first-order optimizers \citep{schmidt2021descending}. Here, we thus study how
+to provide efficient access to richer information, namely higher-order
+derivatives and their distribution across the mini-batch.
+
+\input{figures/vivit/visual_abstract}
+
+% The GGN/Fisher as a practical Hessian approximation
+Recent advances in AD \citep{bradbury2018jax, dangel2020backpack} have made such
+information more readily accessible through leveraging algebraic structure in
+the differentiated loss. We use and extend this functionality to efficiently
+access curvature in form of the Hessian's generalized Gauss-Newton (\ggn)
+approximation. It offers practical advantages over the Hessian and is
+established for training \citep{martens2010deep, martens2015optimizing},
+compressing \citep{singh2020woodfisher}, or adding uncertainty to
+\citep{ritter2018scalable, ritter2018online, kristiadi2020being} neural
+networks.
+% It has also been used to investigate the generalization of neural networks
+% \citep{jastrzebski2021catastrophic, thomas2020interplay}
+It is also linked theoretically to the natural gradient method
+\citep{amari1998natural} via the Fisher information matrix \citep[Section
+9.2]{martens2014new}.
+
+% Implicit versus explicit
+Traditional ways to access curvature fall into two categories. Firstly, repeated
+automatic differentiation allows for matrix-free exact multiplication with the
+Hessian \citep{pearlmutter1994fast} and \ggn \citep{schraudolph2002fast}.
+Iterative linear and eigensolvers can leverage such functionality to compute
+Newton steps \citep{martens2010deep, zhang2017blockdiagonal,
+  gargiani2020promise} and spectral properties \citep{sagun2017eigenvalues,
+  sagun2018empirical, adams2018estimating, ghorbani2019investigation,
+  papyan2019spectrum, yao2020pyhessian, granziol2021deep} on arbitrary
+architectures thanks to the generality of AD. However, repeated matrix-vector
+products are potentially detrimental to performance.
+
+% K-FAC as example for cheap
+Secondly, \kfac (Kronecker-factored approximate curvature)
+\citep{martens2015optimizing, grosse2016kronecker, botev2017practical,
+  martens2018kronecker} constructs an explicit light-weight
+representation of the \ggn based on its algebraic Kronecker structure.
+% Explain the benefits
+The computations are streamlined via gradient backpropagation and the resulting
+matrices are cheap to store and invert. This allows \kfac to scale: It has been
+used successfully with large mini-batches~\citep{osawa2019large}. One reason for
+this efficiency is that \kfac only approximates the \ggn's block diagonal,
+neglecting interactions across layers.
+% Explain the downsides
+Such terms could be useful, however, for applications like uncertainty
+quantification with Laplace approximations \citep{ritter2018scalable,
+  ritter2018online, kristiadi2020being, daxberger2021laplace} that currently
+rely on \kfac. Moreover, due to its specific design for optimization, the
+Kronecker representation does not become more accurate with more data. It
+remains a simplification, exact only under assumptions unlikely to be met in
+practice \citep{martens2015optimizing}. This might be a downside for
+applications that depend on a precise curvature proxy.
+
+% Desiderata
+Here, we propose \vivit (inspired by $\mV\mV^\top$ in
+\Cref{vivit::eq:ggn-factorization}), a curvature model that leverages the \ggn's
+low-rank structure. Like \kfac, its representation is computed in parallel with
+gradients. But it allows a cost-accuracy trade-off, ranging from the
+\emph{exact} \ggn to an approximation that costs a single gradient computation.
+Our contributions are:
+\begin{itemize}
+  % General: Data space versus parameter space
+\item We highlight the \ggn's low-rank structure, and the structural limit
+  for the inherent curvature information contained in a mini-batch.
+  % : Rather than in parameter Gram
+  % space, it is best viewed in a significantly smaller Gram space spanned by
+  % the data and prediction space size. This expresses a structural limitation
+  % how much curvature is contained in a mini-batch.
+
+  % Describe computation
+\item We present how to compute various \ggn properties efficiently by
+  exploiting this structure (\Cref{vivit::fig:visual_abstract}): The exact eigenvalues,
+  eigenvectors, and per-sample directional derivatives. In contrast to other
+  methods, these quantities allow modeling curvature noise.
+
+  % Efficient implementation
+\item We introduce approximations that allow a flexible trade-off between
+  computational cost and accuracy. We also provide a fully-featured efficient
+  implementation in \pytorch \citep{paszke2019pytorch} on top of \backpack
+  \citep{dangel2020backpack}.
+
+  % Empirical study
+\item We empirically demonstrate scalability and efficiency of leveraging the
+  \ggn's low-rank structure through benchmarks on different deep neural network
+  architectures. Finally, we use \vivit's quantities to study the \ggn, and how
+  it is affected by noise, during training.
+\end{itemize}
+
+The main focus is demonstrating that many interesting curvature
+properties, including uncertainty, can be computed efficiently. Practical
+applications of this curvature uncertainty are discussed in
+\Cref{vivit::sec:use_cases}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

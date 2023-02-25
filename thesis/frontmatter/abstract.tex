@@ -1,0 +1,88 @@
+% ===================================================================
+% ENGLISH ABSTRACT
+% ===================================================================
+
+\chapter{Abstract}
+% Deep learning libraries are great
+Automatic differentiation is a key enabler of deep learning: previously,
+practitioners were limited to models for which they could manually compute
+derivatives. Now, they can create sophisticated models with almost no
+restrictions and train them using first-order, \ie gradient, information.
+Popular libraries like PyTorch~\cite{paszke2019pytorch} and
+TensorFlow~\cite{abadi2016tensorflow} compute this gradient efficiently,
+automatically, and conveniently with a single line of code. Under the hood,
+reverse-mode automatic differentiation, or gradient backpropagation, powers the
+gradient computation in these libraries. Their entire design centers around
+gradient backpropagation.
+
+% But they are centered around the gradient
+These frameworks are specialized around one specific task---computing the
+average gradient in a mini-batch. This specialization often complicates the
+extraction of other information like higher-order statistical moments of the
+gradient, or higher-order derivatives like the Hessian. It limits practitioners
+and researchers to methods that rely on the gradient. Arguably, this hampers the
+field from exploring the potential of higher-order information and there is
+evidence that focusing solely on the gradient has not lead to significant recent
+advances in deep learning optimization~\cite{schmidt2021descending}.
+
+% Deep learning needs more than the gradient
+To advance algorithmic research and inspire novel ideas, information beyond the
+batch-averaged gradient must be made available at the same level of
+computational efficiency, automation, and convenience.
+
+% High-level outline thesis
+This thesis presents approaches to simplify experimentation with rich
+information beyond the gradient by making it more readily accessible. We present
+an implementation of these ideas as an extension to the backpropagation
+procedure in \pytorch. Using this newly accessible information, we demonstrate
+possible use cases by (i) showing how it can inform our understanding of neural
+network training by building a diagnostic tool, and (ii) enabling novel methods
+to efficiently compute and approximate curvature information.
+
+% Low-level outline thesis
+% Hessian backpropagation
+First, we extend gradient backpropagation for sequential feedforward models to
+Hessian backpropagation which enables computing approximate per-layer curvature.
+This perspective unifies recently proposed block-diagonal curvature
+approximations. Like gradient backpropagation, the computation of these
+second-order derivatives is modular, and therefore simple to automate and extend
+to new operations.
+
+% BackPACK
+Based on the insight that rich information beyond the gradient can be computed
+efficiently and at the same time, we extend the backpropagation in \pytorch with
+the \backpack library. It provides efficient and convenient access to
+statistical moments of the gradient and approximate curvature information, often
+at a small overhead compared to computing just the gradient.
+
+% Cockpit
+Next, we showcase the utility of such information to better understand neural
+network training. We build the \cockpit library that visualizes what is
+happening inside the model during training through various instruments that rely
+on \backpack's statistics. We show how \cockpit provides a meaningful
+statistical summary report to the deep learning engineer to identify bugs in
+their machine learning pipeline, guide hyperparameter tuning, and study deep
+learning phenomena.
+
+% ViViT
+Finally, we use \backpack's extended automatic differentiation functionality to
+develop \vivit, an approach to efficiently compute curvature information, in
+particular curvature noise. It uses the low-rank structure of the generalized
+Gauss-Newton approximation to the Hessian and addresses shortcomings in existing
+curvature approximations. Through monitoring curvature noise, we demonstrate how
+\vivit's information helps in understanding challenges to make second-order
+optimization methods work in practice.
+
+% Closing remark
+This work develops new tools to experiment more easily with higher-order
+information in complex deep learning models. These tools have impacted works on
+Bayesian applications with Laplace approximations~\cite{daxberger2021laplace},
+out-of-distribution generalization~\cite{gulrajani2021in,rame2022fishr},
+differential privacy~\cite{yousefpour2021opacus}, and the design of automatic
+differentiation systems. They constitute one important step towards developing
+and establishing more efficient deep learning algorithms.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

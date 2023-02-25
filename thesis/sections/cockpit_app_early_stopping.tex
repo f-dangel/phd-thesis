@@ -1,0 +1,79 @@
+\subsection{Early-stopping Criterion for SGD
+  (\robustInlinecode{EarlyStopping})}\label{cockpit::app:early-stopping}
+
+The empirical risk $\gL_{\sD}(\vtheta)$, and the mini-batch loss
+$\gL_{\sB}(\vtheta)$ are only estimators of the target objective
+$\gL_{\pdata}(\vtheta)$. \citet{mahsereci2017early} motivate
+$p(\giventhat{\vg_{\sB,\sD}(\vtheta)}{\vg_{\pdata}(\vtheta) = \vzero})$ as a measure for
+detecting noise in the finite datasets $\sB, \sD$ due to sampling from $\pdata$.
+They propose an evidence-based (EB) criterion for early stopping the training
+procedure based on mini-batch statistics, and model $p(\vg_{\sB}(\vtheta))$ with
+a sampled diagonal variance approximation (compare
+\Cref{cockpit::eq:cheat-sheet-risk-gradient-diagonal-variance-estimator}),
+\begin{equation}
+  p(\vg_{\sB}(\vtheta))
+  \approx \prod_{j=1}^D  \gN\left(
+    \giventhat{
+      \vg_{\sB}(\vtheta)
+    }{
+      \left[\vg_{\pdata}(\vtheta)\right]_j,
+      \frac{\left[ \hat{\mSigma}_\sB(\vtheta)\right]_{j,j}}{|\sB|}
+    }
+  \right)\,.
+\end{equation}
+Their \sgd stopping criterion is
+\begin{subequations}
+  \begin{align}
+    \frac{2}{D} \left[ \log p(\vg_{\sB}(\vtheta))
+    - \E_{\vg_{\sB}(\vtheta) \sim p(\vg_{\sB}(\vtheta))} \left[ \log p(\vg_{\sB}(\vtheta))\right]
+    \right]
+    &> 0\,,
+      \intertext{and translates into}
+      1 - \frac{|\sB|}{D} \sum_{d=1}^D \frac{
+      \left[ \vg_{\sB}(\vtheta)\right]_d^2
+      }{
+      \left[ \hat{\mSigma}_\sB(\vtheta)\right]_{d,d}
+      }
+    &> 0\,,
+    \\
+    1 - \frac{|\sB|}{D} \sum_{d=1}^D \frac{
+    \left[ \vg_{\sB}(\vtheta)\right]_d^2
+    }{
+    \frac{1}{|\sB| - 1}
+    \sum_{n\in \sB}
+    \left[
+    \vg_n(\vtheta) - \vg_{\sB}(\vtheta)
+    \right]_d^2
+    }
+    &> 0\,,
+    \\
+    \label{cockpit::eq:early-stopping-feature-table}
+    1 - \frac{|\sB| (|\sB| - 1)}{D} \sum_{d=1}^D \frac{
+    \left[ \vg_{\sB}(\vtheta)\right]_d^2
+    }{
+    \left(
+    \sum_{n\in \sB}
+    \left[
+    \vg_n(\vtheta)
+    \right]_d^2
+    \right)
+    - |\sB|
+    \left[
+    \vg_{\sB}(\vtheta)
+    \right]_d^2
+    }
+    &> 0\,.
+  \end{align}
+\end{subequations}
+\cockpit's \inlinecode{EarlyStopping} quantity computes the left side of
+\Cref{cockpit::eq:early-stopping-feature-table}.
+
+\subsubsection{Usage}
+
+\cockpit's \inlinecode{EarlyStopping} quantity can inform practitioners that
+training is about to be completed and the model might be at risk of overfitting.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

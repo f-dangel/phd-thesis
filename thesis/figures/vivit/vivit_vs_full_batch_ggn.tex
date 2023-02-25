@@ -1,0 +1,260 @@
+\begin{figure*}[p]
+  \centering
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    {\footnotesize Impact of batch size}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    {\footnotesize Impact of batch size \& approximations}
+  \end{minipage}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\fmnist \twoctwod \sgd}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/fmnist_2c2d_sgd_plot_bs}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/fmnist_2c2d_sgd_plot_mc_sub}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\fmnist \twoctwod \adam}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/fmnist_2c2d_adam_plot_bs}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/fmnist_2c2d_adam_plot_mc_sub}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarten \threecthreed \sgd}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar10_3c3d_sgd_plot_bs}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar10_3c3d_sgd_plot_mc_sub}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarten \threecthreed \adam}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar10_3c3d_adam_plot_bs}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar10_3c3d_adam_plot_mc_sub}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+  \caption{\textbf{\bfvivit{} versus full-batch \ggn (1).} Overlap between the
+    top-$C$ eigenspaces of different \ggn approximations and the full-batch \ggn
+    during training for all test problems. Each approximation is evaluated on
+    $5$ different mini-batches.} \label{vivit::fig:vivit_vs_full_batch_ggn_1}
+\end{figure*}
+
+\begin{figure*}[p]
+  \centering
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    {\footnotesize Impact of batch size}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    {\footnotesize Impact of batch size \& approximations}
+  \end{minipage}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarten \resnetthirtytwo \sgd}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar10_resnet32_sgd_plot_bs}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar10_resnet32_sgd_plot_mc_sub}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarten \resnetthirtytwo \adam}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar10_3c3d_adam_plot_bs}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar10_3c3d_adam_plot_mc_sub}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarhun \allcnnc \sgd}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar100_allcnnc_sgd_plot_bs}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar100_allcnnc_sgd_plot_mc_sub}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarhun \allcnnc \adam}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar100_allcnnc_adam_plot_bs}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar100_allcnnc_adam_plot_mc_sub}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+  \caption{\textbf{\bfvivit{} versus full-batch \ggn (2).} Overlap between the
+    top-$C$ eigenspaces of different \ggn approximations and the full-batch \ggn
+    during training for all test problems. Each approximation is evaluated on
+    $5$ different mini-batches.} \label{vivit::fig:vivit_vs_full_batch_ggn_2}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

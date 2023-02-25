@@ -1,0 +1,79 @@
+\subsubsection{Procedure}
+
+We train the following \deepobs \citep{schneider2019deepobs} architectures with
+\sgd and \adam: \threecthreed on \cifarten{}, \twoctwod on \fmnist{} and
+\allcnnc on \cifarhun{}; all are equipped with cross-entropy loss. To ensure
+successful training, we use the hyperparameters from \cite{dangel2020backpack}
+(see \Cref{vivit::tab:noise-hyperparameters}).
+
+We also train a residual network \resnetthirtytwo \cite{he2016deep} with
+cross-entropy loss on \cifarten{} with both \sgd and \adam{}. For this, we use a
+batch size of $128$ and train for $180$ epochs. Momentum for \sgd was fixed to
+$0.9$, and \adam uses the default parameters ($\beta_1 = 0.9$, $\beta_2 =
+0.999$, $\epsilon = 10^{-8}$). For both optimizers, the learning rate was
+determined via grid search. Following \citep{schneider2019deepobs}, we use a
+log-equidistant grid from $10^{-5}$ to $10^2$ and $36$ grid points. As
+performance metric, the best test accuracy during training (evaluated once every
+epoch) is used.
+
+\subsubsection{Results}
+
+The results for the hyperparameter grid search are reported in
+\Cref{vivit::tab:noise-hyperparameters}. The training metrics training/test
+loss/accuracy for all eight test problems are shown in
+\Cref{vivit::fig:training_metrics_1,vivit::fig:training_metrics_2}.
+
+\begin{table}[ht]
+  \centering
+  \caption{ \textbf{Hyperparameter settings for training runs.} For both \sgd
+    and \adam, we report their learning rates $\eta$ (taken from the baselines
+    in \cite{dangel2020backpack} or, for \resnetthirtytwo, determined via grid
+    search). Momentum for \sgd is fixed to $0.9$. \adam uses the default
+    parameters $\beta_1 = 0.9$, $\beta_2 = 0.999$, $\epsilon = 10^{-8}$. We also
+    report the batch size used for training and the number of training epochs. }
+  \label{vivit::tab:noise-hyperparameters}
+  \vspace{1ex}
+  \begin{footnotesize}
+    \begin{tabular}{lllll}
+      \toprule
+      Problem
+      & \sgd
+      & \adam
+      & Batch size
+      & Epochs \\
+      \midrule
+      \fmnist \twoctwod
+      & $\eta \approx 2.07 \cdot 10^{-2}$
+      & $\eta \approx 1.27\cdot 10^{-4}$
+      & $N = 128$
+      & $100$
+      \\
+      \cifarten \threecthreed
+      & $\eta \approx 3.79 \cdot 10^{-3}$
+      & $\eta \approx 2.98 \cdot 10^{-4}$
+      & $N = 128$
+      & $100$
+      \\
+      \cifarten \resnetthirtytwo
+      & $\eta \approx 6.31 \cdot 10^{-2}$
+      & $\eta \approx 2.51 \cdot 10^{-3}$
+      & $N = 128$
+      & $180$
+      \\
+      \cifarhun \allcnnc
+      & $\eta \approx 4.83\cdot 10^{-1}$
+      & $\eta \approx 6.95\cdot 10^{-4}$
+      & $N = 256$
+      & $350$
+      \\
+      \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+\end{table}
+
+\input{figures/vivit/training_metrics}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

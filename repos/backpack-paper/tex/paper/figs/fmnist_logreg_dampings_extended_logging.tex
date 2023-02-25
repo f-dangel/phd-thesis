@@ -1,0 +1,19 @@
+\ifthenelse{\boolean{createDampingPlots}}{
+
+	\begin{figure}[t]
+		\plotDifferentDampingsExtendedLogging{fmnist}{2c2d}{Zero}
+	\end{figure}	
+	
+	\begin{figure}[t]
+		\plotDifferentDampingsExtendedLogging{fmnist}{2c2d}{DiagGGN}
+	\end{figure}
+
+	\begin{figure}[t]
+		\plotDifferentDampingsExtendedLogging{fmnist}{2c2d}{SDiagGGN}
+	\end{figure}	
+	
+}{
+	
+	% NOTHING
+	
+}

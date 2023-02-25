@@ -1,0 +1,38 @@
+\pgfkeys{/pgfplots/BackPACKBenchBarplot/.style={
+    width=1.02\linewidth,
+    height=0.5\linewidth,
+    grid=major,
+    grid style = {dashed},
+    every axis plot/.append style={line width = 1.5pt},
+    tick pos = left,
+    xtick align = outside,
+    ytick align = inside,
+    xmajorticks = true,
+    ymajorticks = true,
+    ylabel near ticks,
+    xlabel near ticks,
+    xticklabel style = {font = \footnotesize},
+    xlabel style = {font = \footnotesize},
+    axis line style = {black},
+    yticklabel style = {font = \footnotesize},
+    ylabel style = {font = \footnotesize},
+    title style = {font = \footnotesize, inner ysep = 0ex},
+    grid = major,
+    grid style = {dashed},
+    legend cell align = left,
+    legend style = {
+      fill opacity = 0.7,
+      text opacity = 1,
+      font = \footnotesize,
+      legend columns = 4,
+      legend cell align={left},
+      legend image post style={opacity = 1, yscale = 1.1, line width=-1pt},
+      column sep=0.25cm,
+    },
+  }
+}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

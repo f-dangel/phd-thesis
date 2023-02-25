@@ -1,0 +1,132 @@
+\newcommand{\plotLossAccuracy}[4]{
+  \input{fig/loss_accuracy_default_style.tex}
+  \pgfkeys{/pgfplots/zmystyle/.style={
+      lossaccuracydefault,
+    }}
+  \input{../../fig/exp13_full_batch_monitoring/results/plots/loss_accuracy/#1_#2_#3_#4}
+}
+
+\begin{figure}[p]
+    \centering
+    \textbf{\fmnist \twoctwod \sgd}\\[1mm]
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{fmnist}{2c2d}{sgd}{loss}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/fmnist_2c2d_sgd_loss.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{fmnist}{2c2d}{sgd}{accuracy}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/fmnist_2c2d_sgd_accuracy.pdf}
+    \end{minipage}
+
+    \textbf{\fmnist \twoctwod \adam}\\[1mm]
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{fmnist}{2c2d}{adam}{loss}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/fmnist_2c2d_adam_loss.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{fmnist}{2c2d}{adam}{accuracy}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/fmnist_2c2d_adam_accuracy.pdf}
+    \end{minipage}
+
+    \textbf{\cifarten \threecthreed \sgd}\\[2mm]
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{cifar10}{3c3d}{sgd}{loss}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/cifar10_3c3d_sgd_loss.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{cifar10}{3c3d}{sgd}{accuracy}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/cifar10_3c3d_sgd_accuracy.pdf}
+    \end{minipage}
+
+    \vspace{2mm}
+
+    \textbf{\cifarten \threecthreed \adam}\\[2mm]
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{cifar10}{3c3d}{adam}{loss}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/cifar10_3c3d_adam_loss.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{cifar10}{3c3d}{adam}{accuracy}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/cifar10_3c3d_adam_accuracy.pdf}
+    \end{minipage}
+
+    \caption{\textbf{Training metrics (1):}
+        Training/test loss/accuracy for all test problems.}
+    \label{fig:training_metrics_1}
+\end{figure}
+
+
+
+%=================================================================
+
+
+
+\begin{figure}[p]
+    \centering
+    \textbf{\cifarten \resnetthirtytwo \sgd}\\[1mm]
+    \begin{minipage}[t]{0.50\linewidth}
+        \centering
+        \plotLossAccuracy{cifar10}{resnet32}{sgd}{loss}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/cifar10_resnet32_sgd_loss.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.50\linewidth}
+        \centering
+        \plotLossAccuracy{cifar10}{resnet32}{sgd}{accuracy}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/cifar10_resnet32_sgd_accuracy.pdf}
+    \end{minipage}
+
+    \textbf{\cifarten \resnetthirtytwo \adam}\\[1mm]
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{cifar10}{resnet32}{adam}{loss}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/cifar10_resnet32_adam_loss.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{cifar10}{resnet32}{adam}{accuracy}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/cifar10_resnet32_adam_accuracy.pdf}
+    \end{minipage}
+
+    \textbf{\cifarhun \allcnnc \sgd}\\[2mm]
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{cifar100}{allcnnc}{sgd}{loss}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/cifar100_allcnnc_sgd_loss.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{cifar100}{allcnnc}{sgd}{accuracy}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/cifar100_allcnnc_sgd_accuracy.pdf}
+    \end{minipage}
+
+    \vspace{2mm}
+
+    \textbf{\cifarhun \allcnnc \adam}\\[1mm]
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{cifar100}{allcnnc}{adam}{loss}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/cifar100_allcnnc_adam_loss.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.50\textwidth}
+        \centering
+        \plotLossAccuracy{cifar100}{allcnnc}{adam}{accuracy}
+        % \includegraphics[scale=1.0]{fig/exp13_plots/loss_accuracy/cifar100_allcnnc_adam_accuracy.pdf}
+    \end{minipage}
+
+    \caption{\textbf{Training metrics (2):}
+        Training/test loss/accuracy for all test problems.}
+    \label{fig:training_metrics_2}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

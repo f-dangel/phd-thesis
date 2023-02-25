@@ -1,0 +1,88 @@
+% This file was created by tikzplotlib v0.9.7.
+\begin{tikzpicture}
+
+\begin{axis}[
+legend cell align={left},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.03,0.97)}, anchor=north west, draw=white!80!black},
+tick align=outside,
+tick pos=left,
+title={KFLR},
+x grid style={white!69.0196078431373!black},
+xmin=-0.25, xmax=1.25,
+xtick style={color=black},
+xtick={0,0.5,1},
+xticklabel style = {rotate=30.0},
+xticklabels={Grad (ref.),KFAC,KFLR},
+y grid style={white!69.0196078431373!black},
+ymajorgrids,
+ymin=0, ymax=600,
+ytick style={color=black},
+zmystyle
+]
+\draw[draw=none,fill=white!20!black] (axis cs:-0.2,0) rectangle (axis cs:0,10.6404150000117);
+\addlegendimage{ybar,ybar legend,draw=none,fill=white!20!black};
+\addlegendentry{16}
+
+\draw[draw=none,fill=white!20!black] (axis cs:0.3,0) rectangle (axis cs:0.5,21.9831315000079);
+\draw[draw=none,fill=white!20!black] (axis cs:0.8,0) rectangle (axis cs:1,245.259722000014);
+\draw[draw=none,fill=white!40!black] (axis cs:-1.38777878078145e-17,0) rectangle (axis cs:0.2,17.0513680000113);
+\addlegendimage{ybar,ybar legend,draw=none,fill=white!40!black};
+\addlegendentry{32}
+
+\draw[draw=none,fill=white!40!black] (axis cs:0.5,0) rectangle (axis cs:0.7,38.6299799999961);
+\draw[draw=none,fill=white!40!black] (axis cs:1,0) rectangle (axis cs:1.2,514.957422499947);
+\path [draw=black]
+(axis cs:-0.1,10.5087382099845)
+--(axis cs:-0.1,10.768611370035);
+
+\path [draw=black]
+(axis cs:0.4,21.8817708700126)
+--(axis cs:0.4,22.0835303899983);
+
+\path [draw=black]
+(axis cs:0.9,242.111124464981)
+--(axis cs:0.9,248.373806605052);
+
+\path [draw=black]
+(axis cs:0.1,16.8821743199533)
+--(axis cs:0.1,17.2124830400753);
+
+\path [draw=black]
+(axis cs:0.6,38.0788840324175)
+--(axis cs:0.6,39.1753339025576);
+
+\path [draw=black]
+(axis cs:1.1,506.37457080998)
+--(axis cs:1.1,523.354416569906);
+
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+-0.1 10.5087382099845
+0.4 21.8817708700126
+0.9 242.111124464981
+};
+\addlegendentry{32}
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+-0.1 10.768611370035
+0.4 22.0835303899983
+0.9 248.373806605052
+};
+\addlegendentry{32}
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+0.1 16.8821743199533
+0.6 38.0788840324175
+1.1 506.37457080998
+};
+\addlegendentry{32}
+\addplot [semithick, black, mark=-, mark size=4, mark options={solid}, only marks]
+table {%
+0.1 17.2124830400753
+0.6 39.1753339025576
+1.1 523.354416569906
+};
+\addlegendentry{32}
+\end{axis}
+
+\end{tikzpicture}

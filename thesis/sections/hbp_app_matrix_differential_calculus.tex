@@ -1,0 +1,116 @@
+Index notation for higher-order derivatives of multi-variate matrix functions
+can become heavy
+\citep{mizutani2008secondorder,naumov2017HessianInMatrixForm,wei2018bdapch,bakker2018OuterProductStructure}.
+We tackle this by embedding our approach in the notation of matrix differential
+calculus, which
+\begin{enumerate}
+\item yields notation consistent with established literature on matrix
+  derivatives \citep{magnus1999MatrixDifferentialCalculus} and clarifies the
+  origin of the symbols $\jac$ and $\gradsquared{}$, used extensively in the
+  main text
+  (\Cref{hbp::equ:generalizedJacobian,hbp::equ:generalizedHessian})\sidenote{%
+    \citet{magnus1999MatrixDifferentialCalculus} use $\D \mB(\mA),\He \mB(\mA)$
+    for the Jacobian $\jac_{\mA}\mB$ and Hessian $\gradsquared{\mA}\mB$ of
+    matrix variables $\mA, \mB$.%
+  }.
+
+\item allows for using a multi-dimensional generalization of the chain rule
+  (\Cref{hbp::the:chainRuleJacobians,hbp::the:chainRuleHessians}).
+
+\item lets us extract first- and second-order derivatives from differentials
+  using the identification rules of \citet{magnus1999MatrixDifferentialCalculus}
+  without bothering to deal with index notation.
+\end{enumerate}
+With these techniques it is easy to see how structure, like Kronecker products,
+appears in the derivatives.
+
+\subsubsection{Preliminaries \& Notation}
+
+\Cref{hbp::equ:generalizedJacobian,hbp::equ:generalizedHessian,hbp::the:chainRuleJacobians,hbp::the:chainRuleHessians}
+represent a collection of results from the book of
+\citet{magnus1999MatrixDifferentialCalculus}. They generalize the concept of
+first- and second-order derivatives to multi-variate matrix functions in terms
+of the Jacobian and Hessian matrix. While there exist multiple ways to arrange
+the partial derivatives, the presented definitions allows for a multi-variate
+generalization of the chain rule.
+
+We denote matrix, vector, and scalar functions by $\mF$, $\vf$, and $\phi$,
+respectively. Matrix (vector) arguments are written as $\mX$ ($\vx$).
+Vectorization ($\vec$, \Cref{def:background::Flattening}) applies
+column-stacking, such that for matrices $\mA, \mB, \mC$,
+\begin{align}
+  \label{hbp::equ:vectorization}
+  \vec(\mA\mB\mC) = \left( \mC^\top \otimes \mA \right) \vec(\mB)\,.
+\end{align}
+We assign vectors to bold lower-case ($\vx, \vtheta, \dots$), matrices to bold
+upper-case ($\mW, \mX, \dots$), and tensors to bold upper-case sans serif
+symbols ($\tW, \tX, \dots$). $\odot$ means elementwise multiplication (Hadamard
+product).
+
+\subsubsection{Remark on Vectorization}
+
+The generalized Jacobian and Hessian from
+\cite{magnus1999MatrixDifferentialCalculus} rely on vectorization of matrices.
+Convolutional neural networks usually act on tensors and we incorporate these by
+assuming them to be flattened such that the first index varies fastest. For a
+matrix (tensor of order two), this is consistent with column-stacking. \Eg, the
+vectorized version of the tensor $\tA \in \mathbb{R}^{n_1 \times n_2 \times
+  n_3}$ with $n_1, n_2,n_3 \in \mathbb{N}$ is $\vec \tA = (\etA_{1,1,1},
+\etA_{2,1,1},\dots, \etA_{n_1,1,1}, \etA_{1, 2, 1}, \dots, \etA_{n_1, n_2,
+  n_3})^\top$. To formulate the generalized Jacobian or Hessian for tensor
+operations, its action on a vector or matrix view of the original tensor is
+considered. Consequently, all operations can be reduced to vector-valued
+functions, which we consider in the following.
+
+The vectorization scheme is not unique. Most of the linear algebra literature
+assumes column-stacking. However, when it comes to implementations, a lot of
+programming languages store tensors in row-major order, corresponding to
+row-stacking vectorization (last index varies fastest). Thus, special attention
+has to be paid in implementations.
+
+\subsection{Relation to the Modular Approach}
+\label{hbp::subsec:RelationMDCModularApproach}
+
+\Cref{hbp::the:chainRuleHessians} can directly be applied to the graph $\ell
+\circ f^{(L)}_{\vtheta^{(L)}} \circ f^{(L - 1)}_{\vtheta^{(L-1)}} \circ \ldots
+\circ f^{(1)}_{\vtheta^{(1)}}$ of the sequential feedforward net under
+investigation. For any module function $f^{(l)}_{\vtheta^{(l)}}$, the loss can
+be expressed as a composition of two functions by squashing preceding modules in
+the graph into a single function $f^{(l - 1)}_{\vtheta^{(l-1)}} \circ \ldots
+\circ f^{(1)}_{\vtheta^{(1)}}$, and likewise composing the module itself and all
+subsequent functions, \ie $\ell \circ f^{(L)}_{\vtheta^{(L)}} \circ \ldots \circ
+f^{(l)}_{\vtheta^{(l)}}$.
+
+The analysis can therefore be reduced to the module shown in
+\Cref{hbp::fig:sketchModule} receiving an input $\vx \in \mathbb{R}^n$ that is used to
+compute the output $\vz \in \mathbb{R}^m$. The scalar loss is then expressed as a
+mapping $\ell(\vz(\vx), \vy): \mathbb{R}^n \to \mathbb{R}^p$ with $p = 1$. Suppressing
+the label $\vy$ , \Cref{hbp::equ:chainRuleHessians} implies
+\begin{align}
+  \label{hbp::equ:chainRuleVectorFunctionsApplied}
+  \begin{split}
+    \gradsquared{\vx}\ell
+    &=
+      \left( \mI_p \otimes \jac_{\vx} \vz \right)^\top
+      \left( \gradsquared{\vz}\ell \right)
+      \jac_{\vx} \vz
+      +
+      \left(\jac_{\vz} \ell \otimes \mI_n\right) \gradsquared{\vx} \vz
+    \\
+    &=
+      \left(\jac_{\vx} \vz \right)^\top
+      \left( \gradsquared{\vz}\ell \right)
+      \jac_{\vx} \vz
+      +
+      \left(\jac_{\vz} \ell \otimes \mI_n\right) \gradsquared{\vx} \vz\,.
+  \end{split}
+\end{align}
+The HBP \Cref{hbp::equ:hessianBackPropagation}, which contains Hessians of
+elements of $\vz$, is obtained by substituting the form
+\Cref{hbp::equ:HessianVectorToVector} into
+\Cref{hbp::equ:chainRuleVectorFunctionsApplied}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

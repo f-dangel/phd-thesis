@@ -1,0 +1,43 @@
+For the practical use of the \vivit{} concept, it is essential that (i) the
+computations are efficient and (ii) that we gain an understanding of how
+sub-sampling noise and the approximations introduced in
+\Cref{vivit::sec:approximations} alter the structural properties of the \ggn{}. In the
+following, we therefore empirically investigate \vivit{}'s scalability and
+approximation properties in the context of deep learning. The insights from this
+analysis substantiate \vivit{}'s value as a monitoring tool for deep learning
+optimization.
+
+\subsubsection{Experimental Setting}
+
+Architectures include three deep CNNs from \deepobs \cite{schneider2019deepobs}
+(\twoctwod on \fmnist{}, \threecthreed on \cifarten and \allcnnc on \cifarhun),
+as well as ResNets from \citet{he2016deep} on \cifarten based on
+\citet{idelbayev2018proper}---all architectures use cross-entropy loss. Based on
+the approximations presented in \Cref{vivit::sec:approximations}, we distinguish
+the following cases:
+\begin{itemize}
+\item \textbf{mb, exact:} Exact \ggn with all mini-batch samples. Backpropagates
+  $NC$ vectors.
+\item \textbf{mb, mc:} \mc-approximated \ggn with all mini-batch samples.
+  Backpropagates $N M$ vectors with $M$ the number of \mc{}-samples.
+\item \textbf{sub, exact:} Exact \ggn on a subset of mini-batch samples
+  ($\floor{\nicefrac{N}{8}}$ as in \cite{zhang2017blockdiagonal}).
+  Backpropagates $\floor{\nicefrac{N}{8}} C$ vectors.
+\item \textbf{sub, mc:} \mc-approximated \ggn on a subset of mini-batch samples.
+  Backpropagates $\floor{\nicefrac{N}{8}} M$ vectors with $M$ the number of
+  \mc{}-samples.
+\end{itemize}
+
+\subsection{Scalability}\label{vivit::subsec:scalability}
+\input{sections/vivit_scalability}
+
+\subsection{Approximation Quality}\label{vivit::subsec:approx_quality}
+\input{sections/vivit_approx_quality}
+
+\subsection{Per-sample Directional Derivatives}\label{vivit::subsec:directional_derivatives}
+\input{sections/vivit_directional_derivatives}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

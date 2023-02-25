@@ -1,0 +1,46 @@
+\captionsetup[subfigure]{justification=justified,singlelinecheck=false}
+
+\begin{figure}[p]
+	\vfill
+	\begin{subfigure}[t]{0.99\textwidth}
+		\caption{\qquad Computational overhead for \mnist Log.\,Reg.\,(GPU)}
+		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_combined_mnist_logreg_cuda}
+		\label{fig:app_benchmark_instruments_cuda-mnist_logreg}
+		\vspace{0.5cm}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[t]{0.99\textwidth}
+		\caption{\qquad Computational overhead for \mnist \mlp\,(GPU)}
+		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_combined_mnist_mlp_cuda}
+		\label{fig:app_benchmark_instruments_cuda-mnist_mlp}
+		\vspace{0.5cm}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[t]{0.99\textwidth}
+		\caption{\qquad Computational overhead for \cifarten \threecthreed\,(GPU)}
+		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_combined_cifar10_3c3d_cuda}
+		\label{fig:app_benchmark_instruments_cuda-cifar10}
+		\vspace{0.5cm}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[t]{0.99\textwidth}
+		\caption{\qquad Computational overhead for \fmnist \twoctwod\,(GPU)}
+		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_combined_fmnist_2c2d_cuda}
+		\label{fig:app_benchmark_instruments_cuda-fmnist}
+		\vspace{0.5cm}
+	\end{subfigure}
+	\vfill
+	\caption{\textbf{Individual overhead of \cockpittitle's instruments on GPU for
+		four different problems.} All run times are shown as multiples of
+	the \emph{baseline} without tracking. Expensive quantities are displayed in
+	separate panels on the right. Experimental details in the text.}
+	\label{fig:app_benchmark_instruments_cuda}
+\end{figure}
+
+\captionsetup[subfigure]{justification=centering, singlelinecheck=true}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../cockpit_paper"
+%%% End:

@@ -1,0 +1,142 @@
+% Hessian --> GGN
+\vivit is based on the Hessian's generalized Gauss-Newton approximation (see
+\Cref{vivit::eq:ggn}).
+% full-batch GGN --> mini-batch GGN
+In practice, the \ggn is only computed on a mini-batch which yields a
+statistical estimator for the \textit{full-batch} \ggn (\ie the \ggn evaluated
+on the entire training set).
+% mini-batch GGN --> approximations
+Additionally, we introduce curvature sub-sampling and an \mc approximation (see
+\Cref{vivit::sec:approximations}), \ie further approximations that alter the
+curvature's structural properties.
+% Summary of section
+In this section, we compare quantities at different stages within this hierarchy
+of approximations. We use the test problems from above and train the networks
+with both \sgd and \adam{} (details in \Cref{vivit::sec:training_of_nns}).
+
+% ---------------------------
+\subsubsection{\ggn Versus Hessian}
+
+First, we empirically study the relationship between the \ggn and the Hessian in
+the deep learning context. To capture \textit{solely} the effect of neglecting
+the residual $\mR$ (see \Cref{vivit::eq:ggn}), we consider the noise-free case and
+compute $\mH$ and $\mG$ on the entire training set.
+
+We characterize both curvature matrices by their top-$C$ eigenspace: the space
+spanned by the eigenvectors to the $C$
+% (the number of classes)
+largest eigenvalues. This is a $C$-dimensional subspace of the parameter space
+$\Theta$, on which the loss function is subject to particularly strong
+curvature. The \textit{overlap} between these spaces serves as the comparison
+metric.
+% Definition of eigenspace
+Let $\{ \ve_c^\mU \}_{c=1}^C$ the set of orthonormal eigenvectors to the $C$
+largest eigenvalues of some symmetric matrix $\mU$ and $\mathcal{E}^\mU =
+\vecspan (\ve_1^\mU, ..., \ve_C^\mU)$.
+% the corresponding top-$C$ eigenspace.
+% Definition overlap
+The projection onto this subspace $\mathcal{E}^\mU$ is given by the projection
+matrix $\mP^\mU = (\ve_1^\mU, ..., \ve_C^\mU) (\ve_1^\mU, ..., \ve_C^\mU)^\top$.
+As in \citet{gurari2018gradient}, we define the overlap between two top-$C$
+eigenspaces $\mathcal{E}^\mU$ and $\mathcal{E}^\mV$ of the matrices $\mU$ and
+$\mV$ by \vspace{-2mm}
+\begin{equation}
+  \text{overlap}(\mathcal{E}^\mU, \mathcal{E}^\mV)
+  = \frac{\Tr{}(\mP^\mU \mP^\mV)}
+  {\sqrt{\Tr{}(\mP^\mU) \Tr{}(\mP^\mV)}}
+  \in [0, 1]\, .
+  \label{vivit::eq:overlap_eigenspaces}
+\end{equation}
+If $\text{overlap}(\mathcal{E}^\mU, \mathcal{E}^\mV) = 0$, then
+$\mathcal{E}^\mU$ and $\mathcal{E}^\mV$ are orthogonal to each other; if the
+overlap is $1$, the subspaces are identical.
+
+\Cref{vivit::fig:approx_GGN_Hessian} shows the overlap between the full-batch \ggn and
+Hessian during training of the \threecthreed network on \cifarten with \sgd{}.
+Except for a short phase at the beginning of the optimization procedure (note
+the log scale for the epoch-axis), a strong agreement ($\text{overlap} \geq
+0.85$) between the top-$C$ eigenspaces is observed. We make similar observations
+with the other test problems (see \Cref{vivit::sec:ggn_vs_hessian}), yet to a slightly
+lesser extent for \cifarhun{}. Consequently, we identify the \ggn as an
+interesting object, since it consistently shares relevant structure with the
+Hessian matrix.
+
+
+% ---------------------------
+\subsubsection{Eigenspace Under Noise \& Approximations}
+
+\begin{figure}[t]
+  \centering
+  % \textbf{\cifarten \threecthreed \sgd}\\[1mm]
+  \input{figures/vivit/eigspace_default_style}
+  \pgfkeys{/pgfplots/zmystyle/.style={
+      eigspacedefault,
+    }}
+  \tikzexternalenable
+  \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar10_3c3d_sgd_plot_bs}
+  \tikzexternaldisable
+
+  \caption{ \textbf{Mini-batch \ggn versus full-batch \ggn{}:} Overlap between the
+    top-$C$ eigenspaces of the mini-batch \ggn and full-batch \ggn during training
+    of the \threecthreed network on \cifarten with \sgd{}. For each mini-batch
+    size, $5$ different mini-batches are drawn. }\label{vivit::fig:approx_eigenspace_bs}
+\end{figure}
+
+% Mini-batch GGN versus full-batch GGN
+%
+\vivit uses mini-batching to compute a statistical estimator of the full-batch
+\ggn{}. This approximation alters the top-$C$ eigenspace, as shown in
+\Cref{vivit::fig:approx_eigenspace_bs}: with decreasing mini-batch size, the
+approximation carries less and less structure of its full-batch counterpart, as
+indicated by dropping overlaps. In addition, at constant batch size, a decrease
+in approximation quality can be observed over the course of training. This might
+be a valuable insight for the design of second-order optimization methods, where
+this structural decay could lead to performance degradation over the course of
+the optimization, which has to be compensated for by a growing batch-size (\eg
+\citet{martens2010deep} reports that the optimal batch size grows during
+training).
+
+
+% ViViT versus full-batch GGN
+%
+
+\begin{figure}[t]
+  \centering
+  % \textbf{\cifarten \threecthreed \sgd}\\[1mm]
+  \input{figures/vivit/eigspace_default_style}
+  \pgfkeys{/pgfplots/zmystyle/.style={
+      eigspacedefault,
+    }}
+  \tikzexternalenable
+  \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_vivit_vs_fb/cifar10_3c3d_sgd_plot_mc_sub}
+  \tikzexternaldisable
+
+  \caption{ \textbf{Approximations versus full-batch \ggn{}:} Overlap between the
+    top-$C$ eigenspaces of the mini-batch \ggn{}, \vivit{}'s approximations and
+    the full-batch \ggn during training of the \threecthreed network on \cifarten
+    with \sgd{}. Each approximation is evaluated on $5$ mini-batches.
+  } \label{vivit::fig:approx_eigenspace_vivit}
+\end{figure}
+
+To allow for a fine-grained cost-accuracy trade-off, \vivit introduces
+% curvature sub-sampling and an MC approximation as
+\textit{further} approximations to the mini-batch \ggn{} (see
+\Cref{vivit::sec:approximations}). \Cref{vivit::fig:approx_eigenspace_vivit}
+shows the overlap between these \ggn approximations and the full-batch
+\ggn{}\sidenote{ A comparison with the mini-batch \ggn as ground truth can be
+  found in \Cref{vivit::sec:eigenspace_noise} }. The order of the approximations
+is as expected: with increasing computational effort, the approximations improve
+and, despite the greatly reduced computational effort compared to the exact
+mini-batch \ggn{}, significant structure of the top-$C$ eigenspace is preserved.
+Details and results for the other test problems are reported in
+\Cref{vivit::sec:eigenspace_noise}.
+
+So far, our analysis is based on the top-$C$ eigenspace of the curvature
+matrices. We extend it by studying the effect of noise and approximations on the
+curvature \textit{magnitude} along the top-$C$ directions in
+\Cref{vivit::sec:curvature_noise}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

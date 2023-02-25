@@ -1,0 +1,80 @@
+% This file was created by tikzplotlib v0.9.7.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.211764705882353,0.294117647058824,0.603921568627451}
+\definecolor{color1}{rgb}{0.431372549019608,0.650980392156863,0.803921568627451}
+\definecolor{color2}{rgb}{0.76078431372549,0.894117647058824,0.937254901960784}
+
+\begin{axis}[
+legend cell align={left},
+legend columns=4,
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.03,0.97)}, anchor=north west, draw=white!80!black},
+tick align=outside,
+tick pos=left,
+title={3C3D on CIFAR10},
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=7.5,
+xtick style={color=black},
+xtick={0,1,2,3,4,5,6,7},
+xticklabels={
+Grad (ref.),2nd Moment,
+Batch L2,DiagGGN-MC,
+KFAC,Indiv. Grad,
+KFLR,DiagGGN},
+y grid style={white!69.0196078431373!black},
+ylabel={Time [ms]},
+ymin=0, ymax=50,
+ytick style={color=black},
+zmystyle
+]
+\draw[draw=none,fill=white!20!black] (axis cs:-0.375,0) rectangle (axis cs:-0.125,15.0664545000154);
+\draw[draw=none,fill=color0] (axis cs:0.625,0) rectangle (axis cs:0.875,14.395405000073);
+\addlegendimage{ybar,ybar legend,draw=none,fill=color0};
+\addlegendentry{Batch = 32}
+
+\draw[draw=none,fill=color0] (axis cs:1.625,0) rectangle (axis cs:1.875,15.2878979999969);
+\draw[draw=none,fill=color0] (axis cs:2.625,0) rectangle (axis cs:2.875,19.3677970000863);
+\draw[draw=none,fill=color0] (axis cs:3.625,0) rectangle (axis cs:3.875,16.8086539999877);
+\draw[draw=none,fill=color0] (axis cs:4.625,0) rectangle (axis cs:4.875,15.2265290000742);
+\draw[draw=none,fill=color0] (axis cs:5.625,0) rectangle (axis cs:5.875,21.8555310000283);
+\draw[draw=none,fill=color0] (axis cs:6.625,0) rectangle (axis cs:6.875,22.4338249999505);
+\draw[draw=none,fill=white!40!black] (axis cs:-0.125,0) rectangle (axis cs:0.125,20.5737690000092);
+\draw[draw=none,fill=color1] (axis cs:0.875,0) rectangle (axis cs:1.125,20.6966069999908);
+\addlegendimage{ybar,ybar legend,draw=none,fill=color1};
+\addlegendentry{48}
+
+\draw[draw=none,fill=color1] (axis cs:1.875,0) rectangle (axis cs:2.125,20.9739174999868);
+\draw[draw=none,fill=color1] (axis cs:2.875,0) rectangle (axis cs:3.125,25.4147299999659);
+\draw[draw=none,fill=color1] (axis cs:3.875,0) rectangle (axis cs:4.125,22.383585);
+\draw[draw=none,fill=color1] (axis cs:4.875,0) rectangle (axis cs:5.125,20.8398080000052);
+\draw[draw=none,fill=color1] (axis cs:5.875,0) rectangle (axis cs:6.125,30.4188420000173);
+\draw[draw=none,fill=color1] (axis cs:6.875,0) rectangle (axis cs:7.125,33.1303219999199);
+\draw[draw=none,fill=white!60!black] (axis cs:0.125,0) rectangle (axis cs:0.375,26.3089910000645);
+\draw[draw=none,fill=color2] (axis cs:1.125,0) rectangle (axis cs:1.375,26.2560775000225);
+\addlegendimage{ybar,ybar legend,draw=none,fill=color2};
+\addlegendentry{64}
+
+\draw[draw=none,fill=color2] (axis cs:2.125,0) rectangle (axis cs:2.375,28.7451689999898);
+\draw[draw=none,fill=color2] (axis cs:3.125,0) rectangle (axis cs:3.375,32.0420350000177);
+\draw[draw=none,fill=color2] (axis cs:4.125,0) rectangle (axis cs:4.375,28.0495179999889);
+\draw[draw=none,fill=color2] (axis cs:5.125,0) rectangle (axis cs:5.375,30.8939720000581);
+\draw[draw=none,fill=color2] (axis cs:6.125,0) rectangle (axis cs:6.375,37.0278835000022);
+\draw[draw=none,fill=color2] (axis cs:7.125,0) rectangle (axis cs:7.375,47.5826415000711);
+\addplot [semithick, white!20!black, opacity=0.4, forget plot]
+table {%
+-0.5 15.0664545000154
+7.5 15.0664545000154
+};
+\addplot [semithick, white!40!black, opacity=0.4, forget plot]
+table {%
+-0.5 20.5737690000092
+7.5 20.5737690000092
+};
+\addplot [semithick, white!60!black, opacity=0.4, forget plot]
+table {%
+-0.5 26.3089910000645
+7.5 26.3089910000645
+};
+\end{axis}
+
+\end{tikzpicture}

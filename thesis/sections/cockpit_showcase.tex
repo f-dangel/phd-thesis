@@ -1,0 +1,51 @@
+Having introduced the tool, we can now return to \Cref{cockpit::fig:showcase}
+for a closer look. The figure shows a snapshot from training the \allcnnc
+\citep{springenberg2015striving} on \cifarhun using \sgd with a cyclic learning
+rate schedule (bottom left panel). Diagonal curvature instruments are configured
+to use an MC approximation to save run time (here, $C=100$, compare
+\Cref{cockpit::sec:benchmark}).
+
+A glance at all panels shows that the learning rate schedule is reflected in the
+metrics. However, the instruments also provide insights into the early phase of
+training (first $\sim100$ iterations), where the learning rate is still
+unaffected by the schedule: there, the loss plateaus and the optimizer takes
+relatively small steps (compared to later, as can be seen in the small gradient
+norms, and small distance from initialization). Based on these low-cost
+instruments, one may thus at first suspect that training was poorly initialized;
+but training indeed succeeds after iteration 100! Viewing \cockpit entirely
+though, it becomes clear that optimization in these first steps is not stuck at
+all: while loss, gradient norms, and distance in parameter space remain almost
+constant, curvature changes, which expresses itself in a clear downward trend of
+the maximum Hessian eigenvalue (top right panel).
+
+The importance of early training phases has recently been hypothesized
+\citep{frankle2020early}, suggesting a logarithmic timeline. Not only does our
+showcase support this hypothesis, but it also provides an explanation from the
+curvature-based metrics, which in this particular case are the only meaningful
+feedback in the first few training steps. It also suggests monitoring training
+at log-spaced intervals. \cockpit provides the flexibility to do so, indeed,
+\Cref{cockpit::fig:showcase} has been created with log-scheduled tracking events.
+
+As a final note, we recognize that the approach taken here promotes an amount of
+\emph{manual} work (monitoring metrics, deliberately intervening, \etc) that may
+seem ironic and at odds with the paradigm of automation that is at the heart of
+machine learning. However, we argue that this might be what is needed at this
+point in the evolution of the field. Deep learning has been driven notably by
+scaling compute resources \citep{thompson2020computational}, and fully automated
+one-shot training may still be some way out. To develop better training methods,
+researchers, not just users, need \emph{algorithmic} interpretability and
+explainability: direct insights and intuition about the processes taking place
+``inside'' neural nets. To highlight how \cockpit might provide this, we
+contrast in \Cref{cockpit::app:convex-problems} the view of two convex \deepobs
+problems (noisy quadratic \& logistic regression on \mnist). In both cases, the
+instruments behave differently compared to the deep learning problem in
+\Cref{cockpit::fig:showcase}. In particular, the gradient norm increases (left
+column, bottom panel) during training, and individual gradients become less
+scattered (center column, top panel). This is diametrically opposed to the
+convex problems and shows that deep learning differs even qualitatively from
+well-understood optimization problems.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

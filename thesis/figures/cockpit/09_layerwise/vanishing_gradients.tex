@@ -1,0 +1,101 @@
+\begin{figure*}
+  % pgfplots style "layerwiseexperimentdefault"
+  \pgfkeys{/pgfplots/layerwiseexperimentdefault/.style={
+      width=\linewidth,
+      height=0.145\textheight,
+      every axis plot/.append style={line width = 1.5pt},
+      tick pos = left,
+      xmajorticks = true,
+      ymajorticks = true,
+      ylabel near ticks,
+      xlabel near ticks,
+      xtick align = inside,
+      ytick align = inside,
+      ytick={-1,0,1},
+      legend cell align = left,
+      legend columns = 1,
+      legend pos = south east,
+      legend style = {
+        fill opacity = 0.7,
+        text opacity = 1,
+        font = \footnotesize,
+      },
+      xticklabel style = {font = \footnotesize, inner xsep = 0ex},
+      xlabel style = {font = \footnotesize},
+      axis line style = {black},
+      yticklabel style = {font = \footnotesize, inner ysep = 0ex},
+      ylabel style = {font = \footnotesize},
+      title style = {font = \footnotesize, inner ysep = 0ex},
+      grid = major,
+      grid style = {dashed}
+    }
+  }
+
+  \centering
+  \begin{subfigure}[t]{0.4\linewidth}
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={layerwiseexperimentdefault,
+        title = {Network}, ylabel=Gradient\\Element, ylabel style={align=left}, xticklabels = {}
+      }}
+    \input{../repos/cockpit-paper/tex/fig/09_layerwise/net-grad-margin-cifar10_3c3d.tex}
+
+    \vspace{-0.1cm}
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={layerwiseexperimentdefault,
+        ylabel=Gradient\\Element, ylabel style={align=left}
+      }}
+    \input{../repos/cockpit-paper/tex/fig/09_layerwise/net-grad-margin-cifar10_3c3dsig.tex}
+    % \vspace{-3ex}
+    \caption{Network Histogram}
+    \label{cockpit::fig:layerwise-experiment_net}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.57\linewidth}
+    \pgfkeys{/pgfplots/layerwiseexperimentdefaultparameters/.style={
+        layerwiseexperimentdefault,
+        ylabel={},
+        ylabel style = {inner ysep = -4ex},
+        yticklabels={},
+        width=0.45\linewidth,
+      }
+    }
+    \hfill%
+    \pgfkeys{/pgfplots/zmystyle/.style={layerwiseexperimentdefaultparameters,
+        title={Parameter 0}, xticklabels = {},}}%
+    \input{../repos/cockpit-paper/tex/fig/09_layerwise/param-0-grad-margin-cifar10_3c3d.tex}
+    \hfill
+    \pgfkeys{/pgfplots/zmystyle/.style={layerwiseexperimentdefaultparameters,
+        title={Parameter 4}, xticklabels = {},}}%
+    \input{../repos/cockpit-paper/tex/fig/09_layerwise/param-4-grad-margin-cifar10_3c3d.tex}
+    \pgfkeys{/pgfplots/zmystyle/.style={layerwiseexperimentdefaultparameters,
+        title={Parameter 10}, xticklabels = {},}}%
+    \hfill
+    \input{../repos/cockpit-paper/tex/fig/09_layerwise/param-10-grad-margin-cifar10_3c3d.tex}
+    \hfill
+
+    \vspace{-0.1cm}\hspace{-0.25\baselineskip}\hfill
+    \pgfkeys{/pgfplots/zmystyle/.style={layerwiseexperimentdefaultparameters}}
+    \input{../repos/cockpit-paper/tex/fig/09_layerwise/param-0-grad-margin-cifar10_3c3dsig.tex}
+    \hfill
+    \input{../repos/cockpit-paper/tex/fig/09_layerwise/param-4-grad-margin-cifar10_3c3dsig.tex}
+    \hfill
+    \input{../repos/cockpit-paper/tex/fig/09_layerwise/param-10-grad-margin-cifar10_3c3dsig.tex}
+    \hfill
+    \caption{Layer-wise Histograms}
+    \label{cockpit::fig:layerwise-experiment_layers}
+  \end{subfigure}
+  \vspace{-1ex}
+  \caption{\textbf{Gradient distributions of two similar architectures on the
+      same problem}. (a) Distribution of individual gradient elements summarized
+    over the entire network. Both seem similar. (b) Layer-wise histograms for a
+    subset of layers. Parameter 0 is the layer closest to the network's input,
+    parameter 10 closest to its output. Only the layer-wise view reveals that
+    there are several degenerated gradient distributions for the orange network
+    making training unnecessary hard.}
+  \label{cockpit::fig:layerwise-experiment}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../../thesis"
+%%% End:

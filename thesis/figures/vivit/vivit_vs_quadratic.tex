@@ -1,0 +1,133 @@
+\begin{figure*}[p]
+  \centering
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    {\footnotesize \sgd}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    {\footnotesize \adam}
+  \end{minipage}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\fmnist \twoctwod}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigvals_vivit_vs_fb/fmnist_2c2d_sgd_plot}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigvals_vivit_vs_fb/fmnist_2c2d_adam_plot}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarten \threecthreed}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigvals_vivit_vs_fb/cifar10_3c3d_sgd_plot}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigvals_vivit_vs_fb/cifar10_3c3d_adam_plot}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarten \resnetthirtytwo}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigvals_vivit_vs_fb/cifar10_resnet32_sgd_plot}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigvals_vivit_vs_fb/cifar10_resnet32_adam_plot}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \caption{\cifarhun \allcnnc}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigvals_vivit_vs_fb/cifar100_allcnnc_sgd_plot}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefaultapp,
+          eigspacenolegend,
+        }}
+      \tikzexternalenable
+      \vspace{-6ex}
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigvals_vivit_vs_fb/cifar100_allcnnc_adam_plot}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \caption{ \textbf{\bfvivit{}'s versus full-batch quadratic model.} Comparison
+    between approximations to the quadratic model and the full-batch model in
+    terms of the average relative error for the directional curvature during
+    training for all test problems. } \label{vivit::fig:curvature_noise}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

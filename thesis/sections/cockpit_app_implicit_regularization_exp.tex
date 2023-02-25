@@ -1,0 +1,117 @@
+\subsection{Detecting Implicit Regularization of The
+  Optimizer}\label{cockpit::app:implicit_regularization_exp}
+
+In non-convex optimization, optimizers can converge to local minima with
+different properties. Here, we illustrate this by investigating the effect of
+sub-sampling noise on a simple task from
+\cite{mulayoff2020unique,ginsburg2020regularization}.
+
+We generate synthetic data $\sD = \{(x_n, y_n) \in \sR \times \sR
+\}_{n=1}^{N=100}$ for a regression task with $x \sim \gN(\giventhat{x}{0, 1})$
+with noisy observations $y = 1.4 x + \epsilon$ where $\epsilon \sim
+\gN(\giventhat{\epsilon}{0,1})$. The model is a scalar net with parameters
+$\vtheta = \begin{pmatrix} w_1 & w_2 \end{pmatrix}^\top \in \sR^2$, initialized
+at $\vtheta_0 = \begin{pmatrix} 0.1 & 1.7 \end{pmatrix}^\top$, that produces
+predictions $f_{\vtheta}(x) = w_2 w_1 x$. We seek to minimize the mean squared
+error
+\begin{equation*}
+  \gL_\sD(\vtheta) = \frac{1}{N} \sum_{n=1}^{N} \left( f_{\vtheta}(x_n) - y_n \right)^2
+\end{equation*}
+and compare \sgd ($|\sB|=95$) with \gd ($|\sB|= N =100$) at a learning rate of
+$0.1$ (see \Cref{cockpit::fig:implicit-regularization}).
+
+We observe that the loss of both \sgd and \gd is almost identical. Using a noisy
+gradient regularizes the Hessian's maximum eigenvalue though. It decreases in
+later stages where the loss curve suggests that training has converged. This
+regularization effect constitutes an important phenomenon that cannot be
+observed by monitoring only the loss.
+
+\pgfkeys{/pgfplots/regularizationdefault/.style={
+    width=1.05\linewidth,
+    height=0.8\linewidth,
+    every axis plot/.append style={line width = 1.5pt},
+    every axis background/.style={fill=white},
+    ymajorticks=true,
+    xmajorticks=true,
+    tick pos = left,
+    ylabel near ticks,
+    xlabel near ticks,
+    xtick align = inside,
+    ytick align = inside,
+    legend cell align = left,
+    legend columns = 1,
+    legend pos = north east,
+    legend style = {
+      fill opacity = 0.7,
+      text opacity = 1,
+      font = \footnotesize,
+    },
+    colorbar style = {font = \footnotesize},
+    title style = {font = \footnotesize, inner ysep = 0ex},
+    xticklabel style = {font = \footnotesize, inner xsep = 0ex},
+    xlabel style = {font = \footnotesize},
+    axis line style = {black},
+    yticklabel style = {font = \footnotesize, inner ysep = -4ex},
+    ylabel style = {font = \footnotesize},
+    grid = major,
+    grid style = {dashed}
+  }
+}
+
+\begin{figure}[!th]
+  \centering
+	\begin{subfigure}[t]{0.495\textwidth}
+    \centering
+		\pgfkeys{/pgfplots/zmystyle/.style={regularizationdefault, ymin=0.6, ymax=1.1}}
+    \tikzexternalenable
+		\input{../repos/cockpit-paper/tex/fig/03_scalar_deep/Loss.tex}
+    \tikzexternaldisable
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.495\textwidth}
+    \centering
+		\pgfkeys{/pgfplots/zmystyle/.style={regularizationdefault,
+        legend style = {
+          opacity = 0,
+          fill opacity = 0,
+          text opacity = 0,
+        },
+        ylabel = {Max.\,Hessian eigenvalue}
+      }}
+    \tikzexternalenable
+		\input{../repos/cockpit-paper/tex/fig/03_scalar_deep/HessMaxEV.tex}
+    \tikzexternaldisable
+	\end{subfigure}
+  \vspace{1ex}
+  \begin{subfigure}{1.0\linewidth}
+    \centering
+		\pgfkeys{/pgfplots/zmystyle/.style={regularizationdefault,
+        width = 0.91\linewidth,
+        height = 0.6695*0.91*\linewidth,
+        legend style = {
+          opacity = 0,
+          fill opacity = 0,
+          text opacity = 0,
+        },
+        xmajorticks=true,
+        ymajorticks=true,
+      }}
+    \tikzexternalenable
+    \input{../repos/cockpit-paper/fig/03_scalar_deep/output/Trajectory.tex}
+    \tikzexternaldisable
+  \end{subfigure}
+  \caption{\textbf{Observing implicit regularization of the optimizer with
+      \cockpittitle} through a comparison of \sgd and \gd on a synthetic problem
+    inspired by \cite{mulayoff2020unique, ginsburg2020regularization} (details
+    in the text). \textit{Top left:} The mini-batch loss of both optimizers
+    looks similar. \textit{Top right:} Noise due to mini-batching regularizes
+    the Hessian's maximum eigenvalue in stages where the loss suggests that
+    training has converged. \textit{Bottom:} Optimization trajectories in
+    parameter space. SGD is attracted to the flattest minimum.}
+	  \label{cockpit::fig:implicit-regularization}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

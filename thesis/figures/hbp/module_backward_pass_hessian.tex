@@ -1,0 +1,19 @@
+% A single module with data flow for forward/backward/HBP pass
+\begin{tikzpicture}
+  \node (in)
+  [inner sep=0]
+  {\tikz \drawMessagesWithArrows{$\vx$}{$\grad{\vx}\ell$}{$\gradsquared{\vx}\ell$}{\hNodeDistance};};
+  \node (module)
+  [anchor=south west, inner sep=0]
+  at (in.south east)
+  {\tikz \drawModuleWithParams{$f_{\vtheta}$}{16}{$\vtheta$}{$\grad{\vtheta}\ell$}{$\gradsquared{\vtheta}\ell$};};
+  \node (out)
+  [inner sep=0, anchor=south west]
+  at (module.south east)
+  {\tikz \drawMessagesWithArrows{$\vz$}{$\grad{\vz}\ell$}{$\gradsquared{\vz}\ell$}{\hNodeDistance};};
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

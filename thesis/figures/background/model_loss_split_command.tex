@@ -1,0 +1,34 @@
+% #1 input
+% #2 output
+% #3 label
+% #4 loss
+\newcommand{\drawModelLossSplit}[4]{
+  \node (in)
+  [inner sep=0]
+  {\tikz \drawMessagesWithArrows{#1}{ }{ }{\hNodeDistance};};
+  \node (layer1)
+  [anchor=south west, inner sep=0]
+  at (in.south east)
+  {\tikz \drawModuleWithParams{$f_{\vtheta}$}{16}{$\vtheta$}{ }{ };};
+  \node (out)
+  [inner sep=0, anchor=south west]
+  at (layer1.south east)
+  {\tikz \drawMessagesWithArrows{#2}{ }{ }{\hNodeDistance};};
+  % loss layer
+  \node (lossLayer)
+  [inner sep=0pt, anchor=south west]
+  at (out.south east)
+  {\tikz\drawModuleNoParams{$\ell$}{5};};
+  \node (loss)
+  [inner sep=0, anchor=south west]
+  at (lossLayer.south east)
+  {\tikz \drawMessagesWithArrows{#4}{ }{ }{\hNodeDistance};};
+  \node (label)
+  [inner sep=0, anchor=south west, rotate=-90, xshift = -120, yshift = -62]
+  at (lossLayer.south east)
+  {\tikz \drawMessagesWithArrows{#3}{ }{ }{\hNodeDistance};};
+}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

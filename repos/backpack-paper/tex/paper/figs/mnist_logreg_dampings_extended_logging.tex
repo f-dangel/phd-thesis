@@ -1,0 +1,19 @@
+\ifthenelse{\boolean{createDampingPlots}}{
+
+%	\begin{figure}[t]
+%		\plotDifferentDampingsExtendedLogging{mnist}{logreg}{Zero}{\bestStrategy}{\bestMetricType}{\bestMetric}
+%	\end{figure}	
+	
+	\begin{figure}[t]
+		\plotDifferentDampingsExtendedLogging{mnist}{logreg}{DiagGGN}{\bestStrategy}{\bestMetricType}{\bestMetric}
+	\end{figure}
+
+%	\begin{figure}[t]
+%		\plotDifferentDampingsExtendedLogging{mnist}{logreg}{SDiagGGN}{\bestStrategy}{\bestMetricType}{\bestMetric}
+%	\end{figure}	
+	
+}{
+	
+	% NOTHING
+	
+}

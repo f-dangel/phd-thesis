@@ -1,0 +1,433 @@
+\subsection{Gradient Tests (\robustInlinecode{NormTest},
+  \robustInlinecode{InnerTest},
+  \robustInlinecode{OrthoTest})}\label{cockpit::app:gradient_tests}
+
+\citet{bollapragada2017adaptive} and \citet{byrd2012sample} propose batch size adaptation
+schemes based on the gradient noise. They formulate geometric constraints
+between population and mini-batch gradient and accessible approximations that
+can be probed to decide whether the mini-batch size should be increased. Because
+mini-batches are \iid from $\pdata$, it holds that
+\begin{subequations}
+  \label{cockpit::eq:iid-sampling-expectation}
+  \begin{align}
+    \E\left[\vg_{\sB}(\vtheta) \right]
+    &=
+      \vg_{\pdata}(\vtheta),
+    \\
+    \E\left[ \vg_{\sB}(\vtheta)^\top \vg_{\pdata}(\vtheta)  \right]
+    &=
+      \lVert \vg_{\pdata}(\vtheta)  \rVert^2.
+  \end{align}
+\end{subequations}
+
+The above works propose enforcing other weaker similarity in expectation during
+optimization. These geometric constraints reduce to basic vector geometry (see
+\Cref{cockpit::subfig:gradient-test-sketch1} for an overview of the relevant
+vectors). We recall their formulation here for consistency and derive the
+practical versions, which can be computed from training observables and are used
+in \cockpit (consult \Cref{cockpit::subfig:gradient-test-sketch2} for the
+visualization).
+
+\begin{figure*}[ht]
+  \centering
+  \begin{subfigure}[t]{0.59\linewidth}
+    \centering
+    \tikzexternalenable
+    \begin{tikzpicture}[rotate=5, >=latex, very thick, xscale = 1., yscale =
+      1.25]
+
+      % node style
+      \tikzset{my label style/.style={fill=white, fill opacity=0.5, text
+          opacity=1, font=\footnotesize}}
+
+
+      % expected risk gradient
+      \draw[->, ultra thick] (0,0) to node [midway, anchor=north west, my label
+      style] {$\vg_{\pdata}$} (7,0);
+
+      % mini-batch gradient
+      \draw[->] (0,0) to node [midway, anchor=south east, my label style]
+      {$\vg_{\sB}$} (6,3);
+      \draw[->, >=latex] (0,0) -- (6,3);
+
+      % right angle
+      % \draw (6,0) rectangle ++(-0.15,0.15);
+
+      % residual
+      \draw[->, sns_blue] (7,0) to node [midway, right, anchor=south west, my label
+      style] {$\vg_{\sB} - \vg_{\pdata}$} (6,3);
+
+      % projection
+      \draw[->, sns_orange] (0,0) to node [midway, above, anchor=south east, my label
+      style] {$\mathrm{proj}_{\vg_{\pdata}}\left(\vg_{\sB}\right)$} (6,0);
+
+      % orthogonal residual
+      \draw[->, sns_green] (6,0) to node [midway, left, anchor=north east, my label
+      style] {$\vg_{\sB} - \mathrm{proj}_{\vg_{\pdata}}\left(\vg_{\sB}\right)$} (6,3);
+    \end{tikzpicture}
+    \tikzexternaldisable
+    \caption{Relevant vectors}
+    \label{cockpit::subfig:gradient-test-sketch1}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.39\linewidth}
+    \centering
+    \tikzexternalenable
+    \begin{tikzpicture}[>=latex, very thick, xscale = 2, yscale = 2]
+      \clip (-1,0) rectangle (1,2);
+
+      % expected risk gradient
+      % \draw[->, ultra thick] (0,0) to (0,1);
+      % target indicator
+      \draw[ultra thick] (0,0.9) to (0,1.1);
+      \draw[ultra thick] (-0.1,1) to (0.1,1);
+
+      % norm test
+      \pgfmathsetmacro{\normTestRadius}{0.5}
+      \filldraw [fill=sns_blue, opacity=0.4] (0,1) circle (\normTestRadius);
+
+      % inner product test
+      \pgfmathsetmacro{\innerProductWidth}{0.2}
+      \filldraw [fill=sns_orange, opacity=0.4] (-2,1 - \innerProductWidth) rectangle
+      (2,1 + \innerProductWidth);
+
+      % orthogonality test
+      \pgfmathsetmacro{\orthogonalityTestWidth}{0.3}
+      \filldraw [fill=sns_green, opacity=0.4] (-\orthogonalityTestWidth, 0) rectangle
+      (\orthogonalityTestWidth, 2);
+
+      % norm test label
+      \draw[ultra thick, <->, sns_blue] (0,1) to ++(45:\normTestRadius) node [above, right] {\footnotesize $\theta_{\text{norm}}$};
+
+      % inner product test label
+      \draw[ultra thick, <->, sns_orange] (-0.75, 1 - \innerProductWidth) to ++(0, 2 *\innerProductWidth) node [above] {\footnotesize $2 \theta_{\text{inner}}$};
+
+      % orthogonality test label
+      \draw[ultra thick, <->, sns_green] (-\orthogonalityTestWidth0, 0.2) to ++(2 *\orthogonalityTestWidth, 0.) node [right] {\footnotesize $2 \nu_{\text{ortho}}$};
+
+      % acute angle test
+      % \pgfmathsetmacro{\acuteAngle}{30}
+      % \pgfmathsetmacro{\initAngle}{90 - \acuteAngle}
+      % \pgfmathsetmacro{\endAngle}{90 + \acuteAngle}
+      % \pgfmathsetmacro{\acuteAngleRadius}{3}
+
+      % \filldraw [fill=black, opacity=0.2] (0,0) --
+      % (\initAngle:\acuteAngleRadius) arc
+      % (\initAngle:\endAngle:\acuteAngleRadius) -- cycle;
+    \end{tikzpicture}
+    \tikzexternaldisable
+    \caption{\cockpit's gradient test visualization.}
+    \label{cockpit::subfig:gradient-test-sketch2}
+  \end{subfigure}
+  \caption{\textbf{Conceptual sketch for gradient tests.}
+    \subfigref{cockpit::subfig:gradient-test-sketch1} Relevant vectors to
+    formulate the geometric constraints between population and mini-batch
+    gradient probed by the gradient tests.
+    \subfigref{cockpit::subfig:gradient-test-sketch2} Gradient test
+    visualization in \cockpit.}
+  \label{cockpit::fig:gradient-tests-sketch}
+\end{figure*}
+
+\subsubsection{Usage}
+
+All three gradient tests describe the noise level of the gradients.
+\citet{bollapragada2017adaptive} and \citet{byrd2012sample} adapt the batch size
+so that the proposed geometric constraints are fulfilled. Practitioners can use
+the combined gradient test plot, \ie top center plot in
+\Cref{cockpit::fig:showcase}, to monitor gradient noise during training and
+adjust hyperparameters such as the batch size.
+
+
+\subsubsection{Norm Test (\robustInlinecode{NormTest})}\label{cockpit::app:norm-test}
+The norm test \citep{byrd2012sample} constrains the residual norm $\lVert
+\vg_{\sB}(\vtheta) - \vg_{\pdata}(\vtheta) \rVert$, rescaled by $\lVert
+\vg_{\pdata}(\vtheta) \rVert$. This gives rise to a standardized ball of radius
+$\theta_{\text{norm}} \in (0, \infty)$ around the population gradient, where the
+mini-batch gradient should reside. \citet{byrd2012sample} set
+$\theta_{\text{norm}} = 0.9$ in their experiments and increase the batch size if
+(in the practical version, see below) the following constraint is not fulfilled
+\begin{subequations}
+  \begin{align}
+    \label{cockpit::eq:norm-test-constraint}
+    \E\left[ \frac{ \left\lVert \vg_{\sB}(\vtheta) - \vg_{\pdata}(\vtheta)
+    \right\rVert^2 }{\left\lVert \vg_{\pdata}(\vtheta) \right\rVert^2} \right]
+    \le
+    \theta_{\text{norm}}^2\,.
+  \end{align}
+  Instead of taking the expectation over mini-batches, \citet{byrd2012sample} note
+  that the above will be satisfied if
+  \begin{equation}
+    \label{cockpit::eq:norm-test-individual}
+    \frac{1}{|\sB|} \E\left[ \frac{ \left\lVert \vg_n(\vtheta) - \vg_{\pdata}(\vtheta)
+        \right\rVert^2 }{\left\lVert \vg_{\pdata}(\vtheta) \right\rVert^2} \right]
+    \le \theta_{\text{norm}}^2\,.
+  \end{equation}
+\end{subequations}
+They propose a practical form of this test,
+\begin{subequations}
+  \begin{equation}
+    \label{cockpit::eq:norm-test-practical-proposed}
+    \frac{1}{|\sB| (|\sB| - 1)} \frac{\sum_{n \in \sB} \left\lVert \vg_n(\vtheta) -
+        \vg_{\sB}(\vtheta) \right\rVert^2}{\left\lVert
+        \vg_{\sB}(\vtheta)\right\rVert^2} \le \theta_{\text{norm}}^2\,,
+  \end{equation}
+  which can be computed from mini-batch statistics. Rearranging
+  \begin{align}
+    \sum_{n \in \sB} \left\lVert \vg_n(\vtheta) - \vg_{\sB}(\vtheta) \right\rVert^2
+    &= \left( \sum_{n \in \sB} \left\lVert \vg_n(\vtheta) \right\rVert^2 \right) - |\sB|
+      \left\lVert \vg_{\sB}(\vtheta) \right\rVert^2\,,
+  \end{align}
+  we arrive at
+  \begin{align}
+    \label{cockpit::eq:norm-test-feature-table}
+    \frac{1}{|\sB| (|\sB| - 1)} \left[ \frac{ \sum_{n \in \sB} \left\lVert
+    \vg_n(\vtheta) \right\rVert^2 }{\left\lVert
+    \vg_{\sB}(\vtheta)\right\rVert^2} - |\sB| \right] &\le
+                                                        \theta_{\text{norm}}^2
+  \end{align}
+\end{subequations}
+that leverages the norm of both the mini-batch and the individual gradients,
+which can be aggregated over parameters during a backward pass. \cockpit's
+\inlinecode{NormTest} corresponds to the maximum radius $\theta_{\text{norm}}$
+for which the above inequality holds.
+
+\subsubsection{Inner Product Test
+  (\robustInlinecode{InnerTest})}\label{cockpit::app:inner-product-test}
+The inner product test \citep{bollapragada2017adaptive} constrains the
+projection of $\vg_{\sB}(\vtheta)$ onto $\vg_{\pdata}(\vtheta)$ (compare
+\Cref{cockpit::subfig:gradient-test-sketch1}),
+\begin{align}
+  \label{cockpit::eq:inner-product-projection}
+  \mathrm{proj}_{\vg_{\pdata}(\vtheta)}\left(\vg_{\sB}(\vtheta)\right)
+  :=
+  \frac{\vg_{\sB}(\vtheta)^\top \vg_{\pdata}(\vtheta)}{\left\lVert
+  \vg_{\pdata}(\vtheta) \right\rVert^2} \vg_{\pdata}(\vtheta)\,,
+\end{align}
+rescaled by $\lVert \vg_{\pdata}(\vtheta) \rVert$. This restricts the mini-batch
+gradient to reside in a standardized band of relative width
+$\theta_{\text{inner}}\in (0, \infty)$ around the population risk gradient.
+\citet{bollapragada2017adaptive} use $\theta_{\text{inner}} = 0.9$ (in the practical
+version, see below) to adapt the batch size if the parallel component's variance
+does not satisfy the condition
+\begin{subequations}
+  \begin{align}
+    \label{cockpit::eq:inner-product-test}
+    \Var\left( \frac{\vg_{\sB}(\vtheta)^\top \vg_{\pdata}(\vtheta)}{\left\lVert
+    \vg_{\pdata}(\vtheta) \right\rVert^2} \right)
+    &= \E\left[ \left( \frac{\vg_{\sB}(\vtheta)^\top \vg_{\pdata}(\vtheta)}{\left\lVert
+      \vg_{\pdata}(\vtheta) \right\rVert^2}  -1 \right)^2 \right]
+      \le \theta_{\text{inner}}^2
+  \end{align}
+  (note that by \Cref{cockpit::eq:iid-sampling-expectation} we have $\E[
+    \nicefrac{\vg_{\sB}(\vtheta)^\top \vg_{\pdata}(\vtheta)}{\left\lVert \vg_{\pdata}(\vtheta)
+      \right\rVert^2} ] = 1 $). \citet{bollapragada2017adaptive} bound
+  \Cref{cockpit::eq:inner-product-test} by the individual gradient variance,
+  \begin{align}
+    \label{cockpit::eq:inner-product-test-individual}
+    \begin{split}
+      &\frac{1}{|\sB|}\Var\left( \frac{\vg_n(\vtheta)^\top \vg_{\pdata}(\vtheta)}{\left\lVert
+      \vg_{\pdata}(\vtheta) \right\rVert^2}\right)
+      \\
+      &\qquad =
+      \frac{1}{|\sB|} \E \left[ \left( \frac{\vg_n(\vtheta)^\top \vg_{\pdata}(\vtheta) }{\left\lVert
+      \vg_{\pdata}(\vtheta) \right\rVert^2} - 1    \right)^2  \right] \le \theta_{\text{inner}}^2\,.
+    \end{split}
+  \end{align}
+\end{subequations}
+They then propose a practical form of \Cref{cockpit::eq:inner-product-test-individual},
+which uses the mini-batch sample variance,
+\begin{subequations}
+  \begin{align}
+    \label{cockpit::eq:inner-product-test-practical}
+    \begin{split}
+    &\frac{1}{|\sB|} \Var\left( \frac{\vg_n(\vtheta)^\top \vg_{\sB}(\vtheta)}{\left\lVert
+    \vg_{\sB}(\vtheta)\right\rVert^2}\right)
+      \\
+      &\qquad
+    = \frac{1}{|\sB| (|\sB| - 1)}\left[  \sum_{n\in \sB}  \left( \frac{\vg_n(\vtheta)^\top \vg_{\sB}(\vtheta)}{\left\lVert
+    \vg_{\sB}(\vtheta)\right\rVert^2} - 1    \right)^2  \right]
+    \le \theta_{\text{inner}}^2\,.
+    \end{split}
+  \end{align}
+  Expanding
+  \begin{align}
+    \label{cockpit::eq:inner-product-test-practical-rewrite}
+    \sum_{n\in \sB}  \left( \frac{\vg_n(\vtheta)^\top \vg_{\sB}(\vtheta)}{\left\lVert
+    \vg_{\sB}(\vtheta)\right\rVert^2} - 1    \right)^2
+    &=
+      \frac{\sum_{n\in \sB}  \left( \vg_n(\vtheta)^\top \vg_{\sB}(\vtheta)\right)^2}{\left\lVert
+      \vg_{\sB}(\vtheta)\right\rVert^4} - |\sB|
+  \end{align}
+  and inserting \Cref{cockpit::eq:inner-product-test-practical-rewrite} into
+  \Cref{cockpit::eq:inner-product-test-practical} yields
+  \begin{align}
+    \label{cockpit::eq:inner-product-test-feature-table}
+    \frac{1}{|\sB| (|\sB| - 1)}
+    \left[   \frac{\sum_{n\in \sB}  \left( \vg_n(\vtheta)^\top \vg_{\sB}(\vtheta)\right)^2}{\left\lVert
+    \vg_{\sB}(\vtheta)\right\rVert^4} - |\sB|\right]
+    &\le \theta_{\text{inner}}^2\,.
+  \end{align}
+\end{subequations}
+It relies on pairwise scalar products between individual gradients, which can be
+aggregated over layers during backpropagation. \cockpit's \inlinecode{InnerTest}
+quantity computes the maximum band width $\theta_{\text{inner}}$ that satisfies
+\Cref{cockpit::eq:inner-product-test-feature-table}.
+
+\subsubsection{Orthogonality Test (\robustInlinecode{OrthoTest})}\label{cockpit::app:orthogonality-test}
+In contrast to the inner product test (\Cref{cockpit::app:inner-product-test})
+which constrains the projection (\Cref{cockpit::eq:inner-product-projection}),
+the orthogonality test \citep{bollapragada2017adaptive} constrains the
+orthogonal part (see \Cref{cockpit::fig:gradient-tests-sketch} (a))
+\begin{align}
+  \label{cockpit::eq:orthogonality-projection}
+  \vg_{\sB}(\vtheta)
+  -
+  \mathrm{proj}_{\vg_{\pdata}(\vtheta)}\left(\vg_{\sB}(\vtheta)\right)\,,
+\end{align}
+rescaled by $\lVert \vg_{\pdata}(\vtheta) \rVert$. This restricts the mini-batch
+gradient to a standardized band of relative width $\nu_{\text{ortho}} \in (0,
+\infty)$ parallel to the population gradient. \citet{bollapragada2017adaptive} use $\nu
+= \tan(80^{\circ}) \approx 5.84$ (in the practical version, see below) to adapt
+the batch size if the following condition is violated,
+\begin{subequations}
+  \begin{align}
+    \label{cockpit::eq:orthogonality-test-constraint}
+    \E\left[
+    \left\lVert
+    \frac{
+    \vg_{\sB}(\vtheta)
+    -
+    \mathrm{proj}_{\vg_{\pdata}(\vtheta)}\left(\vg_{\sB}(\vtheta)\right)
+    }{
+    \lVert \vg_{\pdata}(\vtheta) \rVert
+    }
+    \right\rVert^2
+    \right]
+    \le \nu^2_{\text{ortho}}\,.
+  \end{align}
+  Expanding the norm, and inserting \Cref{cockpit::eq:inner-product-projection}, this
+  simplifies to
+  \begin{align}
+    \begin{split}
+      \E \left[ \left\lVert \frac{ \vg_{\sB}(\vtheta) }{ \lVert \vg_{\pdata}(\vtheta)
+      \rVert } - \frac{ \vg_{\sB}(\vtheta)^\top \vg_{\pdata}(\vtheta) }{ \lVert
+      \vg_{\pdata}(\vtheta) \rVert^2 } \frac{ \vg_{\pdata}(\vtheta) }{ \lVert
+      \vg_{\pdata}(\vtheta) \rVert} \right\rVert^2 \right] &\le
+                                                        \nu^2_{\text{ortho}}\,,
+      \\
+      \E\left[ \frac{ \lVert \vg_{\sB}(\vtheta) \rVert^2 }{ \lVert
+      \vg_{\pdata}(\vtheta) \rVert^2 } - \frac{ \left( \vg_{\sB}(\vtheta)^\top
+      \vg_{\pdata}(\vtheta) \right)^2 }{ \lVert \vg_{\pdata}(\vtheta) \rVert^4 }
+      \right] &\le \nu^2_{\text{ortho}}\,.
+    \end{split}
+  \end{align}
+  \citet{bollapragada2017adaptive} bound this inequality with individual gradients,
+  \begin{align}
+    \frac{1}{|\sB|}
+    \E \left[
+    \left\lVert
+    \frac{
+    \vg_n(\vtheta)
+    }{
+    \lVert
+    \vg_{\pdata}(\vtheta)
+    \rVert^2
+    }
+    -
+    \frac{
+    \vg_n(\vtheta)^\top
+    \vg_{\pdata}(\vtheta)
+    }{
+    \lVert
+    \vg_{\pdata}(\vtheta)
+    \rVert^2
+    }
+    \frac{
+    \vg_{\pdata}(\vtheta)
+    }{
+    \left\lVert
+    \vg_{\pdata}(\vtheta)
+    \right\rVert}
+    \right\rVert^2
+    \right]
+    &\le \nu^2_{\text{ortho}}\,.
+  \end{align}
+\end{subequations}
+They propose the practical form
+\begin{subequations}
+  \begin{align}
+    \frac{1}{|\sB|(|\sB|-1)}
+    \E\left[
+    \left\lVert
+    \frac{
+    \vg_n(\vtheta)
+    }{
+    \lVert
+    \vg_{\sB}(\vtheta)
+    \rVert
+    }
+    -
+    \frac{
+    \vg_n(\vtheta)^\top
+    \vg_{\sB}(\vtheta)
+    }{
+    \lVert
+    \vg_{\sB}(\vtheta)
+    \rVert^2
+    }
+    \frac{
+    \vg_{\sB}(\vtheta)
+    }{
+    \left\lVert
+    \vg_{\sB}(\vtheta)
+    \right\rVert}
+    \right\rVert^2
+    \right]
+    &\le \nu^2_{\text{ortho}}\,,
+  \end{align}
+  which simplifies to
+  \begin{align}
+    \label{cockpit::eq:orthogonality-test-feature-table}
+    \frac{1}{|\sB| (|\sB| - 1)}
+    \sum_{n \in \sB }
+    \left(
+    \frac{
+    \lVert
+    \vg_n(\vtheta)
+    \rVert^2
+    }{
+    \lVert
+    \vg_{\sB}(\vtheta)
+    \rVert^2
+    }
+    -
+    \frac{
+    \left(
+    \vg_n(\vtheta)^\top
+    \vg_{\sB}(\vtheta)
+    \right)^2
+    }{
+    \lVert
+    \vg_{\sB}(\vtheta)
+    \rVert^4
+    }
+    \right)
+    &\le \nu^2_{\text{ortho}}\,.
+  \end{align}
+\end{subequations}
+It relies on pairwise scalar products between individual gradients which can be
+aggregated over layers during a backward pass. \cockpit's \inlinecode{OrthoTest}
+quantity computes the maximum band width $\nu_{\text{ortho}}$ which satisfies
+\Cref{cockpit::eq:orthogonality-test-feature-table}.
+
+\subsubsection{Relation to Acute Angle Test}
+
+Recently, a novel ``acute angle test'' was proposed by
+\citet{bahamou2019dynamic}. While the theoretical constraint between
+$\vg_{\sB}(\vtheta)$ and $\vg_{\pdata}(\vtheta)$ differs from the orthogonality
+test, the practical versions coincide. Hence, we do not incorporate the acute
+angle here.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

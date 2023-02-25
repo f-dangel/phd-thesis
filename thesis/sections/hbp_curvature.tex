@@ -1,0 +1,132 @@
+The HBP equation yields \emph{exact} diagonal blocks
+$\gradsquared{\vtheta^{(1)}}\ell, \dots, \gradsquared{\vtheta^{(L)}}\ell$ of the
+full parameter Hessian $\gradsquared{\vtheta}\ell$. They can be of interest in
+their own right for analysis of the loss function, but are not generally
+suitable for second-order optimization in the sense
+of~\eqref{hbp::equ:NewtonUpdate}, as they need neither be PSD nor invertible.
+For application in optimization, HBP can be modified to yield semi-definite BDAs
+of the Hessian. \Cref{hbp::equ:hessianBackPropagation} again provides the
+foundation for this adaptation, which is closely related to the concepts of
+\KFRA~\citep{botev2017practical}, BDA-PCH~\citep{wei2018bdapch}, and, under
+certain conditions, \KFAC \citep{martens2015optimizing}. We draw their
+connections by briefly reviewing them here.
+
+\subsubsection{Generalized Gauss-Newton Matrix}
+
+The \ggn emerges as the curvature matrix in the quadratic expansion of the loss
+function $\ell(\vz^{(L)}, \vy)$ in the network output $\vz^{(L)}$
+(\Cref{sec:background::ggn}). It is also obtained by linearizing the network
+output $\vz^{(L)}(\vtheta, \vx)$ in $\vtheta$ before computing the loss
+Hessian~\citep{martens2014new}, and reads
+(\Cref{eq:background::generalizedGaussNewton})
+\begin{align*}
+  \mG(\vtheta) =
+  \left( \jac_{\vtheta} \vz^{(L)}\right )^\top
+  \gradsquared{\vz^{(L)}}\ell
+  \left( \jac_{\vtheta} \vz^{(L)}\right )\,.
+\end{align*}
+For diagonal blocks $\mG(\vtheta^{(l)})$, the Jacobian is unrolled
+using its chain rule (\Cref{hbp::the:chainRuleJacobians})
+\begin{math}
+  \jac_{\vtheta^{(l)}}{\vz^{(L)}} =
+  (\jac_{\vz^{(L-1)}} \vz^{(L)})
+  (\jac_{\vz^{(L-2)}} \vz^{(L-1)})
+  \cdots
+  (\jac_{\vz^{(l)}} \vz^{(l+1)})
+  (\jac_{\vtheta^{(l)}} \vz^{(l)}).
+\end{math}
+This shows that the Hessian $\gradsquared{\vz^{(L)}}\ell$ of the loss function
+\wrt the network output is propagated back through a layer by multiplication
+from left and right with its Jacobian. This is accomplished in HBP by
+\emph{ignoring second-order effects introduced by modules}, that is by setting
+the Hessian of the module function to zero, therefore neglecting the second term
+in \Cref{hbp::equ:hessianBackPropagation}\sidenote{%
+  Recall from \Cref{sec:background::DeepNeuralNetworks} that many common neural
+  network operations, such as affine transformations, convolutions, padding \&
+  pooling, have vanishing second-order derivatives \wrt both their input and
+  parameters. Hence, the second term in \Cref{hbp::equ:hessianBackPropagation}
+  vanishes exactly for these operations.}. In fact, if all activations in the
+network are piecewise linear (\eg ReLUs), the \ggn and Hessian blocks are
+equivalent. Moreover, diagonal blocks of the \ggn are PSD if the loss function
+is convex (and thus $\gradsquared{\vz^{(L)}}\ell$ is PSD). This is because
+blocks are recursively left- and right-multiplied with Jacobians, which does not
+alter the definiteness. Hessians of the loss functions listed in
+\Cref{hbp::table:backpropEquations} are PSD. The resulting recursive scheme has
+been used by \citet{botev2017practical} under the acronym \KFRA to optimize
+convex loss functions of fully-connected neural networks with piecewise linear
+activation functions.
+
+\subsubsection{Positive-curvature Hessian}
+
+Another concept of positive semi-definite BDAs of the Hessian (that additionally
+considers second-order module effects) was studied in \citet{wei2018bdapch} and
+named the PCH. It is obtained by modification of terms in the second summand of
+\Cref{hbp::equ:hessianBackPropagation} that can introduce concavity during HBP.
+This ensures positive semi-definiteness since the first summand is
+semi-definite, assuming the loss Hessian $\gradsquared{\vz^{(L)}}\ell$ with
+respect to the network output to be positive semi-definite.
+\citet{wei2018bdapch} suggest to eliminate negative curvature of a matrix by
+computing the eigenvalue decomposition and either discard negative eigenvalues
+or cast them to their absolute value. This allows the construction of PSD
+curvature matrices even for non-convex loss functions. In the setting
+of~\citet{wei2018bdapch}, the PCH can empirically outperform optimization using
+the \ggn. In usual feedforward neural networks, the concavity is introduced by
+nonlinear element-wise activations, and corresponds to a diagonal matrix
+(\Cref{hbp::table:backpropEquations}). Thus, convexity can be maintained during
+HBP by either clipping negative values to zero (PCH-clip), or taking their
+magnitude in the diagonal concave term (PCH-abs).
+
+\subsubsection{Fisher Information Matrix}
+
+If the network output models a conditional probability density on the labels,
+$q(\giventhat{\rvy}{\vz^{(L)}})$, maximum likelihood learning for the
+parameterized density $p_\vtheta (\giventhat{\rvy}{\vx}) =
+q(\giventhat{\rvy}{\vz^{(L)}(\vx, \vtheta)})$ will correspond to choosing a
+negative log-likelihood loss function, \ie $\ell(\vz^{(L)}, \vy) = - \log
+q(\giventhat{\vy}{\vz^{(L)}})$
+(\Cref{sec:background::ProbabilisticInterpretation}). Common loss functions like
+square and cross-entropy loss can be interpreted in this way
+(\Cref{ex:background::probabilisticInterpretationMSELoss,ex:background::probabilisticInterpretationCrossEntropyLoss}),
+. Natural gradient descent \citep{amari1998natural} uses the Fisher information
+matrix
+\begin{math}
+  \mF(\vtheta)
+  =
+  \E_{\vy \sim p_\vtheta(\giventhat{\rvy}{\vx})}
+  \left[\left(\nicefrac{\partial \log
+        p_\theta(\giventhat{\vy}{\vx})}{\partial \vtheta} \right)
+    \left(\nicefrac{\partial \log
+        p_\theta(\giventhat{\vy}{\vx})}{\partial \vtheta} \right)^\top
+  \right]
+\end{math}
+as a PSD curvature matrix approximating the Hessian. It can be expressed as the
+log-predictive density's expected Hessian under $p_{\vtheta}$ itself:
+$\mF(\vtheta) = - \E_{\vy \sim p_{\vtheta}(\giventhat{\rvy}{\vz^{(L)}})}\left[
+  \gradsquared{\vtheta} \log q(\giventhat{\vy}{\vz^{(L)}}) \right]$, see
+\Cref{eq:background::FisherExpectationForms}. Assuming truly \iid samples
+$\vx$, the log-likelihood of multiple data decomposes and, after using the chain
+rule, results in the approximation
+\begin{align*}
+  \mF_{\sD_{\text{train}}}(\vtheta)
+  &\approx
+    \dfrac{1}{|\sD_{\text{train}}|}
+    \sum_{(\vx, \vy) \in \sD_{\text{train}}}
+    \left( \jac_{\vtheta} \vz^{(L)}\right)^\top
+    \mF_{q}(\vz^{(L)})
+    \left( \jac_{\vtheta} \vz^{(L)}\right)
+\end{align*}
+with $\mF_q(\vz^{(L)}) = - \E_{\vy \sim q(\giventhat{\rvy}{\vz^{(L)}})}[
+\gradsquared{\vz^{(L)}} \log q(\giventhat{\vy}{\vz^{(L)}})]$, see
+\Cref{eq:background::FisherGGNPerspective}. In this form, the computational
+scheme for Fisher BDAs resembles the HBP of the \ggn. However, instead of
+propagating back the loss Hessian \wrt the network, it uses the negative
+log-likelihood's expected Hessian the model's predictive distribution.
+\citet{martens2015optimizing} use Monte Carlo sampling to estimate this matrix
+in their \KFAC optimizer. Relations between the Fisher and \ggn are discussed in
+\citep{pascanu2013revisiting, martens2014new}; for square and cross-entropy
+loss, they are equivalent (\Cref{sec:background::naturalGradientDescent}).
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

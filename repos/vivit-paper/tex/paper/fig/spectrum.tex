@@ -1,0 +1,443 @@
+\begin{figure}[p]
+  \centering
+
+  \begin{small}
+    \textbf{\fmnist \twoctwod}
+  \end{small}
+  \vspace{0.5\baselineskip}
+
+  \begin{minipage}{0.495\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Full network}
+    \end{small}
+    \vspace{1ex}
+
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultleft,
+          title={exact, mb}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/fmnist_2c2d_cpu_one_group_full_batch_exact.tex}
+    \end{minipage}
+    \hspace{1.9ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultcenter,
+          title={exact, sub}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/fmnist_2c2d_cpu_one_group_frac_batch_exact.tex}
+    \end{minipage}
+    \hspace{-3.5ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultright,
+          title={mc, full}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/fmnist_2c2d_cpu_one_group_full_batch_mc.tex}
+    \end{minipage}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.495\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Block-diagonal approximation}
+    \end{small}
+    \vspace{1ex}
+
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultleft, ymax = 5e-4,
+          title={exact, mb}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/fmnist_2c2d_cpu_layerwise_group_full_batch_exact.tex}
+    \end{minipage}
+    \hspace{1.9ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultcenter, ymax = 5e-4,
+          title={exact, sub}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/fmnist_2c2d_cpu_layerwise_group_frac_batch_exact.tex}
+    \end{minipage}
+    \hspace{-3.5ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultright, ymax = 5e-4,
+          title={mc, full}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/fmnist_2c2d_cpu_layerwise_group_full_batch_mc.tex}
+    \end{minipage}
+  \end{minipage}
+
+%======================================================================
+
+  \begin{small}
+    \textbf{\cifarten \threecthreed}
+  \end{small}
+  \vspace{0.5\baselineskip}
+
+  \begin{minipage}{0.495\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Full network}
+    \end{small}
+    \vspace{1ex}
+
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultleft,
+          title={exact, mb}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_3c3d_cpu_one_group_full_batch_exact.tex}
+    \end{minipage}
+    \hspace{1.9ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultcenter,
+          title={exact, sub}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_3c3d_cpu_one_group_frac_batch_exact.tex}
+    \end{minipage}
+    \hspace{-3.5ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultright,
+          title={mc, full}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_3c3d_cpu_one_group_full_batch_mc.tex}
+    \end{minipage}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.495\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Block-diagonal approximation}
+    \end{small}
+    \vspace{1ex}
+
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultleft, ymax = 3e-3,
+          title={exact, mb}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_3c3d_cpu_layerwise_group_full_batch_exact.tex}
+    \end{minipage}
+    \hspace{1.9ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultcenter, ymax = 3e-3,
+          title={exact, sub}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_3c3d_cpu_layerwise_group_frac_batch_exact.tex}
+    \end{minipage}
+    \hspace{-3.5ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultright, ymax = 3e-3,
+          title={mc, full}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_3c3d_cpu_layerwise_group_full_batch_mc.tex}
+    \end{minipage}
+  \end{minipage}
+
+
+%======================================================================
+
+  \begin{small}
+    \textbf{\cifarten \resnetthirtytwo}
+  \end{small}
+  \vspace{0.5\baselineskip}
+
+  \begin{minipage}{0.495\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Full network}
+    \end{small}
+    \vspace{1ex}
+
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultleft, ymax = 1e-4,
+          title={exact, mb}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_resnet32_cpu_one_group_full_batch_exact.tex}
+    \end{minipage}
+    \hspace{1.9ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultcenter, ymax = 1e-4,
+          title={exact, sub}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_resnet32_cpu_one_group_frac_batch_exact.tex}
+    \end{minipage}
+    \hspace{-3.5ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultright, ymax = 1e-4,
+          title={mc, full}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_resnet32_cpu_one_group_full_batch_mc.tex}
+    \end{minipage}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.495\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Block-diagonal approximation}
+    \end{small}
+    \vspace{1ex}
+
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultleft, ymax = 3e-3,
+          title={exact, mb}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_resnet32_cpu_layerwise_group_full_batch_exact.tex}
+    \end{minipage}
+    \hspace{1.9ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultcenter, ymax = 3e-3,
+          title={exact, sub}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_resnet32_cpu_layerwise_group_frac_batch_exact.tex}
+    \end{minipage}
+    \hspace{-3.5ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultright, ymax = 3e-3,
+          title={mc, full}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_resnet32_cpu_layerwise_group_full_batch_mc.tex}
+    \end{minipage}
+  \end{minipage}
+
+\vspace{-3mm}
+
+\caption{\textbf{\ggn spectra of different architectures under \vivittitle's
+      approximations:} Left and right columns contain results with the full
+    network's \ggn and a per-layer block-diagonal approximation, respectively.}
+  \label{fig:spectrum_1}
+
+\end{figure}
+
+%\addtocounter{figure}{-1}
+%\clearpage
+
+\begin{figure}[t]
+  \centering
+
+  \begin{small}
+    \textbf{\cifarten \resnetfiftysix}
+  \end{small}
+  \vspace{0.5\baselineskip}
+
+  \begin{minipage}{0.495\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Full network}
+    \end{small}
+    \vspace{1ex}
+
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultleft, ymax = 1e-4,
+          title={exact, mb}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_resnet56_cpu_one_group_full_batch_exact.tex}
+    \end{minipage}
+    \hspace{1.9ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultcenter, ymax = 1e-4,
+          title={exact, sub}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_resnet56_cpu_one_group_frac_batch_exact.tex}
+    \end{minipage}
+    \hspace{-3.5ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultright, ymax = 1e-4,
+          title={mc, full}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_resnet56_cpu_one_group_full_batch_mc.tex}
+    \end{minipage}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.495\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Block-diagonal approximation}
+    \end{small}
+    \vspace{1ex}
+
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultleft, ymax = 3e-3,
+          title={exact, mb}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_resnet56_cpu_layerwise_group_full_batch_exact.tex}
+    \end{minipage}
+    \hspace{1.9ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultcenter, ymax = 3e-3,
+          title={exact, sub}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_resnet56_cpu_layerwise_group_frac_batch_exact.tex}
+    \end{minipage}
+    \hspace{-3.5ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultright, ymax = 3e-3,
+          title={mc, full}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar10_resnet56_cpu_layerwise_group_full_batch_mc.tex}
+    \end{minipage}
+  \end{minipage}
+
+  %==================================================
+
+  \begin{small}
+    \textbf{\cifarhun \allcnnc}
+  \end{small}
+  \vspace{0.5\baselineskip}
+
+  \begin{minipage}{0.495\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Full network}
+    \end{small}
+    \vspace{1ex}
+
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultleft, ymax = 1e-3,
+          title={exact, mb}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar100_allcnnc_cpu_one_group_full_batch_exact.tex}
+    \end{minipage}
+    \hspace{1.9ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultcenter, ymax = 1e-3,
+          title={exact, sub}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar100_allcnnc_cpu_one_group_frac_batch_exact.tex}
+    \end{minipage}
+    \hspace{-3.5ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultright, ymax = 1e-3,
+          title={mc, full}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar100_allcnnc_cpu_one_group_full_batch_mc.tex}
+    \end{minipage}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.495\linewidth}
+    \centering
+    \begin{small}
+      \textbf{Block-diagonal approximation}
+    \end{small}
+    \vspace{1ex}
+
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultleft, ymax = 5e-3,
+          title={exact, mb}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar100_allcnnc_cpu_layerwise_group_full_batch_exact.tex}
+    \end{minipage}
+    \hspace{1.9ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultcenter, ymax = 5e-3,
+          title={exact, sub}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar100_allcnnc_cpu_layerwise_group_frac_batch_exact.tex}
+    \end{minipage}
+    \hspace{-3.5ex}
+    \begin{minipage}[t]{0.33\linewidth}
+      \centering
+      % load "spectrumdefault{left, center, right}" styles
+      \input{fig/spectrum_default_style.tex}
+      % customize "zmystyle" as you wish
+      \pgfkeys{/pgfplots/zmystyle/.style={spectrumdefaultright, ymax = 5e-3,
+          title={mc, full}}}
+      \input{../../fig/exp10_performance_ggn_evals/fig/evals/cifar100_allcnnc_cpu_layerwise_group_full_batch_mc.tex}
+    \end{minipage}
+  \end{minipage}
+
+  \vspace{-3mm}
+
+  \caption{\textbf{\ggn spectra of different architectures under \vivittitle's
+      approximations:} Left and right columns contain results with the full
+    network's \ggn and a per-layer block-diagonal approximation, respectively.}
+  \label{fig:spectrum_2}
+\end{figure}
+%\clearpage
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

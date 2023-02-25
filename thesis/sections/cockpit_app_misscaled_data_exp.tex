@@ -1,0 +1,32 @@
+In this section, we present additional experiments and use cases that showcase
+\cockpit's utility. \Cref{cockpit::app:misscaled_data_exp_imagenet} shows that
+\cockpit is able to scale to larger datasets by running the experiment with
+incorrectly scaled data (see \Cref{cockpit::sec:misscaled_data_exp}) on
+\imagenet instead of \cifarten. \Cref{cockpit::app:implicit_regularization_exp}
+provides another concrete use case similar to \Cref{cockpit::fig:LINE}:
+detecting regularization during training.
+
+\subsection{Incorrectly Scaled Data for
+  ImageNet}\label{cockpit::app:misscaled_data_exp_imagenet}
+
+We repeat the experiment of \Cref{cockpit::sec:misscaled_data_exp} on the \imagenet
+\citep{deng2009imagenet} dataset instead of \cifarten. We also use a larger neural
+network model, switching from \threecthreed to \vgg \citep{simonyan2015deep}. This
+demonstrates that \cockpit is able to scale to both larger models and datasets.
+The input size of the images is almost fifty times larger ($224 \times 224$
+instead of $32 \times 32$). The model size increased by roughly a factor of 150
+(\vgg for \imagenet has roughly 138 million parameters, \threecthreed has less
+than a million).
+
+Similar to the example in the main text, the gradients are affected by the
+scaling introduced via the input images, albeit less drastically (see
+\Cref{cockpit::fig:data-pre-processing_imagenet}). Due to the gradient scaling,
+default optimization hyperparameters might not work well anymore for the model
+using the raw data.
+
+\input{figures/cockpit/06_preprocessing/misscaled_data_imagenet}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

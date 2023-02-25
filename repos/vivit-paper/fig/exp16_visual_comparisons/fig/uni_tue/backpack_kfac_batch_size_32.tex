@@ -1,0 +1,75 @@
+% This file was created by tikzplotlib v0.9.7.
+\begin{tikzpicture}
+
+\begin{axis}[
+colorbar,
+colorbar style={ylabel={}},
+colormap={mymap}{[1pt]
+  rgb(0pt)=(0.705882352941177,0.627450980392157,0.411764705882353);
+  rgb(1pt)=(0.647058823529412,0.117647058823529,0.215686274509804);
+  rgb(2pt)=(0.196078431372549,0.254901960784314,0.294117647058824)
+},
+point meta max=-0.0714857280254364,
+point meta min=-5,
+tick align=outside,
+tick pos=left,
+title={Batch size 32},
+xmin=-0.5, xmax=324.5,
+y dir=reverse,
+ymin=-0.5, ymax=324.5,
+zmystyle
+]
+\addplot graphics [,xmin=-0.5, xmax=324.5, ymin=324.5, ymax=-0.5] {backpack_kfac_batch_size_32-000.png};
+\addplot [line width=0.32pt, white, dashed]
+table {%
+-0.499999999999996 150
+324.5 150
+};
+\addplot [line width=0.32pt, white, dashed]
+table {%
+150 324.5
+150 -0.5
+};
+\addplot [line width=0.32pt, white, dashed]
+table {%
+-0.499999999999996 160
+324.5 160
+};
+\addplot [line width=0.32pt, white, dashed]
+table {%
+160 324.5
+160 -0.5
+};
+\addplot [line width=0.32pt, white, dashed]
+table {%
+-0.499999999999996 260
+324.5 260
+};
+\addplot [line width=0.32pt, white, dashed]
+table {%
+260 324.5
+260 -0.5
+};
+\addplot [line width=0.32pt, white, dashed]
+table {%
+-0.499999999999996 270
+324.5 270
+};
+\addplot [line width=0.32pt, white, dashed]
+table {%
+270 324.5
+270 -0.5
+};
+\addplot [line width=0.32pt, white, dashed]
+table {%
+-0.499999999999996 320
+324.5 320
+};
+\addplot [line width=0.32pt, white, dashed]
+table {%
+320 324.5
+320 -0.5
+};
+\end{axis}
+
+\end{tikzpicture}

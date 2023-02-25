@@ -1,0 +1,38 @@
+Contemporary machine learning, in particular deep learning, remains a craft and
+an art. High dimensionality, stochasticity, and non-convexity require constant
+tracking and tuning, often resulting in a painful process of trial and error.
+When things fail, popular performance measures, like the training loss, do not
+provide enough information by themselves. These metrics only tell \emph{whether}
+the model is learning, but not \emph{why}. Alternatively, traditional debugging
+tools can provide access to individual weights and data. However, in models
+whose power only arises from possessing myriad weights, this approach is
+hopeless, like looking for the proverbial needle in a haystack.
+
+To mitigate this, we proposed \cockpit, a practical visual debugging tool for
+deep learning. It offers instruments to monitor the network's internal dynamics
+during training, in real-time. In its presentation, we focused on two crucial
+factors affecting user experience: Firstly, such a debugger must provide
+meaningful insights. To demonstrate \cockpit's utility, we showed how it can
+identify bugs where traditional tools fail. Secondly, it must come at a feasible
+computational cost. Although \cockpit uses rich second-order information,
+efficient computation keeps the necessary run time overhead cheap. The
+open-source \pytorch package can be added to many existing training loops.
+
+Obviously, such a tool is never complete. Just like there is no perfect
+universal debugger, the list of current instruments is naturally incomplete.
+Further practical experience with the tool, for example in the form of a future
+larger user study, could provide additional evidence for its utility. However,
+our analysis shows that \cockpit provides useful tools and extracts valuable
+information presently not accessible to the user. We believe that this improves
+algorithmic interpretability -- helping practitioners understand how to make
+their models work -- but may also inspire new research. The code is designed
+flexibly, deliberately separating the computation and visualization. New
+instruments can be added easily and also be shown by the user's preferred
+visualization tool, \eg \tensorboard. Of course, instead of just showing the
+data, the same information can be used by novel algorithms directly,
+side-stepping the human in the loop.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

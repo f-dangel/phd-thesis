@@ -1,0 +1,29 @@
+Aiming to provide a well-founded, theoretical and empirical evaluation, we have
+consciously focused on studying the approximation quality of \vivit's
+quantities, as well as on demonstrating the efficiency of their computation. We
+believe it is interesting in itself that the low-rank structure provides access
+to quantities that would otherwise be costly. Still, we want to briefly address
+possible use cases---their full development and assessment, however, will amount
+to separate paper(s):
+\begin{itemize}
+\item \textbf{Monitoring tool:} Our computationally efficient curvature model
+  provides geometric \textit{and} stochastic information about the local loss
+  landscape and can be used by tools like \cockpit \citep{schneider2021cockpit}
+  to debug optimizers or to gain insights into the optimization problem itself
+  (as in \Cref{vivit::subsec:approx_quality,vivit::subsec:directional_derivatives}).
+
+\item \textbf{Second-order optimization:} The quantities provided by \vivit{},
+  in particular the first- and second-order directional derivatives, can be used
+  to build a stochastic quadratic model of the loss function and perform
+  Newton-like parameter updates. In contrast to existing second-order methods,
+  \textit{per-sample} quantities contain information about the reliability of
+  that quadratic model. This offers a new dimension for improving second-order
+  methods through statistics on the mini-batch \textit{distribution} of the
+  directional derivatives (\eg for variance-adapted step sizes), potentially
+  increasing the method's performance and stability.
+\end{itemize}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

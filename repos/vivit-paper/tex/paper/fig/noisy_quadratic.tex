@@ -1,0 +1,91 @@
+\begin{figure}[t]
+  \centering
+
+  % pgfplots style "defaultstyle"
+  \pgfkeys{/pgfplots/defaultstyle/.style={
+      width=1.15\linewidth,
+      height=0.25\textheight,
+      every axis plot/.append style={line width = 1.2pt},
+      every axis plot post/.append style={
+        mark size=1, mark options={opacity=0.3}
+      },
+      tick pos = left,
+      xmajorticks = true,
+      ymajorticks = true,
+      ylabel near ticks,
+      xlabel near ticks,
+      xtick align = inside,
+      ytick align = inside,
+      legend cell align = left,
+      legend columns = 2,
+      legend style = {
+        fill opacity = 0.9,
+        text opacity = 1,
+        font = \tiny,
+        at={(0.5,-0.23)},
+        anchor=north
+      },
+      %xticklabel style = {font = \small, inner xsep = 0ex},
+      xlabel style = {font = \small},
+      axis line style = {black},
+      yticklabel style = {font = \small, inner ysep = 0ex},
+      ylabel style = {font = \small, inner ysep = 0ex},
+      title style = {font = \small, inner ysep = 0ex, yshift = -0.75ex},
+      grid = major,
+      grid style = {dashed}
+    }
+  }
+
+\begin{minipage}{0.35\linewidth}
+   \pgfkeys{/pgfplots/zmystyle/.style={
+    defaultstyle,
+    title={$\gL(\vtheta) - \gL(\vtheta_{\text{min}})$},
+    ylabel=\empty
+    }
+  }
+   \input{../../fig/exp09_noisy_quadratic/Loss.tex}
+\end{minipage}
+%
+\begin{minipage}{0.38\linewidth}
+  \pgfkeys{/pgfplots/zmystyle/.style={
+    defaultstyle,
+    title={$\Vert \vtheta - \vtheta_{\text{min}} \Vert$ after $20$ steps},
+    ylabel=\empty,
+    xlabel=\phantom{step},
+    xtick=\empty,
+    xtick={0, 1, 2, 3, 4, 5, 6, 7, 8},
+    xticklabels={SGD, $\delta_k$ (ours), $\delta=10^{-4}$, $\delta=10^{-3}$,
+    $\delta=10^{-2}$, $\delta=10^{-1}$, $\delta=10^{0}$, $\delta=10^{1}$, $\delta=10^{2}$},
+    xticklabel style = {font = \tiny, rotate = 75, anchor = east, inner xsep = 1 ex}
+    }
+  }
+   \input{../../fig/exp09_noisy_quadratic/Distance_at_end.tex}
+\end{minipage}
+%
+\begin{minipage}{0.25\linewidth}
+  \pgfkeys{/pgfplots/zmystyle/.style={defaultstyle,
+    title={Relative damping $\nicefrac{\delta_k}{k^2}$},
+    ylabel=\empty
+    }
+  }
+   \input{../../fig/exp09_noisy_quadratic/Dampings.tex}
+   \vspace{9.5mm}
+\end{minipage}
+
+\vspace{-2.0ex}
+\caption{\textbf{Comparison of optimizers on noisy quadratic.} Statistics for
+  different optimizers during (\textit{left}) and at the end (\textit{center})
+  of training over $100$ runs. For the loss values, we present mean (dashed
+  line), median (solid line) and a confidence interval (shaded area) between the
+  lower and upper quartile. Boxplot whiskers range from the distribution's
+  minimum to the maximum and boxes indicate lower and upper quartile, enclosing
+  the median. Horizontal black lines indicate the initial loss/distance.
+  \textit{Right}: Relative dampings of our adaptive method. Darker shades
+  indicate larger curvatures.}
+  \label{fig:noisy_quadratic}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

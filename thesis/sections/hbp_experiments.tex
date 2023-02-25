@@ -1,0 +1,222 @@
+We illustrate the usefulness of incorporating curvature information with the two
+outlined strategies by experiments with a fully-connected and a convolutional
+neural network (CNN) on the CIFAR-10 dataset~\citep{krizhevsky2009learning}.
+Following the guidelines of \citet{schneider2019deepobs}, the training loss is
+estimated on a random subset of the training set of equal size as the test set.
+Each experiment is performed for 10 different random seeds and we show the mean
+values with shaded intervals of one standard deviation. For the loss function we
+use softmax cross-entropy. Details on the model architectures and
+hyperparameters are given in \Cref{hbp::sec:experimentalDetails}.
+
+\subsubsection{Training Procedure \& Update Rule}
+
+In comparison to a first-order optimization procedure, the training loop with
+HBP has to be extended by a single backward pass to backpropagate the
+batch-averaged or exact loss Hessian. This yields matrix-vector products with a
+curvature estimate $\mC^{(l)}$ for each parameter block $\vtheta^{(l)}$ of the
+network. Parameter updates $\Delta \vtheta^{(l)}$ are obtained by applying CG to
+solve the linear system\sidenote{We use the same update rule as
+  \citet{wei2018bdapch} since we extend some of the results shown within this
+  work.}
+\begin{align}
+  \label{hbp::equ:linearSystemCG}
+  \left[ \alpha \mI + (1 - \alpha) \mC^{(l)} \right]  \Delta
+  \vtheta^{(l)} = - \grad{\vtheta^{(l)}}\gL\,,
+\end{align}
+where $\alpha$ acts as a step size limitation to improve robustness against
+noise. The CG routine terminates if the ratio of residual and gradient norm
+falls below a certain threshold or the maximum number of iterations has been
+reached. The solution returned by CG is scaled by a learning rate $\eta$, and
+parameters are updated by the relation $\vtheta^{(l)} \leftarrow \vtheta^{(l)} +
+\eta \Delta \vtheta^{(l)}.$
+
+\subsubsection{FCNN, Batch Approximations \& Sub-Blocking}
+
+The flexibility of HBP is illustrated by extending the results in
+\citet{wei2018bdapch}. Investigations are performed on a fully-connected
+network with sigmoid activations. Solid lines in \Cref{hbp::fig:experiment_fcnn} show
+the performance of the Newton-style optimizer and momentum SGD in terms of the
+training loss and test accuracy. The second-order method is capable to escape
+the initial plateau in fewer iterations.
+
+\begin{figure*}[!t]
+  \centering
+  \footnotesize
+  % Training loss plot
+  \begin{minipage}{0.495\linewidth}
+    \centering
+    \vspace*{-2.5ex}
+    \setlength{\figwidth}{1.08\linewidth}
+    \setlength{\figheight}{0.66\figwidth}
+    \HBPresetPGFStyle
+    \pgfkeys{/pgfplots/mystyle/.style={
+        HBPoriginal,
+        HBPnolegend
+      }}
+    \tikzexternalenable
+    \input{../repos/hbp-paper/fig/exp02_chen_splitting/cifar10/PCHabs/train_loss_processed.tex}
+    \tikzexternaldisable
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.495\linewidth}
+    \centering
+    \setlength{\figwidth}{1.08\linewidth}
+    \setlength{\figheight}{0.66\figwidth}
+    \HBPresetPGFStyle
+    \pgfkeys{/pgfplots/mystyle/.style={
+        HBPoriginal,
+        legend pos = south east,
+      }}
+    \tikzexternalenable
+    \input{../repos/hbp-paper/fig/exp02_chen_splitting/cifar10/PCHabs/test_acc_processed.tex}
+    \tikzexternaldisable
+  \end{minipage}
+  \vspace{-3ex}
+  \caption{\textbf{SGD and different Newton-style optimizers based on the
+      PCH-abs with batch approximations.} The same fully-connected neural
+    network of~\citep{wei2018bdapch} was used to generate the solid baseline
+    results. Our modular approach allows further splitting the parameter blocks
+    into sub-blocks that can independently be optimized in parallel (dashed
+    lines).}
+  \label{hbp::fig:experiment_fcnn}
+\end{figure*}
+
+\begin{figure*}[!t]
+  \centering
+  \begin{subfigure}[t]{0.495\linewidth}
+    \centering
+    \footnotesize
+    % Training loss plot
+    \setlength{\figwidth}{1.08\linewidth}
+    \setlength{\figheight}{0.66\figwidth}
+    \HBPresetPGFStyle
+    % modify style: do not show legend
+    \pgfkeys{/pgfplots/mystyle/.style={
+        HBPoriginal,
+        HBPnox,
+        HBPnolegend,
+      }}
+    \caption{}\label{hbp::subfig:experiment_cnn1}
+    \vspace{-2ex}
+    \tikzexternalenable
+    \input{../repos/hbp-paper/fig/exp08_c4d3_optimization/train_loss_processed.tex}
+    \tikzexternaldisable
+    \vspace{-7ex}
+    % Test accuracy plot
+    \HBPresetPGFStyle
+    % modify style: show legend on lower right
+    \pgfkeys{/pgfplots/mystyle/.style={
+        HBPoriginal,
+        legend pos = south east,
+      }}
+    \tikzexternalenable
+    \hspace*{-0.23cm}\input{../repos/hbp-paper/fig/exp08_c4d3_optimization/test_acc_processed.tex}
+    \tikzexternaldisable
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.495\linewidth}
+    \centering
+    \footnotesize
+    \setlength{\figwidth}{1.08\linewidth}
+    \setlength{\figheight}{0.66\figwidth}
+    \caption{}\label{hbp::subfig:experiment_cnn2}
+    \vspace{-2ex}
+    \HBPresetPGFStyle
+    % modify style: do not show legend
+    \pgfkeys{/pgfplots/mystyle/.style={
+        HBPoriginal,
+        HBPnolegend,
+        HBPnox,
+        xmin = 0, xmax = 370,
+      }}
+      \tikzexternalenable
+      \input{../repos/hbp-paper/fig/exp08_c4d3_optimization/wall_train_loss_processed.tex}
+      \tikzexternaldisable
+    \vspace{-6.8ex}
+    \HBPresetPGFStyle
+    % modify style: show legend on lower right
+    \pgfkeys{/pgfplots/mystyle/.style={
+        HBPoriginal,
+        xmin = 0, xmax = 370,
+        legend pos = south east,
+      }}
+      \tikzexternalenable
+      \hspace*{-0.23cm}\input{../repos/hbp-paper/fig/exp08_c4d3_optimization/wall_test_acc_processed.tex}
+      \tikzexternaldisable
+      \HBPresetPGFStyle
+  \end{subfigure}
+  \vspace{2ex}
+  \caption{\textbf{\SGD, Adam, \KFAC, and Newton-style methods with different
+      exact curvature matrix-vector products (HBP).} The architecture is a CNN
+    with sigmoid activations (see \Cref{hbp::sec:experimentalDetails}).
+    \subfigref{hbp::subfig:experiment_cnn1} Comparison of train and test loss
+    over iterations. SGD cannot train the net.
+    \subfigref{hbp::subfig:experiment_cnn2} Wall-clock time comparison (on an
+    RTX 2080 Ti GPU; same colors realize different random
+    seeds).}\label{hbp::fig:experiment_cnn}
+\end{figure*}
+
+The modularity of HBP allows for additional parallelism by splitting the linear
+system \Cref{hbp::equ:linearSystemCG} into smaller sub-blocks
+(\Cref{fig:hbp::subblocking}, which then also need fewer iterations of CG. Doing
+so only requires a minor modification of the parameter Hessian computation by
+\Cref{hbp::equ:hessianBackPropagation}. Consequently, we split weights and bias
+terms row-wise into a specified number of sub-blocks\marginnote{
+  \begin{center}
+    \includegraphics[height = 0.8\linewidth]{../repos/hbp-paper/doc/aistats_talk/logo/hbp_logo_splitting}
+  \end{center}
+  \vspace{-2ex}
+  \captionof{figure}{\textbf{Illustration of sub-blocking.} Here, each diagonal
+    block is split into three blocks of equal size.}\label{fig:hbp::subblocking}
+}. \Cref{hbp::fig:experiment_fcnn} shows performance curves. In the initial
+phase, the BDA can be split into a larger number of sub-blocks without suffering
+from a loss in performance. The reduced curvature information is still
+sufficient to escape the initial plateau. However, larger blocks have to be
+considered in later stages to further reduce the loss efficiently.
+
+The fact that this switch in modularity is necessary is an argument in favor of
+the HBP's flexibility to efficiently realize such switches: for this experiment,
+the splitting for each block was artificially chosen to illustrate this
+flexibility. In principle, the splitting could be decided individually for each
+parameter block, and even changed at run time.
+
+\subsubsection{CNN, Matrix-free Exact Curvature Multiplication}
+
+For convolutions, the large number of hidden features prohibits backpropagating
+a curvature matrix batch average. Instead, we use exact curvature matrix-vector
+products provided within HBP. The CNN possesses sigmoid activations and cannot
+be trained by SGD (\Cref{hbp::subfig:experiment_cnn1}). For comparison with
+another second-order method, we experiment with a public KFAC
+implementation~\citep[see \Cref{hbp::sec:experimentalDetails} for
+details]{martens2015optimizing,grosse2016kronecker}.
+
+The matrix-free second-order methods progress fast in the initial stage of the
+optimization. However, progress in later phases stagnates. This may be caused by
+the limited sophistication of the update rule~\eqref{hbp::equ:linearSystemCG}: if a
+small value for $\alpha$ is chosen, the optimizer will perform well in the
+beginning (GGN, $\alpha_1$). As the gradients become smaller, and hence more
+noisy, the step size limitation is too optimistic, which leads to a slow-down in
+optimization progress. A more conservative step size limitation improves the
+overall performance at the cost of fewer initial progress (GGN, $\alpha_2$). In
+the training phase where damping is ``effective'', our illustrative methods, and
+KFAC, exhibit better progress per iteration on the objective than the
+first-order competitor Adam, underlining the usefulness of curvature even if
+only computed block-wise.
+
+For an impression on performance in terms of run time,
+\Cref{hbp::subfig:experiment_cnn2} compares the wall-clock time of one
+matrix-free method and the baselines. The HBP-based optimizer can compete with
+existing methods and offers potential for further improvements, like
+sub-blocking and parallelized CG. Despite the more adaptive nature of
+second-order methods, their full power seems to still require adaptive damping,
+to account for the quality of the local quadratic approximation and restrict the
+update if necessary. The importance of these techniques to properly adapt the
+Newton direction has been emphasized in previous works
+\citep{martens2010deep,martens2015optimizing, botev2017practical} that aim to
+develop fully fletched second-order optimizers. Such adaptation, however, is
+beyond the scope of this text.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

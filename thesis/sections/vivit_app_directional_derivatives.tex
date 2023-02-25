@@ -1,0 +1,56 @@
+\subsubsection{Procedure}
+
+We use the checkpoints from \Cref{vivit::sec:ggn_vs_hessian}. For every
+checkpoint, we compute the top-$C$ eigenvectors of the mini-batch \ggn{}
+($N=128$) using an iterative matrix-free method. We also compute the mini-batch
+gradient. The first- and second-order directional derivatives of the resulting
+quadratic model (\Cref{vivit::eq:quadratic_model}) are given by
+\Cref{vivit::eq:gammas-lambdas}.
+
+We use these directional derivatives $\{\gamma_{n,k}\}_{n=1, k=1}^{N, C}$,
+$\{\lambda_{n,k}\}_{n=1, k=1}^{N, C}$ to compute signal-to-noise ratios (SNRs)
+along the top-$C$ eigenvectors. The curvature SNR along direction $\ve_k$ is
+given by the squared sample mean divided by the empirical variance of the
+samples $\{\lambda_{n,k}\}_{n=1}^{N}$, \ie
+\begin{equation*}
+  \text{SNR} = \frac{
+    \lambda_k^2
+  }{
+    \nicefrac{1}{N-1} \sum_{n=1}^N (\lambda_{n,k} - \lambda_k)^2
+  }
+  \quad \text{where} \quad
+  \lambda_k = \frac{1}{N} \sum_{n=1}^N \lambda_{n,k} \, .
+\end{equation*}
+(and similarly for $\{\gamma_{n,k}\}_{n=1}^{N}$).
+
+\subsubsection{Results}
+
+\Cref{vivit::fig:directional_derivatives_1,vivit::fig:directional_derivatives_2}
+show the results.
+%
+These plots show the SNRs in $C$ distinct colors that generated from linear
+interpolation in the RGB color space from black
+(\tikz\draw[white,fill={black},line width=0mm] (0,0) circle (.8ex);) to light
+red (\tikz\draw[white,fill={light_red},line width=0mm] (0,0) circle (.8ex);). At
+each checkpoint, the colors are assigned based on the \textit{order} of the
+respective directional curvature $\lambda_k$: the SNR that belongs to the
+direction with the smallest curvature is shown in black and the SNR that belongs
+to the direction with the largest curvature is shown in light red. The color
+thus encodes only the order of the top-$C$ directional curvatures --
+\textit{not} their magnitude. We use this color encoding to reveal potential
+correlations between SNR and curvature.
+
+We find that the gradient SNR along the top-$C$ eigenvectors is consistently
+small (in comparison to the curvature SNR) and remains roughly on the same level
+during the optimization. The curvature signal decreases as training proceeds.
+The SNRs along the top-C eigendirections do not appear to show any significant
+correlation with the corresponding curvatures. Only for the \cifarhun test
+problems we can suspect a correlation between strong curvature and small
+curvature SNR.
+
+\input{figures/vivit/directional_derivatives}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

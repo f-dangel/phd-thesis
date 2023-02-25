@@ -1,0 +1,40 @@
+\subsubsection{Configuration Overhead}\label{cockpit::app:benchmark-configuration}
+
+For the estimation of different \cockpit configuration overheads, we use almost
+the same setting as described above, training for $512$ iterations and tracking
+only every specified interval.
+
+\subsubsection{Configuration Overhead on GPU Versus CPU}
+
+\Cref{cockpit::fig:app_benchmark_configurations_cuda} and
+\Cref{cockpit::fig:app_benchmark_configurations_cpu} show the configuration
+overhead for four different \deepobs problems. The bottom left part of
+\Cref{cockpit::fig:app_benchmark_configurations_cuda} corresponds to
+\Cref{cockpit::fig:benchmark_heatmap}. In general, increased parallelism can be
+exploited on a GPU, leading to smaller overheads in comparison to a CPU.
+
+\cockpit can even scale to significantly larger problems, such as a \resnetfifty
+on \imagenet-like data.
+\Cref{cockpit::fig:app_benchmark_configurations_gpu_imagenet} shows the
+computational overhead for different tracking intervals on such a large-scale
+problem. Using the \textit{economy} configuration, we can achieve our
+self-imposed goal of at most doubling the run time even when tracking every
+fourth step. More extensive configurations (such as the \textit{full} set) would
+indeed have almost prohibitively large costs associated. However, these costs
+could be dramatically reduced when one decides to only inspect a part of the
+network using \cockpit. Note, individual gradients are not properly defined when
+using batch norm, therefore, we replaced these batch norm layers with identity
+layers when using the \resnetfifty.
+
+\input{figures/cockpit/01_benchmark/app_gpu_grid_overhead}
+
+\input{figures/cockpit/01_benchmark/app_cpu_grid_overhead}
+
+\clearpage
+
+\input{figures/cockpit/01_benchmark/app_gpu_imagenet_overhead}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

@@ -1,0 +1,60 @@
+\subsubsection{Abstract}
+
+We propose a modular extension of backpropagation for the computation of
+block-diagonal approximations to various curvature matrices of the training
+objective (in particular, the Hessian, generalized Gauss-Newton, and
+positive-curvature Hessian). The approach reduces the otherwise tedious manual
+derivation of these matrices into local modules, and is easy to integrate into
+existing machine learning libraries. Moreover, we develop a compact notation
+derived from matrix differential calculus. We outline different strategies
+applicable to our method. They subsume recently-proposed block-diagonal
+approximations as special cases, and are extended to convolutional neural
+networks in this work.
+
+\marginnote{
+  \begin{center}
+    Code and experiments available at the Github repository
+    \href{https://github.com/f-dangel/hbp}{\texttt{f-dangel/hbp}}
+  \end{center}
+  \begin{center}
+    \includegraphics[height=0.8\linewidth]{../repos/hbp-paper/doc/aistats_talk/logo/hbp_logo}
+  \end{center}
+}
+
+\section{Introduction}
+\input{sections/hbp_introduction}
+
+\section{Notation}\label{hbp::sec:basicSetting}
+\input{sections/hbp_setting}
+
+\section{Modular Hessian Backpropagation}\label{hbp::sec:modularApproach}
+\input{sections/hbp_modular_approach}
+
+\subsection{Obtaining Different Curvature Matrices}\label{hbp::subsec:curvatureMatrices}
+\input{sections/hbp_curvature}
+
+\subsection{Batch Learning Approximations}\label{hbp::subsec:batchLearning}
+\input{sections/hbp_batch_learning}
+
+\section{Experiments \& Implementation}\label{hbp::sec:experiments}
+\input{sections/hbp_experiments}
+
+\section{Conclusion}
+\input{sections/hbp_conclusion}
+
+\section*{Acknowledgments}
+The authors would like to thank Frederik Kunstner, Matthias Werner, Frank
+Schneider, and Agustinus Kristiadi for their constructive feedback on the
+manuscript, and gratefully acknowledge financial support by the European
+Research Council through ERC StG Action 757275 / PANAMA; the DFG Cluster of
+Excellence “Machine Learning - New Perspectives for Science”, EXC 2064/1,
+project number 390727645; the German Federal Ministry of Education and Research
+(BMBF) through the T\"ubingen AI Center (FKZ: 01IS18039A); and funds from the
+Ministry of Science, Research and Arts of the State of Baden-W\"urttemberg.
+F.\,D.\,is grateful to the International Max Planck Research School for
+Intelligent Systems (IMPRS-IS) for support.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

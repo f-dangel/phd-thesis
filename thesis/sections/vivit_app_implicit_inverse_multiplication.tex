@@ -1,0 +1,108 @@
+\subsubsection{Inverse \ggn-Vector Products}
+
+A damped Newton step\sidenote{Instead of $\delta \mI_{D}$, any other
+  easy-to-invert matrix can be used.} requires multiplication by $(\mG + \delta
+\mI_D)^{-1}$. By means of \Cref{vivit::eq:ggn-factorization} and the matrix
+inversion lemma,
+\begin{align}
+  &\left(
+  \delta \mI_D +  \mG
+  \right)^{-1}
+  \nonumber
+    \\
+  &\qquad =
+    \left(
+    \delta \mI_D + \mV \mV^\top
+    \right)^{-1}
+    \explainmath{(\Cref{vivit::eq:ggn-factorization})}
+  \\
+  \nonumber
+  &\qquad =
+    \frac{1}{\delta}
+    \left(
+    \mI_D + \frac{1}{\delta} \mV \mV^\top
+    \right)^{-1}
+  \\
+  \nonumber
+  &\qquad =
+    \frac{1}{\delta}
+    \left[
+    \mI_D
+    -
+    \frac{1}{\delta} \mV
+    \left(
+    \mI_{NC}
+    + \mV^\top \frac{1}{\delta} \mV
+    \right)^{-1}
+    \mV^\top
+    \right]
+    \explainmath{(Matrix inversion lemma)}
+  \\
+  \nonumber
+  &\qquad =
+    \frac{1}{\delta}
+    \left[
+    \mI_D
+    -
+    \mV
+    \left(
+    \delta \mI_{NC} + \mV^\top \mV
+    \right)^{-1}
+    \mV^\top
+    \right]
+    \explainmath{(Gram matrix)}
+  \\
+  &\qquad =
+    \frac{1}{\delta}
+    \left[
+    \mI_D
+    -
+    \mV
+    \left(
+    \delta \mI_{NC} + \mGtilde
+    \right)^{-1}
+    \mV^\top
+    \right]\,.
+    \label{vivit::eq:inverse-ggn}
+\end{align}
+Inverse \ggn-vector products require inversion of the damped Gram matrix
+as well as applications of $\mV, \mV^\top$ for the transformations between Gram
+and parameter space.
+
+\subsubsection{Inverse Block-Diagonal \ggn-Vector Products}
+
+Next, we replace the full \ggn by its block diagonal approximation $\mG \approx
+\mG_{\text{BDA}} = \diag(\mG^{(1)}, \mG^{(2)}, \dots)$ with
+\begin{align*}
+  \mG^{(l)} = \mV^{(l)} {\mV^{(l)}}^\top \in \sR^{d^{(l)} \times d^{(l)}}
+\end{align*}
+and $\mV^{(l)}$ as in \Cref{vivit::eq:layerwise-ggn-factor}. Then, inverse
+multiplication reduces to each block,
+\begin{align*}
+  \mG_{\text{BDA}}^{-1} = \diag\!\left({\mG^{(1)}}^{-1}, {\mG^{(2)}}^{-1}, \dots\right)\,.
+\end{align*}
+If again a damped Newton step is considered, we can reuse \Cref{vivit::eq:inverse-ggn}
+with the substitutions
+\begin{align*}
+  \left(\mG, D, \mV, \mV^\top, \mGtilde\right)
+  \leftrightarrow \left( \mG^{(l)}, d^{(l)}, \mV^{(l)}, {\mV^{(l)}}^\top, \mGtilde^{(l)}\right)
+\end{align*}
+to apply the inverse and immediately discard the \vivit factors:
+At backpropagation of layer $T^{(l)}_{\vtheta^{(l)}}$
+\begin{enumerate}
+\item Compute $\mV^{(l)}$ using \Cref{vivit::eq:layerwise-ggn-factor}.
+\item Compute $\mGtilde^{(l)}$ using \Cref{vivit::eq:layerwise-gram-matrix}.
+\item Compute $\left(\delta \mI_{NC} + \mGtilde^{(l)}\right)^{-1}$.
+\item Apply the inverse in \Cref{vivit::eq:inverse-ggn} with the above substitutions to the target vector.
+\item Discard $\mV^{(l)}$, ${\mV^{(l)}}^\top, \mGtilde^{(l)},$ and $\left(\delta
+    \mI_{NC} + \mGtilde^{(l)}\right)^{-1}$. Proceed to layer $i-1$.
+\end{enumerate}
+Note that the above scheme should only be used for parameters that satisfy
+$d^{(l)} > NC$, \ie $\dim(\mG^{(l)}) > \dim(\mGtilde^{(l)})$. Low-dimensional
+parameters can be grouped with others to increase their joint dimension, and to
+control the block structure of $\mG_{\text{BDA}}$.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

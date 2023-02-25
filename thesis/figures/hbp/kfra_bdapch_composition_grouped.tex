@@ -1,0 +1,28 @@
+% KFRA composition after
+
+\begin{tikzpicture}
+    % first layers
+    \node (in1)
+        [inner sep=0]
+        {\tikz \drawMessagesWithArrows{$\vx$}{$\grad{\vx}\ell$}{$\gradsquared{\vx}\ell$}{\hNodeDistance};};
+    \node (activation)
+        [anchor=south west, inner sep=0]
+        at (in1.south east)
+        {\tikz\drawModuleNoParams{$\vphi$}{5};};
+    \node (layer1)
+        [anchor=south west, inner sep=0]
+         at (activation.south east)
+         {\tikz \drawModuleWithParams{$\vz = \mW\vy$}{16}{\hspace{1.5ex}$ \mW$\hspace{1.5ex} }{\,$\grad{\mW}\ell$\,\,}{$\gradsquared{\mW}\ell$};};
+    \node (layer2)
+        [inner sep=0pt, anchor=south west]
+        at (layer1.south east)
+        {\tikz\drawModuleWithParams{$+ \vb$}{16}{$\vb$}{$\grad{\vb}\ell$}{$\gradsquared{\vb}\ell$};};
+    \node (out2)
+        [inner sep=0, anchor=south west]
+        at (layer2.south east)
+        {\tikz \drawMessagesWithArrows{$\vz$}{$\grad{\vz}\ell$}{$\gradsquared{\vz}\ell$}{\hNodeDistance};};
+\end{tikzpicture}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

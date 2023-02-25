@@ -1,0 +1,120 @@
+\begin{figure*}[p]
+  \centering
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    {\footnotesize\sgd}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    {\footnotesize\adam}
+  \end{minipage}
+
+  \begin{subfigure}[t]{1.0\linewidth}
+    \centering
+    \caption{\fmnist \twoctwod}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_ggn_vs_hessian/fmnist_2c2d_sgd_eigenspace}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_ggn_vs_hessian/fmnist_2c2d_adam_eigenspace}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{1.0\linewidth}
+    \centering
+    \caption{\cifarten \threecthreed}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_ggn_vs_hessian/cifar10_3c3d_sgd_eigenspace}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_ggn_vs_hessian/cifar10_3c3d_adam_eigenspace}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{1.0\linewidth}
+    \centering
+    \caption{\cifarten \resnetthirtytwo}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_ggn_vs_hessian/cifar10_resnet32_sgd_eigenspace}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_ggn_vs_hessian/cifar10_resnet32_adam_eigenspace}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{1.0\linewidth}
+    \centering
+    \caption{\cifarhun \allcnnc}
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_ggn_vs_hessian/cifar100_allcnnc_sgd_eigenspace}
+      \tikzexternaldisable
+    \end{minipage}\hfill
+    \begin{minipage}{0.50\linewidth}
+      \centering
+      \input{figures/vivit/eigspace_default_style}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          eigspacedefault
+        }}
+      \tikzexternalenable
+      \input{../repos/vivit-paper/fig/exp13_full_batch_monitoring/results/plots/eigspace_ggn_vs_hessian/cifar100_allcnnc_adam_eigenspace}
+      \tikzexternaldisable
+    \end{minipage}
+  \end{subfigure}
+  \caption{ \textbf{Full-batch \ggn versus full-batch Hessian.} Overlap between
+    the top-$C$ eigenspaces of the full-batch \ggn and full-batch Hessian during
+    training for all test problems. }
+  \label{vivit::fig:ggn_vs_hessian}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

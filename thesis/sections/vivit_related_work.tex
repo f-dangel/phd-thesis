@@ -1,0 +1,36 @@
+\subsubsection{\ggn Spectrum \& Low-rank Structure}
+
+Other works point out the \ggn's low-rank structure. \citet{botev2017practical}
+present the rank bound ($NC$) and propose an alternative to \kfac based on
+backpropagating a decomposition of the loss Hessian.
+\citet{papyan2019measurements} presents the factorization in
+\Cref{vivit::eq:ggn-factorization} and studies the eigenvalue spectrum's
+hierarchy for cross-entropy loss. In this setting, the \ggn further decomposes
+into summands, some of which are then analyzed through similar Gram matrices.
+These can be obtained as contractions of $\mGtilde$, but our approach goes
+beyond them as it does not neglect terms. We are not aware of works that obtain
+the exact spectrum \emph{and} leverage a highly-efficient fully-parallel
+implementation. This may be because, until recently \citep{bradbury2018jax,
+  dangel2020backpack}, vectorized Jacobians required to perform those operations
+efficiently were not available.
+
+\subsubsection{Efficient Operations with Low-rank Matrices in Deep Learning}
+
+\citet{chen2021fast} use \Cref{vivit::eq:ggn-factorization} for element-wise
+evaluation of the \ggn in FCNNs. They also present a variant based on \mc
+sampling. This element-wise evaluation is then used to construct hierarchical
+matrix approximations of the \ggn. \vivit instead leverages the global low-rank
+structure that also enables efficient eigendecomposition.
+
+Another prominent low-rank matrix in deep learning is the un-centered gradient
+covariance (sometimes called empirical Fisher). \citet{singh2020woodfisher}
+describe implicit multiplication with its inverse and apply it for neural
+network compression, assuming the empirical Fisher as a Hessian proxy. However,
+this assumption has limitations, specifically for optimization
+\citep{kunstner2019limitations}. In principle though, the low-rank structure
+also permits the application of our methods from \Cref{vivit::sec:method}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

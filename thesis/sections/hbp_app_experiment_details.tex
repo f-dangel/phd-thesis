@@ -1,0 +1,302 @@
+\subsubsection{Fully-connected Neural Network}
+The same model as in~\cite{wei2018bdapch} (see
+\Cref{hbp::subtable:modelArchitectures1}) is used to extend the experiment
+performed therein. The weights of each linear layer are initialized with the
+Xavier method of~\citet{glorot2010XavierInit}. Bias terms are intialized to
+zero. Backpropagation of the Hessian uses approximation
+\Cref{hbp::equ:hessians_batch_average_approximation} of
+\Cref{hbp::equ:kfraAndBdapch} to compute the curvature blocks
+$\average{\gradsquared{\mW^{(l)}}\ell}$ and
+$\average{\gradsquared{\vb^{(l)}}\ell }$.
+
+\begin{table*}[t]
+  \caption{\textbf{Model architectures under consideration.} We use
+    \robustInlinecode{Conv2d(in\_channels, out\_channels, kernel\_size,
+      padding)}, \robustInlinecode{ZeroPad2d(padding\_left, padding\_right,
+      padding\_top, padding\_bottom)}, \robustInlinecode{Linear(in\_features,
+      out\_features)}, and \robustInlinecode{MaxPool2d(kernel\_size, stride)} as
+    patterns to describe module hyperparameters. Convolution strides are always
+    one. \subfigref{hbp::subtable:modelArchitectures1} FCNN used to extend the
+    experiment in~\citet{wei2018bdapch} (3\,846\,810 parameters).
+    \subfigref{hbp::subtable:modelArchitectures2} CNN architecture (1\,099\,226
+    parameters). \subfigref{hbp::subtable:modelArchitectures3} DeepOBS 3c3d test
+    problem with three convolutional and three dense layers (895\,210
+    parameters). ReLU activation functions are replaced by sigmoids.}
+  \label{hbp::table:modelArchitectures}
+  \begin{subfigure}[t]{0.30\linewidth}
+    \centering
+    \caption{FCNN
+      (\Cref{hbp::fig:experiment_fcnn})}\label{hbp::subtable:modelArchitectures1}
+    \begin{footnotesize}
+      \begin{tabular}[t]{lll}
+        \toprule
+        \# & Module
+        \\
+        \midrule
+        1 & \inlinecode{Flatten()}
+        \\
+        2 & \inlinecode{Linear(3072, 1024)}
+        \\
+        3 & \inlinecode{Sigmoid()}
+        \\
+        4 & \inlinecode{Linear(1024, 512)}
+        \\
+        5 & \inlinecode{Sigmoid()}
+        \\
+        6 & \inlinecode{Linear(512, 256)}
+        \\
+        7 & \inlinecode{Sigmoid()}
+        \\
+        8 & \inlinecode{Linear(256, 128)}
+        \\
+        9 & \inlinecode{Sigmoid()}
+        \\
+        10 & \inlinecode{Linear(128, 64)}
+        \\
+        11 & \inlinecode{Sigmoid()}
+        \\
+        12 & \inlinecode{Linear(64, 32)}
+        \\
+        13 & \inlinecode{Sigmoid()}
+        \\
+        14 & \inlinecode{Linear(32, 16)}
+        \\
+        15 & \inlinecode{Sigmoid()}
+        \\
+        16 & \inlinecode{Linear(16, 10)}
+        \\
+        \bottomrule
+      \end{tabular}
+    \end{footnotesize}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.30\linewidth}
+    \centering
+    \caption{CNN
+      (\Cref{hbp::fig:experiment_cnn})}\label{hbp::subtable:modelArchitectures2}
+    \begin{footnotesize}
+      \begin{tabular}[t]{lll}
+        \toprule
+        \# & Module
+        \\
+        \midrule
+        1 & \inlinecode{Conv2d(3, 16, 3, 1)}
+        \\
+        2 & \inlinecode{Sigmoid()}
+        \\
+        3 & \inlinecode{Conv2d(16, 16, 3, 1)}
+        \\
+        4 & \inlinecode{Sigmoid()}
+        \\
+        5 & \inlinecode{MaxPool2d(2, 2)}
+        \\
+        6 & \inlinecode{Conv2d(16, 32, 3, 1)}
+        \\
+        7 & \inlinecode{Sigmoid()}
+        \\
+        8 & \inlinecode{Conv2d(32, 32, 3, 1)}
+        \\
+        9 & \inlinecode{Sigmoid()}
+        \\
+        10 & \inlinecode{MaxPool2d(2, 2)}
+        \\
+        11 & \inlinecode{Flatten()}
+        \\
+        12 & \inlinecode{Linear(2048, 512)}
+        \\
+        13 & \inlinecode{Sigmoid()}
+        \\
+        14 & \inlinecode{Linear(512, 64)}
+        \\
+        15 & \inlinecode{Sigmoid()}
+        \\
+        16 & \inlinecode{Linear(64, 10)}
+        \\
+        \bottomrule
+      \end{tabular}
+    \end{footnotesize}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.36\linewidth}
+    \centering
+    \caption{\DeepOBS \threecthreed
+      (\Cref{hbp::fig:experiment_c3d3})}\label{hbp::subtable:modelArchitectures3}
+    \begin{footnotesize}
+      \begin{tabular}[t]{lll}
+        \toprule
+        \# & Module
+        \\
+        \midrule
+        1 & \inlinecode{Conv2d(3, 64, 5, 0)}
+        \\
+        2 & \inlinecode{Sigmoid()}
+        \\
+        3 & \inlinecode{ZeroPad2d(0, 1, 0, 1)}
+        \\
+        4 & \inlinecode{MaxPool2d(3, 2)}
+        \\
+        5 & \inlinecode{Conv2d(64, 96, 3, 0)}
+        \\
+        6 & \inlinecode{Sigmoid()}
+        \\
+        7 & \inlinecode{ZeroPad2d(0, 1, 0, 1)}
+        \\
+        8 & \inlinecode{MaxPool2d(3, 2)}
+        \\
+        9 & \inlinecode{ZeroPad2d(1, 1, 1, 1)}
+        \\
+        10 & \inlinecode{Conv2d(96, 128, 3, 0)}
+        \\
+        11 & \inlinecode{Sigmoid()}
+        \\
+        12 & \inlinecode{ZeroPad2d(0, 1, 0, 1)}
+        \\
+        13 & \inlinecode{MaxPool2d(3, 2)}
+        \\
+        14 & \inlinecode{Flatten()}
+        \\
+        15 & \inlinecode{Linear(1152, 512)}
+        \\
+        16 & \inlinecode{Sigmoid()}
+        \\
+        17 & \inlinecode{Linear(512, 256)}
+        \\
+        18 & \inlinecode{Sigmoid()}
+        \\
+        19 & \inlinecode{Linear(256, 10)}
+        \\
+        \bottomrule
+      \end{tabular}
+    \end{footnotesize}
+  \end{subfigure}
+\end{table*}
+
+Hyperparameters are chosen as follows to obtain consistent results with the
+original work: all runs shown in \Cref{hbp::fig:experiment_fcnn} use a batch
+size of $|\sB| = 500$. For SGD, the learning rate is assigned to $\eta = 0.1$
+with momentum $\rho=0.9$. Block-splitting experiments with the second-order
+method use the PCH-abs. All runs were performed with a learning rate $\eta =
+0.1$ and a regularization strength of $\alpha = 0.02$. For the convergence
+criterion of CG, the maximum number of iterations is restricted to $n_\text{CG}
+= 50$; convergence is reached at a relative tolerance $\epsilon_{\text{CG}} =
+0.1$.
+
+\subsubsection{Convolutional Neural Net}
+
+The CNN architecture shown in \Cref{hbp::subtable:modelArchitectures2} is
+trained on a hyperparameter grid. Runs with smallest final training loss are
+selected to rerun on different random seeds. The curves in
+\Cref{hbp::subfig:experiment_cnn2} represent mean values and standard deviations
+for ten different realizations over the random seed. All layer parameters were
+initialized with \pytorch's default.
+
+For the first-order methods (SGD, Adam), we considered batch sizes $|\sB| \in
+\left\{100, 200, 500\right\}$. For SGD, momentum $\rho$ was tuned over the set
+$\left\{0, 0.45, 0.9\right\}$. Although we varied the learning rate over a large
+range of values $\eta \in \left\{ 10^{-3}, 10^{-2}, 0.1,1, 10 \right\}$, losses
+kept plateauing and did not decrease. In particular, the loss even increased for
+the large learning rates. For Adam, we only vary the learning rate $\eta \in
+\left\{ 10^{-4}, 10^{-3}, 10^{-2}, 0.1,1, 10 \right\}$.
+
+As second-order methods scale better to large batch sizes, we used $|\sB| \in
+\left\{200, 500, 1000\right\}$ for them. The CG convergence parameters were set
+to $n_\text{CG} = 200$ and $\epsilon_{\text{CG}} = 0.1$. For all curvature
+matrices, we varied the learning rates over $\eta \in \left\{ 0.05, 0.1,0.2
+\right\}$ and $\alpha \in \left\{10^{-4}, 10^{-3}, 10^{-2} \right\}$.
+
+To compare with another second-order method, we experimented with a public
+PyTorch implementation of the KFAC optimizer
+\citep{martens2015optimizing,grosse2016kronecker}
+(\href{https://github.com/alecwangcq/KFAC-Pytorch}{\texttt{github.com/alecwangcq/KFAC-Pytorch}}).
+All hyperparameters were kept at their default setting. The learning rate was
+varied over $\eta \in \left\{ 10^{-4}, 10^{-3}, 10^{-2}, 0.1,1, 10 \right\}$.
+
+The hyperparameters of results shown in \Cref{hbp::fig:experiment_cnn} read as
+follows:
+\begin{itemize}
+\item SGD ($|\sB|= 100, \eta = 10^{-3}, \rho=0.9$). The particular choice of
+  these hyperparameters is artificial. This run is representative for SGD, which
+  does not achieve any progress at all.
+
+\item Adam ($|\sB|=100, \eta = 10^{-3}$)
+
+\item KFAC ($|\sB|=500, \eta = 0.1$)
+
+\item PCH-abs ($|\sB|=1000, \eta = 0.2, \alpha = 10^{-3}$),\\ PCH-clip
+  ($|\sB|=1000, \eta = 0.1, \alpha = 10^{-4}$)
+
+\item GGN, $\alpha_1$ ($|\sB|=1000, \eta = 0.1, \alpha = 10^{-4}$). This run
+  does not yield the minimum training loss on the grid; it is shown to
+  illustrate that the second-order method can escape the flat regions in early
+  stages.
+
+\item GGN, $\alpha_2$ ($|\sB|=1000, \eta = 0.1, \alpha = 10^{-3}$). Compared to
+  $\alpha_1$, the second-order method requires more iterations to escape the
+  initial plateau, caused by the larger regularization strength. However, this
+  leads to improved robustness against noise in later training stages.
+\end{itemize}
+
+\paragraph{Additional experiment:} Another experiment conducted with HBP
+considers the 3c3d architecture (\Cref{hbp::subtable:modelArchitectures3}) of
+DeepOBS \citep{schneider2019deepobs} on CIFAR-10. ReLU activations are replaced
+by sigmoids to make the problem more challenging. The hyperparameter grid is
+chosen identically to the CNN experiment above, and results are summarized in
+\Cref{hbp::fig:experiment_c3d3}. In particular, the hyperparameter settings for
+each competitor are:
+\begin{itemize}
+\item SGD ($|\sB|= 100, \eta = 1, \rho =0$)
+\item Adam ($|\sB|=100, \eta = 10^{-3}$)
+\item PCH-abs ($|\sB|=500, \eta = 0.1, \alpha = 10^{-3}$),\\ PCH-clip ($|\sB|=500, \eta = 0.1, \alpha = 10^{-2}$)
+\item GGN ($|\sB|=500, \eta = 0.05, \alpha = 10^{-3}$)
+\end{itemize}
+
+\begin{figure*}
+  \centering
+  \footnotesize
+
+  \begin{minipage}{0.49\linewidth}
+    \setlength{\figwidth}{1.08\linewidth}
+    \setlength{\figheight}{0.66\figwidth}
+    % Training loss plot
+    \HBPresetPGFStyle
+    % modify style: do not show legend
+    \pgfkeys{/pgfplots/mystyle/.style={
+        HBPoriginal,
+        HBPnolegend,
+        ymax = 2.4,
+      }}
+    \vspace{-\baselineskip}
+    \tikzexternalenable
+    \input{../repos/hbp-paper/fig/exp09_c3d3_optimization/train_loss_processed.tex}
+    \tikzexternaldisable
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.49\linewidth}
+    \centering
+    \setlength{\figwidth}{1.08\linewidth}
+    \setlength{\figheight}{0.66\figwidth}
+    % Test accuracy plot
+    \HBPresetPGFStyle
+    % modify style: show legend on lower right
+    \pgfkeys{/pgfplots/mystyle/.style={
+        HBPoriginal,
+        ymin=0.1,
+        legend pos = south east,
+      }}
+    \tikzexternalenable
+    \input{../repos/hbp-paper/fig/exp09_c3d3_optimization/test_acc_processed.tex}
+    \tikzexternaldisable
+  \end{minipage}
+  \HBPresetPGFStyle
+  \vspace{-2ex}
+  \caption{\textbf{Comparison of SGD, Adam, and Newton-style methods with
+      different exact curvature matrix-vector products (HBP)}. The architecture
+    is the DeepOBS 3c3d network \citep{schneider2019deepobs} with sigmoid
+    activations (\Cref{hbp::subtable:modelArchitectures3}).}
+  \label{hbp::fig:experiment_c3d3}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

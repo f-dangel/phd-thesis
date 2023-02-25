@@ -1,0 +1,22 @@
+\input{figures/background/model_loss_split_command_hotfix}
+
+\begin{tikzpicture}
+  \pgfmathsetseed{42}
+  \foreach \x in {1,2,3,4,5} {
+    \pgfmathsetmacro{\xshiftcm}{-0.2 * (\x - 1)}
+    \pgfmathsetmacro{\yshiftcm}{-0.6 * (\x - 1)}
+    \pgfmathrandominteger{\opacitySwitch}{0}{10}
+    \ifthenelse{\opacitySwitch > 6}{%
+      \pgfmathsetmacro{\opacity}{0.15}}{%
+      \pgfmathsetmacro{\opacity}{0.95}}
+    % \node [opacity=\opacity] at (\x, 0) {\opacitySwitch};
+    \begin{scope}[xshift = \xshiftcm cm, yshift = \yshiftcm cm, opacity = \opacity]
+      \drawModelLossSplit{$\vx_{\x}$}{$\vf_{\x}$}{$\vy_{\x}$}{$\ell_{\x}$}
+    \end{scope}
+  }
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

@@ -1,0 +1,378 @@
+The recursive approaches in \cite{botev2017practical,wei2018bdapch} tackle the
+computation of curvature blocks for FCNNs. To the best of our knowledge, an
+extension to CNNs has not been achieved so far. One reason might be that
+convolutions come with heavy notation that is difficult to deal with in index
+notation.
+
+\citet{martens2015optimizing} provide a procedure for computing a Kronecker-factored
+approximation of the Fisher for convolutions (KFC). This scheme relies on the
+property of the Fisher to describe the covariance of the log-likelihood's
+gradients under the model's distribution. Curvature information is thus encoded
+in the expectation value, and not by backpropagation of second-order
+derivatives.
+
+To derive the HBP for convolutions, we use that an efficient implementation of
+the forward pass is decomposed into multiple operations (see
+\Cref{hbp::fig:compositionConvolution}), which can be considered independently
+by means of our modular approach (see \Cref{hbp::fig:convolutionSubmodules} for
+details). Our analysis starts by considering the backpropagation of curvature
+through operations that occur frequently in CNNs. This includes the reshape
+(\Cref{hbp::subsec:HBPReshape}) and extraction operation
+(\Cref{hbp::subsec:HBPIndexSelect}). In \Cref{hbp::subsec:convolutions} we
+outline the modular decomposition and curvature backpropagation of convolution
+in two dimensions. The approach carries over to other dimensions.
+
+All operations under consideration in this section are linear. Hence the second
+terms in \Cref{hbp::equ:hessianBackPropagation} vanish. Again, we use the
+framework of matrix differential calculus
+\citep{magnus1999MatrixDifferentialCalculus} to avoid index notation.
+
+\subsection{Reshape/View}\label{hbp::subsec:HBPReshape}
+The reshape operation reinterprets a tensor $\tX \in \mathbb{R}^{n_1 \times
+  \dots \times n_x}$ as another tensor $\tZ\in \mathbb{Z}^{m_1 \times \dots
+  \times m_z}$ (\Cref{def:background::TensorReshape})
+\begin{align*}
+  \tZ(\tX) = \mathrm{reshape}(\tX)\,,
+\end{align*}
+which possesses the same number of elements, \ie $\prod_i n_i = \prod_i m_i$.
+One example is given by the $\vec$ operation from
+\Cref{def:background::Flattening}. It corresponds to a reshape into a tensor of
+order one. As the arrangement of elements remains unaffected, $\vec \tZ = \vec
+\tX$, and reshaping corresponds to the identity map on the vectorized input.
+Consequently, one finds (remember that $\gradsquared{\tX}\ell$ is a shorthand
+notation for $\gradsquared{\vec \tX}\ell$)
+\begin{align*}
+  \gradsquared{\tX}\ell = \gradsquared{\tZ}\ell \,.
+\end{align*}
+
+\subsection{Index Select/Map}\label{hbp::subsec:HBPIndexSelect}
+Selecting elements of a tensor can be phrased as matrix-vector multiplication of
+a binary matrix $\mPi$ and the vectorized tensor. The mapping is described by an
+index map $\pi$. Element $j$ of the output $\vz\in \mathbb{R}^m$ is selected as
+element $\pi(j)$ from the input $\vx\in \mathbb{R}^n$. Only elements $[\mPi]_{j,
+  \pi(j)}$ in the selection matrix $\mPi\in \mathbb{R}^{m\times n}$ are one,
+while all other entries vanish. Consequently, index selection can be expressed
+as
+\begin{align*}
+  [\vz]_j = [\vx]_{\pi(j)} \quad \Leftrightarrow\quad \vz(\vx) = \mPi \vx \quad \text{with} \quad [\mPi]_{j,\pi(j)} = 1\,.
+\end{align*}
+The HBP is equivalent to the linear layer discussed in
+\Cref{hbp::subsec:linearLayerBackwardPass},
+\begin{align*}
+  \gradsquared{\vz}\ell = \mPi^\top (\gradsquared{\vx}\ell) \mPi\,.
+\end{align*}
+Applications include max-pooling and the \inlinecode{im2col}/\inlinecode{unfold}
+operation (see \Cref{hbp::subsec:convolutions}). Average-pooling represents a
+weighted sum of index selections and can be treated analogously.
+
+\subsection{Convolution}\label{hbp::subsec:convolutions}
+The convolution operation acts on local patches of a multi-channel input of
+sequences, images, or volumes. In the following, we restrict the discussion to
+two-dimensional convolution. \Cref{hbp::subfig:convolutionIllustration1}
+illustrates the setting. A collection of filter maps, the \emph{kernel} $\tW$,
+is slid over the spatial coordinates of the input tensor $\tX$. In each step,
+the kernel is contracted with the current area of overlap (the \emph{patch}).
+
+\tikzset{external/export next=false} % externalization does not correctly fill
+% out the matrix background in subfigure (c)
+\begin{figure}
+  \centering
+  \begin{subfigure}[t]{1.0\linewidth}
+    \caption{}
+    \label{hbp::subfig:convolutionIllustration1}
+    \vspace{-4ex}
+    \tikz{
+      \node (sketch) {
+        \resizebox{\textwidth}{!}{
+          \input{../repos/hbp-paper/doc/tikz_sketch/convolution_illustration.tex}
+        }
+      };
+    }
+  \end{subfigure}
+
+  \vspace{-0.43\textheight}
+
+  \begin{subfigure}[t]{1.0\linewidth}
+    \caption{}
+    \label{hbp::subfig:convolutionIllustration2}
+  \end{subfigure}
+
+  \vspace{0.43\textheight}
+
+  \vspace{-0.17\textheight}
+
+  \begin{subfigure}[t]{1.0\linewidth}
+    \caption{}
+    \label{hbp::subfig:convolutionIllustration3}
+  \end{subfigure}
+
+  \vspace{0.13\textheight}
+
+  \caption{\textbf{Two-dimensional convolution $\tY = \tX \star \tW$ without
+      bias term.} \subfigref{hbp::subfig:convolutionIllustration1} The input
+    $\tX$ consists of $C_\text{in} = 3$ channels (different colors) of $(3\times
+    3)$ images. Filter maps of size $(2\times 2)$ are provided by the kernel
+    $\tW$ for the generation of $C_\text{out} = 2$ output channels. Patch and
+    kernel volumes that are contracted in the first step of the convolution are
+    highlighted. Assuming no padding and a stride of one results in four
+    patches. New features $\tY$ consist of $C_\text{out} = 2$ channels of
+    $(2\times 2)$ images. \subfigref{hbp::subfig:convolutionIllustration2}
+    Detailed view. All tensors are unrolled along the first axis.
+    \subfigref{hbp::subfig:convolutionIllustration3} Convolution as matrix
+    multiplication. From left to right, the matrices $\llbracket
+    \tX\rrbracket^\top, \mW^\top,$ and $\mY^\top$ are shown.}
+  \label{hbp::fig:convolutionIllustration}
+\end{figure}
+
+Both the sliding process as well as the structure of the patch area can be
+controlled by hyperparameters of the operation (kernel size, stride, dilation).
+Moreover, it is common practice to extend the input tensor, for instance by
+zero-padding \citep[for an introduction to the arithmetics of convolutions,
+see][]{dumoulin2016ConvolutionArithmeticGuide}. The approach presented here is
+not limited to a certain choice of convolution hyperparameters.
+
+\subsubsection{Forward Pass \& Notation}
+We now introduce the quantities involved in the process along with their
+dimensions. For a summary, see \Cref{hbp::table:convolution Quantities}. A
+forward pass of convolution proceeds as follows (see
+\Cref{hbp::subfig:convolutionIllustration2} for an example):
+
+\begin{itemize}
+\item The input $\tX$, a tensor of order three, stores a collection of
+  two-dimensional data. Its components $\tX_{c_\text{in}, x_1, x_2}$ are
+  referenced by indices for the channel $c_{\text{in}}$ and the spatial location
+  $(x_1,x_2)$. $C_{\text{in}}, X_1, X_2$ denote input channels, width \& height
+  of the image, respectively.
+
+\item The kernel $\tW$ is a tensor of order four with shape $(C_{\text{out}},
+  C_{\text{in}}, K_1, K_2)$. Kernel width $K_1$ and height $K_2$ determine the
+  patch size $P= K_1 K_2$ for each channel. New features are obtained by
+  contracting the patch and kernel. This is repeated for a collection of
+  $C_{\text{out}}$ output channels stored along the first axis of $\tW$.
+
+\item Each output channel $c_\text{out}$ is shifted by a bias
+  $b_{c_\text{out}}$, stored in the $C_\text{out}$-dimensional vector $\vb$.
+
+\item The output $\tY = \tX \star \tW$ with components $[\tY]_{c_\text{out},
+    y_1, y_2}$ is of the same structure as the input. We denote the spatial
+  dimensions of $\tY$ by $Y_1, Y_2$, respectively. Hence $\tY$ is of dimension
+  ($C_\text{out}, Y_1, Y_2$).
+\end{itemize}
+
+\marginnote{
+  \begin{center}
+    \tikzexternalenable
+    \resizebox{\linewidth}{!}{\input{../repos/hbp-paper/doc/tikz_sketch/convolutionComposition.tex}}
+    \tikzexternaldisable
+  \end{center}
+  \captionof{figure}{\textbf{Decomposition of the convolution operation's
+      forward pass.}}
+  \label{hbp::fig:compositionConvolution}
+}
+
+\paragraph{Example (index notation):}
+A special case where input and output have the same spatial
+dimensions~\citep{grosse2016kronecker} uses a stride of one, kernel widths $K_1
+= K_2 = 2 K + 1$, $(K\in \mathbb{N})$, and padding $K$. Elements of the filter
+$[\tW]_{c_{\text{out}}, c_{\text{in}}, :, :}$ are addressed with the index set
+$\{-K, \dots, 0, \dots, K\} \times \{-K, \dots, 0, \dots, K\}$:
+\begin{align}
+  [\tY]_{c_\text{out}, y_1, y_2} = \sum\limits_{k_1 = -K}^{K}
+  \sum\limits_{k_2 = -K}^{K} [\tX]_{c_\text{in}, x_1 + k_1, x_2 + k_2}
+  [\tW]_{c_\text{out}, c_{\text{in}}, k_1, k_2} + [b]_{c_\text{out}}\,.
+  \label{hbp::equ:convolutionExample}
+\end{align}
+Elements of $\tX$ addressed out of bounds evaluate to zero. Arbitrary
+convolutions come with even heavier notation.
+
+\subsubsection{Convolution as Matrix Multiplication}
+
+Evaluating convolutions by sums of the form \Cref{hbp::equ:convolutionExample}
+leads to poor memory locality~\citep{grosse2016kronecker}. For improved
+performance, the computation is mapped to a matrix
+multiplication~\citep{chellapilla2006HighPerformanceCNN}. To do so, patches of
+the input $\tX$ are extracted and flattened into columns of a matrix. The patch
+extraction is indicated by the operator $\llbracket \cdot \rrbracket$ and the
+resulting matrix $\llbracket \tX \rrbracket$ is of dimension $(C_\text{in} K_1
+K_2\times P)$ (see left part of \Cref{hbp::subfig:convolutionIllustration3}
+showing $\llbracket \tX\rrbracket^\top$). In other words, elements contracted
+with the kernel are stored along the first axis of $\llbracket \tX \rrbracket$.
+$\llbracket \cdot \rrbracket$ is also referred to as \inlinecode{im2col} or
+\inlinecode{unfold} operation\sidenote{Our definition of the \inlinecode{unfold}
+  operator slightly differs from~\cite{grosse2016kronecker}, where flattened
+  patches are stacked rowwise. This lets us achieve an analogous form to a
+  linear layer. Conversion is achieved by transposition.}, and accounts for
+padding.
+
+\begin{table}[t]
+  \centering
+  \caption{\textbf{Important quantities for the convolution operation.} The
+    number of patches equals the product of the outputs' spatial dimensions,
+    \ie~$P = Y_1 Y_2$.}
+  \label{hbp::table:convolution Quantities}
+  \begin{footnotesize}
+    \begin{tabular}{rrr}
+      \toprule
+      Tensor     & Dimensionality     & Description \\
+      \midrule
+      $\tX$ & $(C_\text{in}, X_1, X_2)$ & Input \\
+      $\tW$ & $(C_\text{out}, C_\text{in}, K_1, K_2)$ & Kernel\\
+      $\tY$ & $(C_\text{out}, Y_1, Y_2)$ & Output \\
+      $\llbracket \tX \rrbracket$ & $(C_\text{in} K_1 K_2, P)$ & Expanded input\\
+      $\mW$ & $(C_\text{out}, C_\text{in} K_1 K_2)$ & Matricized kernel\\
+      $\mY$ & $(C_\text{out}, P)$ & Matricized output\\
+      $\vb$ & $C_\text{out}$ & Bias vector\\
+      $\mB$ & $(C_\text{out}, P)$ & Bias matrix\\
+      \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+\end{table}
+
+The kernel tensor $\tW$ is reshaped into a $(C_\text{out} \times C_\text{in} K_1
+K_2)$ matrix $\mW$, and elements of the bias vector $vb$ are copied columnwise
+into a $(C_\text{out} \times P)$ matrix
+% $B$. More formally,
+\begin{math}
+  \mB = \vb {\mathbf{1}}^\top_P\,,
+\end{math}
+where ${\mathbf{1}}_P$ is a $P$-dimensional vector of ones. Patchwise
+contractions are carried out by matrix multiplication and yield a matrix $\mY$
+of shape $(C_\text{out}, P)$ with $P = Y_1 Y_2$,
+\begin{align}
+  \label{hbp::eq:convolutionMatrixMultiplication}
+  \mY = \mW \llbracket \tX\rrbracket + \mB
+\end{align}
+(\Cref{hbp::subfig:convolutionIllustration3} shows $\mW^\top, \llbracket \tX
+\rrbracket^\top$, and $\mY$ from left to right). Reshaping $\mY$ into a
+$(C_\text{out}, Y_1, Y_2)$ tensor, referred to as \inlinecode{col2im}, yields
+$\tY$. \Cref{hbp::fig:compositionConvolution} summarizes the outlined
+decomposition of the forward pass.
+
+\subsection{HBP for Convolution}\label{hbp::subsec:hbpConvolutions}
+We now compose the HBP for convolution, proceeding from right to left with the
+operations depicted in \Cref{hbp::fig:convolutionSubmodules}, by analyzing the
+backpropagation of curvature for each module, adopting the figure's notation.
+
+\subsubsection{Reshape/\robustInlinecode{col2im}}
+
+The \inlinecode{col2im} operation takes a matrix $\mY \in
+\mathbb{R}^{C_\text{out} \times Y_1 Y_2}$ and reshapes it into the tensor $\tY
+\in \mathbb{R}^{C_\text{out} \times Y_1 \times Y_2}$. According to
+\Cref{hbp::subsec:HBPReshape},
+\begin{math}
+  \gradsquared{\mY}\ell = \gradsquared{\tY}\ell. %\,.
+\end{math}
+
+\subsubsection{Bias Hessian}
+
+Forward pass $\mY = \mZ + \mB$ and \Cref{hbp::equ:biasHessianAddition} imply
+\begin{math}
+  \gradsquared{\mY}\ell = \gradsquared{\mB}\ell = \gradsquared{\mZ}\ell. %\,.
+\end{math}
+To obtain the Hessian \wrt $\vb$ from $\gradsquared{\mB}\ell$, consider the
+columnwise copy operation $\mB(\vb) = \vb \, {\mathbf{1}}_P^\top$, whose matrix
+differential is $\diff \mB(\vb) = (\diff \vb)\, {\mathbf{1}}_P^\top$.
+Vectorization yields $\diff \vec \mB(\vb) = ({\mathbf{1}}_P \otimes
+\mI_{C_\text{out}}) \diff \vb$. Hence, the Jacobian is $\jac_{\vb} \mB(\vb) =
+{\mathbf{1}}_{P} \otimes \mI_{C_\text{out}}$, and
+\Cref{hbp::equ:hessianBackPropagation} yields
+\begin{align*}
+  \gradsquared{\vb}\ell
+  =
+  \left( {\mathbf{1}}_P \otimes \mI_{C_\text{out}} \right)^\top
+  \gradsquared{\mB}\ell
+  \left({\mathbf{1}}_P \otimes \mI_{C_\text{out}} \right)\,.
+\end{align*}
+This performs a linewise and columnwise summation over $\gradsquared{\mB}\ell$,
+summing entities that correspond to copies of the same entry of $\vb$ in the
+matrix $\mB$. It can also be regarded as a reshape of $\gradsquared{\mB}\ell$
+into a $(C_\text{out}, P, C_\text{out}, P)$ tensor, which is then contracted
+over the second and fourth axis.
+
+\begin{figure*}[t]
+  \centering \resizebox{!}{3.25cm}{
+    \tikzexternalenable
+    \footnotesize
+    \input{figures/hbp/convolution_backward_hessian}
+    \tikzexternaldisable
+  }
+  \caption{\textbf{Decomposition of convolution with notation for the study of
+      curvature backpropagation.}}
+  \label{hbp::fig:convolutionSubmodules}
+\end{figure*}
+
+\subsubsection{Weight Hessian}
+
+HBP for the matrix-matrix multiplication $\mZ(\mW, \llbracket \tX \rrbracket) =
+\mW \llbracket \tX \rrbracket$ was discussed in
+\Cref{hbp::subsec:linearLayerBackwardPass}. The Jacobians are given by
+$\jac_{\llbracket \tX \rrbracket} \mZ(\llbracket \tX \rrbracket) = \mI_P \otimes
+\mW$ and $\jac_{\mW} \mZ(\mW) = \llbracket \tX \rrbracket^\top \otimes \mI_S$
+with the patch size $ S = C_\text{in} K_1 K_2$. Hence, HBP for the weight matrix
+\& unfolded input are
+\begin{align*}
+  \gradsquared{\llbracket \tX \rrbracket}\ell
+  &=
+    \left( \mI_P \otimes \mW \right)^\top
+    \gradsquared{\mZ}\ell
+    \left( \mI_P \otimes \mW \right)\,,
+  \\
+  \gradsquared{\mW}\ell
+  &=
+    \left( \llbracket \tX\rrbracket^\top \otimes \mI_S \right)^\top
+    \gradsquared{\mZ}\ell
+    \left( \llbracket \tX \rrbracket^\top \otimes \mI_S \right).
+\end{align*}
+From what has been said about the reshape operation in
+\Cref{hbp::subsec:HBPReshape}, it follows that $\gradsquared{\tW}\ell =
+\gradsquared{\mW}\ell$.
+
+\subsubsection{Im2col/Unfold}
+
+The patch extraction operation $\llbracket \cdot \rrbracket$ copies all patch
+elements into the column of a matrix. It thus represents a selection of
+elements by an index map which is hard to express in notation. Numerically, it
+is obtained by calling \inlinecode{im2col} on a $(C_{\text{in}}, X_1, X_2)$
+index tensor whose entries correspond to the indices. The resulting tensor
+contains all information about the index map. HBP follows the relation of
+\Cref{hbp::subsec:HBPIndexSelect}.
+
+\subsubsection{Discussion}
+Although convolution can be understood as a matrix multiplication, the parameter
+Hessian is not identical to that of the linear layer discussed in
+\Cref{hbp::subsec:linearLayerBackwardPass}. The difference is due to the
+parameter sharing of the convolution. In the case of a linear layer $\vz = \mW
+\vx + \vb$, the Hessian of the weight matrix for a single sample possesses
+Kronecker structure
+\citep{botev2017practical,wei2018bdapch,bakker2018OuterProductStructure},
+\ie~$\gradsquared{\mW}\ell = \vx \otimes \vx^\top \otimes
+\gradsquared{\vz}\ell$. For convolutional layers, however, it has been argued
+by~\cite{bakker2018OuterProductStructure} that block diagonals of the Hessian do
+not inherit the same structure. Rephrasing the forward
+pass~\eqref{hbp::eq:convolutionMatrixMultiplication} in terms of vectorized
+quantities, we find
+\begin{align*}
+  \label{hbp::eq:convolutionMatrixMultiplicationCircular}
+  \vec \mY
+  =
+  \left( I_P \otimes \mW \right)
+  \vec \llbracket \tX \rrbracket
+  +
+  \vec \mB\,.
+\end{align*}
+In this perspective, convolution corresponds to a fully-connected linear layer,
+with the additional constraints that the weight and bias matrix be circular.
+Defining $\mWhat := \mI_P \otimes \mW$, one then finds the Hessian
+$\gradsquared{\mWhat}\ell$ to possess Kronecker structure. Parameterization with
+a kernel tensor encodes the circularity constraint in weight sharing.
+
+For the kernel Hessian $\gradsquared{\mW}\ell$ to possess Kronecker structure,
+the output Hessian $\gradsquared{\mZ}\ell$ must be assumed to factorize into a
+Kronecker product of $S\times S$ and $C_\text{out} \times C_\text{out}$
+matrices. These assumptions are somewhat in parallel with the approximations
+introduced in \cite{grosse2016kronecker} to obtain KFC.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

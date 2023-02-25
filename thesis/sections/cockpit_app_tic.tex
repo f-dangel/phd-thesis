@@ -1,0 +1,104 @@
+\subsection{Takeuchi Information Criterion (\robustInlinecode{TICDiag},
+  \robustInlinecode{TICTrace})}\label{cockpit::app:tic}
+
+Recent work by \citet{thomas2020interplay} suggests that optimizer convergence
+speed and generalization is mainly influenced by curvature and gradient noise;
+and hence their interaction is crucial to understand the generalization and
+optimization behavior of deep neural networks. They reinvestigate the Takeuchi
+Information criterion \citep{takeuchi1976distribution}, an estimator for the
+generalization gap in overparameterized maximum likelihood estimation. At a
+local minimum $\vtheta_\star$, the generalization gap is estimated by the TIC
+\begin{equation}
+  \label{cockpit::eq:tic-theory}
+  \frac{1}{|\sD|}
+  \Tr
+  \left(
+    \mH_{\pdata}(\vtheta_\star)^{-1}
+    \mK_{\pdata}(\vtheta_\star)
+  \right)\,,
+\end{equation}
+where $\mH_{\pdata}(\vtheta_\star)$ is the population Hessian and
+$\mK_{\pdata}(\vtheta_\star)$ is the gradient's uncentered second moment,
+\begin{equation*}
+  \mK_{\pdata}(\vtheta_\star)
+  = \int
+  \nabla_{\vtheta_{\star}}\ell(f_{\vtheta_{\star}}( \vx), \vy)
+  \left(
+    \nabla_{\vtheta_{\star}}\ell(f_{\vtheta_{\star}}( \vx), \vy)
+  \right)^\top \pdata(\vx, \vy)
+  \diff\vx\diff\vy.
+\end{equation*}
+Both matrices are inaccessible in practice. In their experiments,
+\citet{thomas2020interplay} propose the approximation
+$\nicefrac{\Tr(\mK)}{\Tr(\mH)}$ for $\Tr(\mH^{-1} \mK)$. They also replace the
+Hessian by the Fisher as it is easier to compute. With these practical
+simplifications, they investigate the TIC of trained neural networks where the
+curvature and noise matrix are evaluated on a large dataset.
+
+The TIC provided in \cockpit differs from this setting, since by design we want
+to observe quantities during training, while avoiding additional model
+predictions. Also, \backpack provides access to the Hessian; hence we don't need
+to use the Fisher. We propose the following two approximations of the TIC from a
+mini-batch:
+\begin{itemize}
+\item \inlinecode{TICTrace}: uses the approximation of \citet{thomas2020interplay} which
+  replaces the matrix-product trace by the product of traces,
+  \begin{align}
+    \label{cockpit::eq:tic-trace-feature-table}
+    \frac{
+    \Tr\left(
+    \mK_{\sB}(\vtheta)
+    \right)
+    }{
+    \Tr\left(
+    \mH_{\sB}(\vtheta)
+    \right)
+    }
+    =
+    \frac{
+    \frac{1}{|\sB|}
+    \sum_{n\in\sB}
+    \lVert
+    \vg_{n}(\vtheta)
+    \rVert^2
+    }{
+    \Tr\left(
+    \mH_{\sB}(\vtheta)
+    \right)
+    }\,.
+  \end{align}
+\item \inlinecode{TICDiag}: uses a diagonal approximation of the Hessian, which
+  is cheap to invert,
+  \begin{align}
+    \label{cockpit::eq:tic-diag-feature-table}
+    \begin{split}
+      &\Tr\left(
+        \diag\left(
+        \mH_{\sB}(\vtheta)
+        \right)^{-1}
+        \mK_{\sB}(\vtheta)
+        \right)
+      \\
+      &\qquad
+        =
+        \frac{1}{|\sB|}
+        \sum_{d=1}^D
+        \left[
+        \mH_\sB(\vtheta)
+        \right]_{d,d}^{-1}
+        \left[
+        \sum_{n\in\sB}
+        \vg_{n}(\vtheta)^{\odot 2}
+        \right]_{d}\,.
+    \end{split}
+  \end{align}
+\end{itemize}
+
+\subsubsection{Usage}
+
+The TIC is a proxy for the generalization gap, see \citet{thomas2020interplay}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

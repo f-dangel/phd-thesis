@@ -1,0 +1,1302 @@
+Second-order methods iteratively optimize an objective $\gL(\vtheta): \sR^{D}
+\to \sR$ using a local quadratic approximation $\gL(\vtheta) \approx
+m_{\vtheta_t}(\vtheta)$ around the current point $\vtheta_t$ after $t$
+iterations,
+\begin{subequations}
+  \begin{align}\label{eq:background::localQuadraticApproximation}
+    m_{\vtheta_t}(\vtheta)
+    =
+    a(\vtheta_t)
+    +
+    {\vb(\vtheta_t)}^{\top}(\vtheta - \vtheta_t)
+    +
+    \frac{1}{2}
+    (\vtheta - \vtheta_t)^{\top}
+    \mC(\vtheta_t)
+    (\vtheta - \vtheta_t)\,,
+  \end{align}
+  with an offset $a(\vtheta_t) \in \sR$, a slope vector $\vb(\vtheta_t) \in
+  \sR^{D}$, and a curvature matrix $\mC(\vtheta_t) \in \sR^{D \times D}$. As
+  described in \Cref{sec:background::PopularOptimizers}, the next iterate
+  $\vtheta_{t+1}$ is obtained by minimizing the local approximation. For this
+  proxy to possess a minimum, the curvature matrix $\mC(\vtheta_t)$ must be PD.
+  Then, \Cref{eq:background::localQuadraticApproximation} is minimized by
+  \begin{align}\label{eq:background::SecondOrderUpdateInverseCurvature}
+    \vtheta_{t+1}
+    =
+    \argmin_{\vtheta} m_{\vtheta_t}(\vtheta)
+    =
+    \vtheta_t - {\mC(\vtheta_t)}^{-1} \vb(\vtheta_t)\,.
+  \end{align}
+  This update is computationally challenging, because the size of the curvature
+  matrix is quadratic in $D$ and generally infeasible to store. Additionally,
+  the computational complexity of matrix inversion scales cubically in $D$.
+  These problems can somewhat be addressed by approximately solving the linear
+  system
+  \begin{align}\label{eq:background::SecondOrderMethodsLinearSystem}
+    \mC(\vtheta_t) \vtheta_{t+1} = - \vb(\vtheta_t)
+  \end{align}
+\end{subequations}
+for $\vtheta_{t+1}$. This can be done with iterative solvers, such as CG, which
+only require matrix-vector products with $\mC(\vtheta_t)$, which can often be
+implemented without expanding the matrix representation in memory.
+
+The first-order methods from \Cref{sec:background::PopularOptimizers} circumvent
+these issues by using a diagonal---and often quite crude---curvature
+approximation that is cheap to store and invert (see~\cite{choi2020on} for an
+overview). \Eg, \sgd's local approximation,
+\Cref{eq:background::SGDLocalApproximation}, uses $\nicefrac{1}{2\eta}\mI$ as
+curvature matrix. The following sections introduce common curvature matrices for
+local approximations of empirical risks.
+
+\subsection{Newton's Method \& the Hessian
+  Matrix}\label{sec:background::NewtonMethodAndHessian}
+The Taylor series provides a meaningful local approximation of an analytic
+function. Its expansion up to second-order is
+\begin{align}
+  \begin{split}
+    \gL(\vtheta)
+    &=
+      \underbrace{
+      \gL(\vtheta_t)
+      }_{a(\vtheta_t)}
+      +
+      {
+      \underbrace{
+      \grad{\vtheta_{t}}\gL(\vtheta_t)
+      }_{\vb_{\vtheta_t}}
+      }^{\top}
+      ( \vtheta - \vtheta_t)
+    \\
+    &\phantom{= }
+      +
+      \frac{1}{2}
+      {( \vtheta - \vtheta_t)}^{\top}
+      \underbrace{
+      \gradsquared{\vtheta_t}\gL(\vtheta_t)
+      }_{\mC(\vtheta_t)}
+      ( \vtheta - \vtheta_t)
+      +
+      \gO\left( {(\vtheta - \vtheta_t)}^{3} \right)
+  \end{split}
+\end{align}
+where $\gO((\vtheta - \vtheta_t)^{3})$ denotes polynomial terms in the
+components of $\vtheta - \vtheta_t$ of cubic order and above. This reveals the
+objective's Hessian $\gradsquared{\vtheta_t}\gL(\vtheta_t)$, which collects its
+second-order partial derivatives in a matrix
+${[\gradsquared{\vtheta_t}\gL(\vtheta_t)]}_{i,j} = \nicefrac{\partial^2
+  \gL(\vtheta_t)}{\partial {[\vtheta_t]}_i \partial {[\vtheta_t]}_j}$, as
+curvature matrix.
+
+\begin{definition}[\textbf{Hessian}]\label{def:background::Hessian}
+  Let $b: \sR^D \to \sR; \va \mapsto b(\va)$ be a differentiable
+  vector-to-scalar function. The Hessian $\gradsquared{\va} b \in \sR^{D\times
+    D}$ of $b$ \wrt $\va$ is a symmetric matrix containing the second-order
+  partial derivatives
+  \begin{align}
+    \label{eq:background::HessianVectorToScalar}
+    \gradsquared{\va}b = \frac{\partial^2 b}{\partial \va \partial \va^{\top}}
+    \qquad
+    \text{with}
+    \qquad
+    [\gradsquared{\va}b]_{i,j} = \frac{\partial^2 b}{\partial \eva_i \partial \eva_j}
+  \end{align}
+  \Cref{hbp::def:generalizedHessian} generalizes this to the matrix/tensor case.
+  The Hessian will often be denoted by $\mH$. \Eg $\mH_{\pdata}(\vtheta) :=
+  \gradsquared{\vtheta} \gL_{\pdata}(\vtheta)$ for the Hessian of the population
+  risk \Cref{eq:background::expectedRisk}, and $\mH_{\sD}(\vtheta) :=
+  \gradsquared{\vtheta} \gL_{\sD}(\vtheta)$ for the Hessian of the empirical
+  risk \Cref{eq:background::empiricalRisk} on a dataset $\sD$ (with $\sD =
+  \Dtrain,\sB$ for the train loss and mini-batch Hessian).
+\end{definition}
+
+\marginnote[*-5]{%
+  \begin{definition}[\textbf{Generalized
+      Hessian}]\label{hbp::def:generalizedHessian}
+    Let $\mB: \mathbb{R}^{n\times q} \to \mathbb{R}^{m \times p}$ be a twice
+    differentiable matrix function. The \emph{Hessian} $\gradsquared{\mA} \mB(\mA)$
+    is an $(mnpq \times nq)$ matrix defined by
+    \begin{align}
+      \label{hbp::equ:generalizedHessian}
+      \begin{split}
+        &\gradsquared{\mA} \mB(\mA)
+        \\
+        &= \jac_{\mA} \left[\jac_{\mA} \mB(\mA)\right]^\top
+        \\
+        &= \frac{
+          \partial
+          }{
+          \partial (\vec \mA)^\top
+          }
+          \vec \left\{
+          \left[
+          \frac{\partial \vec \mB(\mA)}{\partial (\vec
+          \mA)^\top}
+          \right]^\top
+          \right\}
+      \end{split}
+    \end{align}
+    \citep[][Chapter 10.2]{magnus1999MatrixDifferentialCalculus} with
+    flattening defined by \Cref{def:background::Flattening}. In
+    element-wise notation, this is
+    the matrix-stack of all output component Hessians
+    \begin{align*}
+      \gradsquared{\mA}
+      \mB(\mA)
+      =
+      \begin{pmatrix}
+        \gradsquared{\vec \mA} [\vec \mB]_1
+        \\
+        \gradsquared{\vec \mA} [\vec \mB]_2
+        \\
+        \vdots
+        \\
+        \gradsquared{\vec \mA} [\vec \mB]_{np}
+      \end{pmatrix}\,,
+    \end{align*}
+    with the Hessian from \Cref{def:background::Hessian}.
+  \end{definition}
+  The tensor case is analogous but requires cluttered notation and is therefore
+  omitted. Common forms for neural networks include vector-to-vector functions
+  $f: \sR^m \to \sR^n, \vx \mapsto f(\vx)$ with
+  \begin{align*}
+    \gradsquared{\vx} f(\vx)
+    =
+    \frac{\partial^2 f(\vx)}{\partial \vx^\top \partial \vx}\,,
+  \end{align*}
+  where $\vx$ can be considered the input or bias vector if a linear layer. In
+  details,
+  \begin{align}
+    \label{hbp::equ:HessianVectorToVector}
+    \gradsquared{\vx} f(\vx)
+    =
+    \begin{pmatrix}
+      \gradsquared{\vx} f_1(\vx)
+      \\
+      \vdots
+      \\
+      \gradsquared{\vx} f_m(\vx)
+    \end{pmatrix}\,.
+  \end{align}
+  Others are matrix-to-vector mappings $f:\sR^{n\times q}\to \sR^m, \mX
+  \to f(\mX)$ with
+  \begin{align*}
+    \gradsquared{\mX} f(\mX)
+    =
+    \frac{\partial}{\partial (\vec \mX)^\top}\frac{\partial f(\mX)}{\partial \vec \mX}\,,
+  \end{align*}
+  \eg with $\mX$ the weight of a linear layer.%
+}
+
+Newton's method uses the Hessian as curvature matrix.
+
+\begin{updaterule}[\textbf{Newton's method (simplified)}]\label{opt:background::Newton}
+  A Newton step is
+  \begin{align}
+    \vtheta_{t+1} = \vtheta_t - {\mH_{\sD}(\vtheta_t)}^{-1} \vg_{\sD}(\vtheta_t)
+  \end{align}
+  with the gradient and Hessian from
+  \Cref{def:background::JacobianVectorVector,def:background::Hessian} (practical
+  implementations vary and often introduce additional hyperparameters such as a
+  learning rate, damping term, mini-batch size, \etc).
+\end{updaterule}
+
+Matrix-free multiplication with the Hessian~\cite{pearlmutter1994fast} can been
+combined with CG to compute Newton steps via solving the linear system
+\Cref{eq:background::SecondOrderMethodsLinearSystem}. This idea is known as
+Hessian-free optimization~\cite{martens2010deep}.
+
+While the Taylor expansion motivates using the Hessian as curvature matrix, it
+leads to problems for non-convex functions like the empirical risk, as it is in
+general indefinite. Therefore
+\Cref{eq:background::SecondOrderUpdateInverseCurvature} does not have a
+solution. In practice, PSD curvature matrices that are approximations of the
+Hessian are popular substitutes for the Hessian to avoid this issue
+(\Cref{sec:background::gn,sec:background::ggn,sec:background::naturalGradientDescent}).
+
+\subsection{The Gauss-Newton Method \& Matrix}\label{sec:background::gn}
+
+The Gauss-Newton (GN) method~\cite[chapter 6.3]{bottou2016machine} tackles the
+nonlinear least squares regression task (\Cref{ex:background::Regression}) of
+fitting a function $f_{\vtheta}$ to data in the form of vector-valued inputs
+$\vx_n \in \sR^M$ and scalar-valued outputs $y_n \in \sR$ by minimizing the mean
+squared error,
+\begin{align}\label{eq:background::nonlinearLeastSquares}
+  \minimize_{\vtheta} \gL(\vtheta)\,,
+  \quad
+  \text{where}
+  \quad
+  \gL(\vtheta)
+  =
+  \frac{1}{|\sD|}
+  \sum_{(\vx_n, y_n) \in \sD}
+  {(
+  \underbrace{f_{\vtheta}(\vx_n)}_{:=f_n} - y_n
+  )}^{2}\,,
+\end{align}
+The objective's gradient is
+\begin{align}
+  \label{eq:background::GradientNonlinearLeastSquares}
+  \grad{\vtheta}\gL(\vtheta)
+  =
+  \frac{2}{|\sD|}
+  \sum_{(\vx_n, y_n) \in \sD}
+  {(\jac_{\vtheta} f_n)}^{\top}
+  \left(
+  f_n - y_{n}
+  \right)\,,
+\end{align}
+with the Jacobian $\jac_{\vtheta} f_n \in \sR^{1 \times D}$
+(\Cref{def:background::JacobianVectorVector}). The Hessian is
+\begin{subequations}\label{eq:background::HessianDecompositionGaussNewtonResidual}
+  \begin{align}
+    \label{eq:background::HessianNonlinearLeastSquares}
+    % \begin{split}
+    \gradsquared{\vtheta} \gL(\vtheta)
+    &=
+      \frac{2}{|\sD|}
+      \sum_{(\vx_n, y_n) \in \sD}
+      {(\jac_{\vtheta}f_n)}^{\top}
+      \jac_{\vtheta}f_n
+      % \\
+      % &\phantom{= }
+          +
+          \frac{2}{|\sD|}
+          \sum_{(\vx_n, y_n) \in \sD}
+          \gradsquared{\vtheta} f_n
+          \left(
+          f_n - y_n
+          \right)\,.
+          % \end{split}
+          \intertext{The first term is the PSD
+          \emph{Gauss-Newton matrix} (up to scaling)}
+          \label{eq:background::GaussNewton}
+          \mG_{\sD}(\vtheta)
+        &=
+          \frac{2}{|\sD|}
+          \sum_{(\vx_n, y_n) \in \sD}
+          {(\jac_{\vtheta}f_n)}^{\top}
+          \jac_{\vtheta}f_n\,,
+          \intertext{and the second term is the residual matrix}
+          \mR_{\sD}(\vtheta)
+        &=
+          \frac{2}{|\sD|}
+          \sum_{(\vx_n, y_n) \in \sD}
+          \gradsquared{\vtheta} f_n
+          \left(
+          f_n - y_n
+          \right)\,.
+  \end{align}
+\end{subequations}
+The \emph{Gauss-Newton matrix} approximates the Hessian through first-order
+information of the model, ${(\jac_{\vtheta}f_n)}^{\top} = \grad{\vtheta}f_n$,
+which is cheap to compute. For vanishing residual terms $\lim_{(f_n - y_n)\to 0}
+$ (as the model predictions match the labels), or linear models
+($\gradsquared{\vtheta} f_{\vtheta} = \vzero$) it corresponds to the Hessian.
+
+\begin{updaterule}[\textbf{Gauss-Newton method (simplified)}]
+  For the nonlinear least squares task \Cref{eq:background::nonlinearLeastSquares}, a Gauss-Newton step is%
+  \sidenote{ Stacking Jacobians and residuals,
+    \begin{align*}
+      \mJ(\vtheta)
+      &=
+        \begin{pmatrix}
+          \jac_{\vtheta}f_1
+          \\
+          \jac_{\vtheta}f_2
+          \\
+          \vdots
+          \\
+          \jac_{\vtheta}f_{|\sD|}
+        \end{pmatrix} \in \sR^{|\sD| \times D}\,,
+      \\
+      \vr(\vtheta)
+      &=
+        \begin{pmatrix}
+          f_1 - y_1
+          \\
+          f_2 - y_2
+          \\
+          \vdots
+          \\
+          f_{|\sD|} - y_{|\sD|}
+        \end{pmatrix} \in \sR^{|\sD|}\,,
+    \end{align*}
+    absorbs the sums into matrix multiplies
+    \begin{align*}
+      \vtheta_{t+1}
+      =
+      \vtheta_t
+      -
+      {\left(
+      {\mJ(\vtheta_t)}^{\top}
+      \mJ(\vtheta_t)
+      \right)}^{-1}
+      {\mJ(\vtheta_t)}^{\top}
+      \vr(\vtheta_t)
+    \end{align*}
+    which can be solved through
+    \begin{align*}
+      {\mJ(\vtheta_t)}^{\top}
+      \mJ(\vtheta_t)
+      \vx
+      =
+      -
+      {\mJ(\vtheta_t)}^{\top}
+      \vr(\vtheta_t)
+    \end{align*}
+    via JVPs \& VJPs in combination with CG. }
+  %
+  \begin{align}
+    \vtheta_{t+1}
+    =
+    \vtheta_t
+    -
+    {\mG_{\sD}(\vtheta_t)}^{-1}
+    \grad{\vtheta_t}\gL(\vtheta_t)\,,
+  \end{align}
+  with the gradient and Gauss-Newton matrix from
+  \Cref{def:background::JacobianVectorVector,eq:background::GaussNewton}
+  (practical implementations vary and often introduce additional hyperparameters
+  such as a learning rate, damping term, mini-batch size, \etc).
+\end{updaterule}
+
+% Positive semi-definite Hessian approximations
+\subsection{The Generalized Gauss-Newton Matrix}\label{sec:background::ggn}
+
+The \emph{generalized Gauss-Newton (\ggn) matrix} is a PSD approximation to the
+Hessian that generalizes the GN through abstraction via empirical risk
+minimization (see \Cref{sec:background::empiricalRiskMinimization}). The \ggn
+can be understood through different perspectives, and, using the probabilistic
+interpretation of the model, is related to the natural gradient method through
+its connections to the Fisher (\Cref{sec:background::naturalGradientDescent}) .
+
+\subsubsection{From Gauss-Newton to Generalized Gauss-Newton}
+
+The GN matrix from \Cref{sec:background::ggn} stems from a nonlinear least
+squares problem that can be viewed as supervised regression
+(\Cref{ex:background::Regression}), \ie mean squared error loss function, with
+scalar-valued labels ($C=1$). For the general case of empirical risk
+minimization (\Cref{eq:background::empiricalRisk}), the Hessian decomposes due to
+the split between model and loss function,%
+\begin{subequations}
+  \begin{align}
+    \ell(\vtheta)
+    &=
+      \ell(\cdot, \vy) \circ f_{\vtheta}(\vx)
+      \intertext{as a result of the Hessian chain rule \Cref{hbp::the:chainRuleHessians}.
+      For a single datum $(\vx, \vy)$ with prediction $\vf := f_{\vtheta}(\vx)$, this yields}
+      \label{eq:background::chainRuleModelLossFunctionSplit}
+      \gradsquared{\vtheta} \ell(\vtheta)
+    &=
+      (\jac_{\vtheta}\vf)^{\top}
+      \left[
+      \gradsquared{\vf} \ell(\vf, \vy)
+      \right]
+      \jac_{\vtheta}\vf
+      +
+      \sum_{c=1}^{C}
+      \left(
+      \gradsquared{\vtheta}[\vf]_{c}
+      \right)
+      \grad{\vf} \ell(\vf, \vy)
+  \end{align}
+\end{subequations}
+\marginnote{%
+  The arrangement of partial derivatives in the generalizations of Jacobian
+  \Cref{hbp::def:generalizedJacobian} and Hessian
+  \Cref{hbp::def:generalizedHessian} implies the following chain rule
+  generalization for second-order derivatives:
+  \begin{theorem}[\textbf{Chain rule for the generalized
+      Hessian}]\label{hbp::the:chainRuleHessians}
+    Let $\vb: \mathbb{R}^n \to \mathbb{R}^m$ and $\vc: \mathbb{R}^m \to
+    \mathbb{R}^p$ be twice differentiable and $\vd = \vc \circ \vb: \mathbb{R}^n
+    \to \mathbb{R}^p, \va \mapsto \vd(\va) = \vc(\vb(\va))$. The relation
+    between the Hessian of $\vd$ and the Jacobians and Hessians of the
+    constituents $\vc$ and $\vb$ is given by
+    \begin{align}
+      \label{hbp::equ:chainRuleHessians}
+      \begin{split}
+        &\gradsquared{\va}
+          \vd(\va)
+        \\
+        &\,\,=
+          \left[
+          \mI_p \otimes \jac_{\va} \vb(\va)
+          \right]^\top
+          \left[
+          \gradsquared{\vb} \vc(\vb)
+          \right]
+          \jac_{\va} \vb(\va)
+        \\
+        &\,\,\phantom{= }
+          +
+          \left[
+          \jac_{\vb} \vc(\vb) \otimes \mI_n
+          \right]
+          \gradsquared{\va} \vb(\va)
+      \end{split}
+    \end{align}
+    \citep[restricted from][Chapter 6.10]{magnus1999MatrixDifferentialCalculus}.
+  \end{theorem}
+  The matrix/vector case is analogous. Matrix differential
+  calculus~\cite{magnus1999MatrixDifferentialCalculus} is a useful tool to
+  easily read off the Hessian from specific expressions, see
+  \Cref{hbp::sec:matrixDifferentialCalculus}. For applications of the Hessian
+  chain rule, see \Cref{chap:hbp}. }%
+The first term carries curvature information of the loss function, while the
+second term contains curvature information of the model. Because $\ell(\vf,
+\vy)$ is convex in $\vf$, the first term is PSD, whereas the second term is
+indefinite in general.
+
+The \ggn is the first term and neglects curvature information of the model. For
+the empirical risk \Cref{eq:background::empiricalRisk}, and using the shorthand
+$\vf_n := f_{\vtheta}(\vx_n)$, the Hessian is
+\begin{subequations}\label{eq:background::HessianDecompositionGGNResidual}
+  \begin{align}
+    \mH_{\sD}(\vtheta)
+    &=
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n, \vy_n) \in \sD}
+      \gradsquared{\vtheta} \ell(\vf_n, \vy_n)
+      = \mG_{\sD}(\vtheta) + \sR_{\sD}(\vtheta)
+      \shortintertext{with the \emph{generalized Gauss-Newton matrix}}
+      \label{eq:background::generalizedGaussNewton}
+      \mG_{\sD}(\vtheta)
+    &:=
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n, \vy_n) \in \sD}
+      (\jac_{\vtheta}\vf_n)^{\top}
+      \left[
+      \gradsquared{\vf_n} \ell(\vf_n, \vy_n)
+      \right]
+      \jac_{\vtheta}\vf_n\,
+      \shortintertext{and the \emph{residual matrix}}
+      \mR_{\sD}(\vtheta)
+    &:=
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n, \vy_n) \in \sD}
+      \sum_{c=1}^C
+      \left(
+      \gradsquared{\vtheta}[\vf_n]_c
+      \right)
+      \grad{\vf_n} \ell(\vf_n, \vy_n)\,.
+  \end{align}
+\end{subequations}
+This decomposition reduces to
+\Cref{eq:background::HessianDecompositionGaussNewtonResidual} for nonlinear
+least squares, where $\gradsquared{\vf}(\vx) \ell(\vf, \vy) = \nicefrac{2}{C}
+\mI$ (\Cref{hbp::table:backpropEquations}), $\grad{\vf}\ell(\vf, \vy) =
+\nicefrac{2}{C} (\vf - \vy)$ (\Cref{tab:background::Jacobians}), and $C=1$.
+Therefore, the \ggn is a generalization of the GN via the chain rule applied to
+the model-loss function split.
+
+\subsubsection{From Linearization to Generalized Gauss-Newton}
+
+Alternatively, one can replace the model in $\ell(f_{\vtheta}(\vx), \vy)$ with a
+linear Taylor expansion around $\vtheta$,
+\begin{align*}
+  f_{\vtheta}(\vx)
+  \leftrightarrow
+  \hat{f}_{\vtheta'}(\vx)
+  =
+  f_{\vtheta}(\vx)
+  +
+  \left[\jac_{\vtheta}f_{\vtheta}(\vx)\right] (\vtheta' - \vtheta)\,.
+\end{align*}
+This eliminates second-order terms in the model, \ie
+$\gradsquared{\vtheta'}\hat{f}_{\vtheta'}(\vx) = \vzero$. Application of the
+Hessian chain rule to the loss with a linearized model,
+\begin{subequations}
+  \begin{align}
+    \hat{\ell}(\vtheta')
+    &=
+      \ell(\cdot, \vy) \circ \hat{f}_{\vtheta'}(\vx)\,,
+      \shortintertext{
+      and using the shorthand $\hat{f}_{\vtheta'}(\vx) :=\vfhat$, yields
+      }
+      \gradsquared{\vtheta'} \hat{\ell}(\vtheta')
+    &=
+      \left(\jac_{\vtheta'}\vfhat\right)^{\top}
+      \left[
+      \gradsquared{\vfhat} \ell(\vfhat, \vy)
+      \right]
+      \jac_{\vtheta'}\vfhat\,.
+      \intertext{At the expansion point where model predictions and Jacobians match, this yields the first term of the decomposition \Cref{eq:background::chainRuleModelLossFunctionSplit}}
+      \left.\left(\gradsquared{\vtheta'} \ell(\hat{f}_{\vtheta'}(\vx), \vy)\right)\right|_{\vtheta' = \vtheta}
+    &=
+      \left(\jac_{\vtheta}\vf\right)^{\top}
+      \left[
+      \gradsquared{\vf} \ell(\vf, \vy)
+      \right]
+      \jac_{\vtheta}\vf\,.
+      \shortintertext{
+      This carries over the empirical risk $\hat{\gL}(\vtheta') = \nicefrac{1}{|\sD|}
+      \sum_{(\vx_n,\vy_n) \in \sD} \hat{\ell}(\vtheta')$ under a linearized model, whose Hessian is the \ggn from \Cref{eq:background::generalizedGaussNewton},}
+      \left.\left(\gradsquared{\vtheta'} \hat{\gL}(\vtheta')\right)\right|_{\vtheta' = \vtheta}
+    &=
+      \mG_{\sD}(\vtheta)
+  \end{align}
+\end{subequations}
+Hence, the \ggn is a Hessian approximation that neglects curvature from the
+model, and becomes equivalent to the Hessian for linear models.
+
+\subsection{Natural Gradient Descent \& the
+  Fisher}\label{sec:background::naturalGradientDescent}
+
+Natural gradient descent~\cite[][NGD]{amari1998natural} uses the Fisher
+information matrix as curvature matrix. The natural gradient provides the
+direction of steepest in the space of probability distributions described by a
+model (\Cref{fig:background::sketchNGDSGDsteepestDescent}, recall the
+probabilistic interpretation of certain empirical risks from
+\Cref{sec:background::ProbabilisticInterpretation}). The Fisher is connected to
+the \ggn from \Cref{sec:background::ggn} and for most models used in modern ML,
+is equivalent but provides a probabilistic interpretation.
+
+\subsubsection{Steepest Descent Direction \& Notion of Distance}
+
+\marginnote{%
+  \begin{center}
+    \tikzexternalenable
+    \begin{tikzpicture}
+      \pgfmathsetmacro{\figwidth}{\linewidth}
+      \pgfmathsetmacro{\figheight}{0.8\linewidth}
+      \clip (0, 0) rectangle (\figwidth pt, \figheight pt);
+      %
+      \node [anchor = north, font=\footnotesize, minimum width=\figwidth pt] (spaceName) at
+      (0.5*\figwidth pt, \figheight pt) {Parameter space $\sTheta$};
+      %
+      \fill (0.3*\figwidth pt, 0.3*\figheight pt) circle (0.4ex) coordinate (theta);
+      \node [anchor=north east, font=\footnotesize, inner sep=2pt] at (theta) {$\vtheta$};
+      %
+      \begin{pgfonlayer}{background}
+        \fill [thirdcolor!25] (0, 0) rectangle (spaceName.south east);
+        %
+        \node [circle, minimum width=7ex, fill=maincolor!25, draw=maincolor, dashed, ultra thick] (ball)
+        at (theta) {};
+        %
+        \node [anchor=north, font=\footnotesize, maincolor]
+        at (ball.south) {$\{\vtheta\mathbf{'}\,|\,d(\vtheta, \vtheta\mathbf{'}) \le \epsilon\}$};
+        %
+        \draw [->, >=stealth, secondcolor, ultra thick]
+        (theta) to node [midway, below, sloped, font=\footnotesize] {$-\grad{\vtheta}\gL(\vtheta)$} ++(0.5*\figwidth pt, 0.3*\figheight pt);
+      \end{pgfonlayer}
+      %
+      \node[anchor = north west, ellipse, minimum height=3.5ex, minimum width = 6ex, fill=maincolor!25, draw=maincolor, dashed, ultra thick, xshift=1.5ex, yshift = -1ex] (ellipse)
+      at (spaceName.south west) {};
+      \node [anchor = west, font=\footnotesize, maincolor] (distance) at (ellipse.east) {$d(\vtheta, \vtheta\mathbf{'}) = \lVert \vtheta - \vtheta\mathbf{'}\rVert_2$};
+      %
+      \fill ($(ellipse)!0.33!(ellipse.west)-(0,0.4ex)$) circle (0.4ex) coordinate (thetaEllipse);
+      \fill ($(ellipse)!0.33!(ellipse.east)-(0,0.4ex)$) circle (0.4ex) coordinate (thetaPrimeEllipse);
+      %
+      \draw [thick] ($(thetaEllipse)+(0,1ex)$) to ++(0,0.4ex) to ++(0,-0.8ex) to ++(0,0.4ex) to ($(thetaPrimeEllipse)+(0,1ex)$) to ++(0,0.4ex) to ++(0,-0.8ex) to ++(0,0.4ex);
+    \end{tikzpicture}%
+    \tikzexternaldisable
+    \newline
+    \vspace{2ex}
+    \tikzexternalenable
+    \begin{tikzpicture}
+      \pgfmathsetmacro{\figwidth}{\linewidth}
+      \pgfmathsetmacro{\figheight}{0.8\linewidth}
+      \clip (0, 0) rectangle (\figwidth pt, \figheight pt);
+      %
+      \node [anchor = north, font=\footnotesize, minimum width=\figwidth pt] (spaceName) at
+      (0.5*\figwidth pt, \figheight pt) {Distribution space $\{p_{\vtheta}\,|\,\vtheta \in \sTheta\}$};
+      %
+      \fill (0.3*\figwidth pt, 0.3*\figheight pt) circle (0.4ex) coordinate (theta);
+      \node [anchor=north east, font=\footnotesize, inner sep=2pt] at (theta) {$p_{\vtheta}$};
+      %
+      \begin{pgfonlayer}{background}
+        \fill [thirdcolor!25] (0, 0) rectangle (spaceName.south east);
+        %
+        \node [circle, minimum width=7.5ex, fill=maincolor!25, draw=maincolor, dashed, ultra thick] (ball)
+        at (theta) {};
+        %
+        \node [anchor=north, font=\footnotesize, maincolor]
+        at (ball.south) {$\{p_{\vtheta\mathbf{'}}\,|\,d(p_{\vtheta}, p_{\vtheta\mathbf{'}}) \le \epsilon^2\}$};
+        %
+        \draw [->, >=stealth, secondcolor, ultra thick]
+        (theta) to node [midway, above, sloped, font=\footnotesize] {$-\naturalgrad{\vtheta}\gL(p_{\vtheta})$} ++(0.45*\figwidth pt, -0.05*\figheight pt);
+      \end{pgfonlayer}
+      %
+      \node[anchor = north west, ellipse, minimum height=3.5ex, minimum width = 6ex, fill=maincolor!25, draw=maincolor, dashed, ultra thick, xshift=1.5ex, yshift = -1ex] (ellipse)
+      at (spaceName.south west) {};
+      \node [anchor = west, font=\footnotesize, maincolor] (distance) at (ellipse.east) {$d(p_{\vtheta}, p_{\vtheta\mathbf{'}}) = \lVert \vtheta - \vtheta\mathbf{'}\rVert_{\mF(\vtheta)}$};
+      \node [anchor = north west, font=\footnotesize, maincolor] at (distance.south west) {$\phantom{d(p_{\vtheta}, p_{\vtheta\mathbf{'}})} \approx \KLdiv{p_{\vtheta}}{p_{\vtheta\mathbf{'}}}$};
+      %
+      \fill ($(ellipse)!0.33!(ellipse.west)-(0,0.4ex)$) circle (0.4ex) coordinate (thetaEllipse);
+      \fill ($(ellipse)!0.33!(ellipse.east)-(0,0.4ex)$) circle (0.4ex) coordinate (thetaPrimeEllipse);
+      %
+      \draw [thick] ($(thetaEllipse)+(0,1ex)$) to ++(0,0.4ex) to ++(0,-0.8ex) to ++(0,0.4ex) to ($(thetaPrimeEllipse)+(0,1ex)$) to ++(0,0.4ex) to ++(0,-0.8ex) to ++(0,0.4ex);
+    \end{tikzpicture}%
+    \tikzexternaldisable
+  \end{center}
+  \captionof{figure}{\textbf{Gradient descent and natural gradient descent via
+      steepest descent.} Gradient descent (\emph{top}) follows the direction of
+    steepest descent in Euclidean parameter space. NGD (\emph{bottom}) considers
+    the space of distributions, where local distances are measured via a
+    quadratic expansion of the KL divergence, which gives rise to the Fisher.
+    Details in the text. Figure inspired by
+    \cite{martens2014new}.}\label{fig:background::sketchNGDSGDsteepestDescent}
+}
+
+\paragraph{Concept (steepest descent direction):} Consider an arbitrary
+objective function $\gL: \sTheta \to \sR$ with $\sTheta = \sR^D$. At a location
+$\vtheta \in \sTheta$, the steepest descent direction is the direction in which
+the objective increases at the fastest rate, \ie per infinitesimally small
+distance moved. Formally,
+\begin{align}
+  \label{eq:background::steepestDirection}
+  \Delta \vtheta^{(\text{steepest})}
+  =
+  \lim_{\epsilon \to 0} \frac{1}{\epsilon}
+  \argmin_{\substack{\Delta \vtheta \\ d(\vtheta, \vtheta + \Delta \vtheta) \le \epsilon}}
+  \gL(\vtheta + \Delta \vtheta)
+\end{align}
+and depends on the distance measure $d(\cdot, \cdot)$ between elements in a
+small neighborhood around $\vtheta$.
+
+\paragraph{Gradient descent as steepest descent:} Using the Euclidean 2-norm to
+measure distances in $\sTheta$ via $d(\vtheta_1, \vtheta_2) = \lVert \vtheta_1 -
+\vtheta_2 \rVert_2$, the steepest descent direction points along the negative
+gradient $-\grad{\vtheta}\gL(\vtheta)$~\cite[][Chapter 6]{martens2014new}\,,
+\begin{align}\label{eq:background::negativeGradientSteepestDescent}
+  \lim_{\epsilon \to 0} \frac{1}{\epsilon}
+  \argmin_{\Delta \vtheta: \lVert \Delta \vtheta \rVert_2 \le \epsilon}
+  \gL(\vtheta + \Delta \vtheta)
+  &=
+    \frac{
+    - \grad{\vtheta}\gL(\vtheta)
+    }{
+    \lVert \grad{\vtheta}\gL(\vtheta) \rVert_2
+    }\,.
+\end{align}
+
+\paragraph{Natural gradient as steepest descent:}
+\Cref{sec:background::ProbabilisticInterpretation} showed that in many tasks,
+such as regression (\Cref{ex:background::Regression}) and softmax cross-entropy
+classification (\Cref{ex:background::Classification}), the parameters $\vtheta$
+model a probability distribution $p_{\vtheta}(\vz)$ over a random variable $\vz
+\in \sOmega$. One could therefore establish a different notion of distance by
+comparing probability distributions. The KL divergence is a similarity measure
+between densities, but it is not a proper metric; \eg it is not symmetric in its
+arguments. The steepest descent direction only requires measuring distances
+within an infinitesimal ball though. For this purpose, a metric---described by
+the Fisher---can be established through Taylor expansion of the KL divergence.
+
+Starting from the KL divergence between two infinitesimally close
+distributions $p_{\vtheta}(\vz), p_{\vtheta + \Delta\vtheta}(\vz)$,
+\begin{align}
+  \label{eq:background::KLDivergenceTaylor}
+  \KLdiv{p_{\vtheta + \Delta \vtheta}}{p_{\vtheta}}
+  =
+  \int_{\sOmega} p_{\vtheta}(\vz)
+  \left[
+  \log p_{\vtheta}(\vz) - \log p_{\vtheta + \Delta \vtheta}(\vz)
+  \right]
+  \diff\vz
+\end{align}
+the first step is to Taylor-expand the logarithm around $\vtheta$,
+\begin{align*}
+  \log p_{\vtheta+\Delta \vtheta}(\vz)
+  &=
+    \log p_{\vtheta}(\vz)
+    +
+    ({\Delta \vtheta})^{\top} \grad{\vtheta} \log p_{\vtheta}(\vz)
+  \\&\phantom{= }
+  +
+  \frac{1}{2} ({\Delta \vtheta})^{\top} \gradsquared{\vtheta} \log p_{\vtheta}(\vz) (\Delta \vtheta)
+  + \gO\left((\Delta\vtheta)^3\right)\,.
+\end{align*}
+Inserting this into \Cref{eq:background::KLDivergenceTaylor} results in
+%
+\marginnote{
+  \begin{remark}[\textbf{The log-probability's $\vtheta$-gradient vanishes in
+      expectation}]\label{note:background::KLTaylorFirstOrderTermVanishes}
+    \hspace{-\baselineskip}
+    \begin{align*}
+      -\int_{\sOmega}
+      & p_{\vtheta}(\vz)
+        \grad{\vtheta} \log p_{\vtheta}(\vz)
+        \,\diff\vz
+      \\
+      &=
+        -\int_{\sOmega} p_{\vtheta}(\vz)
+        \frac{\grad{\vtheta}p_{\vtheta}(\vz)}{p_{\vtheta}(\vz)}
+        \,\diff\vz
+      \\
+      &=
+        - \grad{\vtheta}
+        \left(
+        \int_{\sOmega}
+        p_{\vtheta}(\vz)
+        \,\diff\vz
+        \right)
+      \\
+      &=
+        -\grad{\vtheta} 1 = 0
+    \end{align*}
+  \end{remark}
+}
+%
+\begin{align*}
+  \KLdiv{p_{\vtheta}(\vz)}{p_{\vtheta + \Delta \vtheta}(\vz)}
+  &=
+    - {\Delta \vtheta}^{\top}
+    \underbrace{
+    \int_{\sOmega} p_{\vtheta}(\vz)
+    \grad{\vtheta} \log p_{\vtheta}(\vz)
+    \,\diff\vz}_{\text{$=0$, see \Cref{note:background::KLTaylorFirstOrderTermVanishes}}}
+  \\
+  &\phantom{= }\
+    -\frac{1}{2}{\Delta \vtheta}^{\top}
+    \left(
+    \int_{\sOmega} p_{\vtheta}(\vz)
+    \gradsquared{\vtheta} \log p_{\vtheta}(\vz)
+    \,\diff\vz
+    \right)
+    \Delta \vtheta
+  \\
+  &\phantom{= }\
+    + \gO\left({(\Delta\vtheta)}^3\right)
+\end{align*}
+The Hessian in the second term is expressed as
+(\Cref{note:background::KLTaylorHessianDecomposition})
+%
+\marginnote{
+  \begin{remark}[\textbf{Decomposition of the log-probability's
+      $\vtheta$-Hessian}]\label{note:background::KLTaylorHessianDecomposition}
+    Consider element $(i,j)$ of the Hessian,
+    \begin{align*}
+      \frac{\partial^{2}\log p_{\vtheta}(\vz)}{\partial \evtheta_i \partial \evtheta_j}
+      \hspace{-9ex}
+      &
+      \\
+      &=
+        \frac{\partial}{\partial \evtheta_i}
+        \left(
+        \frac{1}{p_{\vtheta}(\vz)}
+        \frac{\partial p_{\vtheta}(\vz)}{\partial \evtheta_j}
+        \right)
+      \\
+      &=
+        - \frac{1}{p_{\vtheta}(\vz)^2}
+        \frac{\partial p_{\vtheta}(\vz)}{\partial \evtheta_j}
+        \frac{\partial p_{\vtheta}(\vz)}{\partial \evtheta_i}
+      \\
+      &\phantom{= }
+        +
+        \frac{1}{p_{\vtheta}(\vz)}
+        \frac{\partial^2 p_{\vtheta}(\vz)}{\partial \evtheta_i \partial \evtheta_j}
+      \\
+      &=
+        - \frac{\partial \log p_{\vtheta}(\vz)}{\partial \evtheta_j}
+        \frac{\partial \log p_{\vtheta}(\vz)}{\partial \evtheta_i}
+      \\
+      &\phantom{= }
+        +
+        \frac{1}{p_{\vtheta}(\vz)}
+        \frac{\partial^2 p_{\vtheta}(\vz)}{\partial \evtheta_i \partial \evtheta_j}
+    \end{align*}
+    which, in vector notation, translates into
+    \Cref{eq:background::LogProbabilityThetaHessian}.
+  \end{remark}
+}
+%
+\begin{align}\label{eq:background::LogProbabilityThetaHessian}
+  \gradsquared{\vtheta} \log p_{\vtheta}(\vz)
+  =
+  -
+  \grad{\vtheta} \log p_{\vtheta}(\vz)
+  \left(
+  \grad{\vtheta} \log p_{\vtheta}(\vz)
+  \right)^{\top}
+  +
+  \frac{1}{p_{\vtheta}(\vz)}
+  \gradsquared{\vtheta}p_{\vtheta}(\vz)\,,
+\end{align}
+whose second term again vanishes in expectation (\Cref{note:background::KLTaylorSecondOrderTermVanishes}).
+%
+\marginnote{
+  \begin{remark}[\textbf{Hessian of the model distribution vanishes in expectation}]\label{note:background::KLTaylorSecondOrderTermVanishes}
+    \begin{align*}
+      \int_{\sOmega}
+      p_{\vtheta}(\vz)
+      &
+        \frac{1}{p_{\vtheta}(\vz)}
+        \gradsquared{\vtheta}p_{\vtheta}(\vz)
+        \,\diff\vz
+      \\
+      &=
+        \gradsquared{\vtheta}
+        \left(
+        \int_{\sOmega}
+        p_{\vtheta}(\vz)
+        \,\diff\vz
+        \right)
+      \\&= \gradsquared{\vtheta}1 =  0
+    \end{align*}
+  \end{remark}
+}%
+Hence,
+\begin{subequations}\label{eq:background::FisherOverview}
+  \begin{align}
+    \label{eq:background::KLDivergenceLocalFisher}
+    \KLdiv{p_{\vtheta}(\vz)}{p_{\vtheta + \Delta \vtheta}(\vz)}
+    =
+    \frac{1}{2}
+    {\Delta \vtheta}^{\top}
+    \mF(\vtheta)
+    \Delta \vtheta
+    + \gO\left({(\Delta\vtheta)}^3\right)
+  \end{align}
+  with the two equivalent forms of the Fisher
+  \begin{align}
+    \label{eq:background::FisherHessianForm}
+    \mF(\vtheta)
+    &=
+      - \int_{\sOmega} p_{\vtheta}(\vz)
+      \gradsquared{\vtheta} \log p_{\vtheta}(\vz)
+      \diff\vz
+    \\
+    \label{eq:background::FisherGradientForm}
+    &= \int_{\sOmega} p_{\vtheta}(\vz)
+      (\grad{\vtheta} \log p_{\vtheta}(\vz))
+      (\grad{\vtheta} \log p_{\vtheta}(\vz))^{\top}
+      \diff\vz
+  \end{align}
+\end{subequations}
+\Cref{eq:background::FisherHessianForm} will be helpful to draw connections to
+the Hessian, and \Cref{eq:background::FisherGradientForm} provides links to the
+\ggn.
+
+Locally, the KL divergence \Cref{eq:background::KLDivergenceLocalFisher} gives
+rise to a metric induced by the Fisher-norm $\lVert \cdot \rVert_{\mF(\vtheta)}$,
+\begin{align}
+  d(p_{\vtheta}, p_{\vtheta + \Delta\vtheta})
+  =
+  \lVert \Delta\vtheta \rVert_{\mF(\vtheta)}
+  :=
+  \sqrt{{(\Delta\vtheta)}^{\top} \mF(\vtheta) \Delta\vtheta }
+\end{align}
+\citet{ollivier2011information} show that the steepest descent for a function $\gL(p_{\vtheta})$ points along the negative natural gradient $-
+\naturalgrad{\vtheta}\gL(p_{\vtheta}) := - {\mF(\vtheta)}^{-1}
+\grad{\vtheta}\gL(p_{\vtheta})$,
+\begin{align}
+  \lim_{\epsilon \to 0}
+  \frac{1}{\epsilon}
+  \argmin_{
+  \substack{
+  \Delta \vtheta
+  \\
+  \lVert \Delta \vtheta\rVert_{\mF(\vtheta)} \le \nicefrac{\epsilon^2}{2}}
+  }
+  \gL(p_{\vtheta + \Delta\vtheta})
+  =
+  - \frac{
+  \naturalgrad{\vtheta}\gL(p_{\vtheta})
+  }{
+  \left\lVert
+  \naturalgrad{\vtheta}\gL(p_{\vtheta})
+  \right\rVert_{{\mF(\vtheta)}^{-1}}
+  }\,.
+\end{align}
+
+\subsubsection{Natural Gradient Descent \& Fisher in Empirical Risk Minimization}
+
+\Cref{sec:background::ProbabilisticInterpretation} presented connections of
+empirical risk minimization to learning $\pdata(\vx, \vy)$ via $p_{\vtheta}(\vx,
+\vy) = p_{\vtheta}(\giventhat{\vy}{\vx}) p(\vx) = q(\giventhat{\vy}{\vf}) p(\vx)
+$ with a negative log-likelihood loss $-\log q(\giventhat{\vy}{\vf}) = \ell(\vf,
+\vy)$ and $f_{\vtheta}(\vx):= \vf$. In these cases, the empirical risk
+\Cref{eq:background::empiricalRisk} depends on a probability distribution, and
+the distribution space's geometry gives rise to NGD with $\vz = (\vx, \vy)$ in
+the Fisher \Cref{eq:background::FisherOverview}. After simplifying the
+$\vtheta$-derivatives and grouping dependencies of $\vx$ and $\vy$, the Fisher
+reads
+\begin{align*}
+  &\mF(\vtheta)
+    \\
+  &\quad =
+    \int_{\sX} p(\vx)
+    \left(
+    - \int_{\sY} p_{\vtheta}(\giventhat{\vy}{\vx})
+    \gradsquared{\vtheta} \log p_{\vtheta}(\giventhat{\vy}{\vx})
+    \,\diff\vy
+    \right)
+    \diff\vx
+  \\
+  &\quad = \int_{\sX}
+    p(\vx)
+    \left(
+    \int_{\sY}
+    p_{\vtheta}(\giventhat{\vy}{\vx})
+    (\grad{\vtheta} \log p_{\vtheta}(\giventhat{\vy}{\vx}))
+    (\grad{\vtheta} \log p_{\vtheta}(\giventhat{\vy}{\vx}))^{\top}
+    \,\diff\vy
+    \right)
+    \diff\vx\,,
+\end{align*}
+or in short form
+\begin{align}
+  \label{eq:background::FisherExpectationForms}
+  \begin{split}
+    \mF(\vtheta)
+    &= \E_{\vx \sim p(\vx)}
+      \E_{\vy \sim p_{\vtheta}(\giventhat{\vy}{\vx})}
+      \left[
+      - \gradsquared{\vtheta} \log p_{\vtheta}(\giventhat{\vy}{\vx})
+      \right]
+    \\
+    &=
+      \E_{\vx \sim p(\vx)}
+      \E_{\vy \sim p_{\vtheta}(\giventhat{\vy}{\vx})}
+      \left[
+      \grad{\vtheta} \log p_{\vtheta}(\giventhat{\vy}{\vx})
+      (\grad{\vtheta} \log p_{\vtheta}(\giventhat{\vy}{\vx}))^{\top}
+      \right]
+  \end{split}
+\end{align}
+Next, replace $p(\vx) \leftrightarrow p_{\sD}(\vx)$ by empirical approximation
+through data,
+\begin{align}\label{eq:background::FisherExpectationDifferentPerspectives}
+  \begin{split}
+    &\mF_{\sD}(\vtheta)
+    \\
+    &\quad=
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n, \_) \in \sD}
+      \E_{\vy \sim p_{\vtheta}(\giventhat{\vy}{\vx_n})}
+      \left[
+      - \gradsquared{\vtheta} \log p_{\vtheta}(\giventhat{\vy}{\vx_n})
+      \right]
+    \\
+    &\quad=
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n, \_) \in \sD}
+      \E_{\vy \sim p_{\vtheta}(\giventhat{\vy}{\vx_n})}
+      \left[
+      \grad{\vtheta} \log p_{\vtheta}(\giventhat{\vy}{\vx_n})
+      (\grad{\vtheta} \log p_{\vtheta}(\giventhat{\vy}{\vx_n}))^{\top}
+      \right]
+  \end{split}
+\end{align}
+(note that the Fisher is independent of the labels $\{\vy_n\}$!). Using the
+relation between log-likelihood and loss function leads to (with $\vf_n :=
+f_{\vtheta}(\vx_n)$)
+\begin{align*}
+  \mF_{\sD}(\vtheta)
+  &=
+    \frac{1}{|\sD|}
+    \sum_{(\vx_n, \_) \in \sD}
+    \E_{\vy \sim q(\giventhat{\vy}{\vf_n})}
+    \left[
+    \gradsquared{\vtheta} \ell(\vf_n, \vy)
+    \right]
+  \\
+  &=
+    \frac{1}{|\sD|}
+    \sum_{(\vx_n, \_) \in \sD}
+    \E_{\vy \sim q(\giventhat{\vy}{\vf_n})}
+    \left[
+    \grad{\vtheta} \ell(\vf_n, \vy)
+    (\grad{\vtheta} \ell(\vf_n, \vy))^{\top}
+    \right]\,.
+\end{align*}
+The second equality views the Fisher as expected gradient outer product. With
+the Jacobian chain rule \Cref{hbp::the:chainRuleJacobians} applied to $\ell
+\circ f_{\vtheta}$, one obtains
+\begin{align}
+  \label{eq:background::FisherSamplingPerspective}
+  \begin{split}
+    &\mF_{\sD}(\vtheta)
+      \\
+    &\quad=
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n, \_) \in \sD}
+      \E_{\vy \sim q(\giventhat{\vy}{\vf_n})}
+      \left[
+      {(\jac_{\vtheta}\vf_n)}^{\top}\grad{\vf_n} \ell(\vf_n, \vy)
+      ({(\jac_{\vtheta}\vf_n)}^{\top}\grad{\vf_n} \ell(\vf_n, \vy))^{\top}
+      \right]
+    \\
+    &\quad=
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n, \_) \in \sD}
+      {(\jac_{\vtheta}\vf_n)}^{\top}
+      \E_{\vy \sim q(\giventhat{\vy}{\vf_n})}
+      \left[
+      \grad{\vf_n} \ell(\vf_n, \vy)
+      (\grad{\vf_n} \ell(\vf_n, \vy))^{\top}
+      \right]
+      \jac_{\vtheta}\vf_n
+  \end{split}
+\end{align}
+\Cref{eq:background::FisherSamplingPerspective} offers an interesting
+perspective to approximate the Fisher via \mc sampling through computing
+gradients of the loss on targets drawn from $q$ and will be used later, \eg
+\Cref{chap:backpack,chap:vivit,backpack::app:backpack-extensions}.
+
+The first equality in
+\Cref{eq:background::FisherExpectationDifferentPerspectives} views the Fisher as
+an expected Hessian under the model's likelihood\sidenote{%
+  It is important to stress the expectation over the \emph{model's likelihood}
+  $\giventhat{\vy}{\vx}$, and \emph{not} over the empirical data. It may be
+  tempting to replace the expectation over $\vy$ with the empirical distribution
+  $p_{\sD}(\vy)$. This leads to the empirical Fisher
+  (\Cref{sec:background::gradientCovariance}), which is often used instead of
+  the Fisher, but has limitations for applications like
+  optimization~\cite{kunstner2019limitations}.}%
+. However, in general it does not coincide with the Hessian, $\mF_{\sD}(\vtheta)
+\neq \mH_{\sD}(\vtheta)$, as $ \E_{\vy \sim q(\giventhat{\vy}{\vf_n})}
+[\gradsquared{\vtheta} \ell(\vf_n, \vy) ] \neq \gradsquared{\vtheta} \ell(\vf_n,
+\vy_n)$. After applying the Hessian chain rule \Cref{hbp::the:chainRuleHessians}
+onto $\ell \circ f_{\vtheta}$,
+\begin{align}
+  \label{eq:background::FisherGGNPerspective}
+  \begin{split}
+    \mF_{\sD}(\vtheta)
+    &=
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n, \_) \in \sD}
+      {(\jac_{\vtheta}\vf_n)}^{\top}
+      \E_{\vy \sim q(\giventhat{\vy}{\vf_n})}
+      \left[
+      \gradsquared{\vf_n}\ell(\vf_n, \vy)
+      \right]
+      {\jac_{\vtheta}\vf_n}
+    \\
+    &\phantom{=} \
+      +
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n, \_) \in \sD}
+      \sum_{c=1}^{C}
+      \gradsquared{\vtheta}{([\vf_n]_{c})}
+      \underbrace{
+      \E_{\vy \sim q(\giventhat{\vy}{\vf_n})}
+      \left[
+      \grad{f_{\vtheta}(\vx_{n})} \ell(\vf_n, \vy)
+      \right]
+      }_{
+      = \vzero\text{, same argument as \Cref{note:background::KLTaylorFirstOrderTermVanishes}}
+      }
+    \\
+    &=
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n, \_) \in \sD}
+      {(\jac_{\vtheta}\vf_n)}^{\top}
+      \E_{\vy \sim q(\giventhat{\vy}{\vf_n})}
+      \left[
+      \gradsquared{\vf_n}\ell(\vf_n, \vy)
+      \right]
+      {\jac_{\vtheta}\vf_n}\,,
+  \end{split}
+\end{align}
+one can see connections to the \ggn
+(\Cref{eq:background::generalizedGaussNewton}).
+
+\subsubsection{Connections Between Fisher \& \ggn}
+
+\marginnote{%
+  \begin{updaterule}[\textbf{Natural gradient descent
+      (simplified}]\label{opt:background:NGD}%
+    For empirical risks with loss functions that have a probabilistic
+    interpretation, an NGD step is
+    \begin{align*}
+      \vtheta_{t+1} = \vtheta_t - {\mF_{\sD}(\vtheta_t)}^{-1} \vg_{\sD}(\vtheta_t)
+    \end{align*}
+    with the gradient from \Cref{def:background::JacobianVectorVector} and the
+    Fisher from \Cref{eq:background::FisherSamplingPerspective} or
+    \Cref{eq:background::FisherGGNPerspective} (practical implementations vary and
+    often introduce additional hyperparameters such as a learning rate, damping
+    term, mini-batch size, \etc).
+  \end{updaterule}%
+}
+
+The Fisher (\Cref{eq:background::FisherGGNPerspective}) and the \ggn
+(\Cref{eq:background::generalizedGaussNewton}) are structurally similar. Both
+are identical if the expected Hessian of the loss \wrt the model's prediction
+under the model is identical to the empirical Hessian,
+\begin{align}
+  \gradsquared{\vf_n}\ell(\vf_n, \vy_n)
+  =
+  \E_{\vy \sim q(\giventhat{\vy}{\vf_n})}
+  \left[
+  \gradsquared{\vf_n}\ell(\vf_n, \vy)
+  \right]
+  \,\,
+  \implies
+  \,\,
+  \mG_{\sD} = \mF_{\sD}\,.
+\end{align}
+For both softmax cross-entropy and square loss, this $\vf$-Hessian is
+independent of $\vy$, see \Cref{hbp::table:backpropEquations}. Therefore, the
+expectation has no effect, and the above equality is satisfied: for least
+squares regression (\Cref{ex:background::Regression}) and softmax cross-entropy
+classification (\Cref{ex:background::Regression}), the Fisher equals the
+\ggn{}\sidenote{%
+  There are more scenarios in which Fisher and \ggn coincide, for instance if
+  $q(\giventhat{\vy}{\vf})$ is an exponential family distribution with natural
+  parameters $\vf$, see~\cite[][Chapter 9]{martens2014new} for a detailed
+  presentation.%
+}. %
+NGD (\Cref{opt:background:NGD}) for those models is thus equivalent to the \ggn
+and can be seen as an approximation of Newton's method
+(\Cref{opt:background::Newton}) with the \ggn instead of the Hessian.
+
+\subsection{The Gradient Covariance Matrix}\label{sec:background::gradientCovariance}
+
+The Fisher's form in \Cref{eq:background::FisherSamplingPerspective} reminds of
+an uncentered second moment of ``would-be'' gradients sampled from the
+likelihood implied by the model~\cite{papyan2020traces}. The uncentered gradient
+covariance matrix
+\begin{align}\label{eq:background::uncenteredGradientCovariance}
+  \begin{split}
+    \mK_{\sD}(\vtheta)
+    &=
+      \E_{(\vx, \vy) \sim p_\sD(\vx, \vy)}
+      \left[
+      \grad{\vtheta} \ell(f_{\vtheta}(\vx), \vy)
+      {(\grad{\vtheta} \ell(f_{\vtheta}(\vx), \vy))}^{\top}
+      \right]
+    \\
+    &=
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n, \vy_n) \in \sD}
+      \grad{\vtheta} \ell(\vf_{n}, \vy_n)
+      {(\grad{\vtheta} \ell(\vf_{n}, \vy_n))}^{\top}
+  \end{split}
+\end{align}
+if often referred to as empirical Fisher in some of the ML literature, because
+it follows from replacing the expectation over the model's distribution
+$q(\giventhat{\vy}{\vf_{n}})$ by the expectation over the empirical data
+distribution $p_{\sD}(\vy)$ in the Fisher. However, empirical Fisher and Fisher
+are, almost always, \emph{not} identical. The importance to distinguish them has
+been expressed in works like~\cite{kunstner2019limitations}
+and~\cite{thomas2020interplay}, and it is questionable whether the uncentered
+gradient covariance \Cref{eq:background::uncenteredGradientCovariance}
+approximates curvature.
+
+However, an alternative perspective to use $\mK_{\sD}$ for optimization is to
+make stochastic gradient-based optimization aware of the
+noise~\cite{balles2022noise} (sketch in
+\Cref{fig:background::gradientVariance}). With the centered gradient covariance
+on data $\sD$
+\begin{align}
+  \label{eq:background::centeredGradientCovariance}
+  \begin{split}
+    \mSigma_{\sD}(\vtheta)
+    &= \Var_{(\vx, \vy) \sim p_\sD(\vx, \vy)}
+      \left[
+      \grad{\vtheta} \ell(f_{\vtheta}(\vx), \vy)
+      \right]
+    \\
+    &=
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n, \vy_n) \in \sD}
+      \left(
+      \grad{\vtheta} \ell(\vf_{n}, \vy_n) - \vg_{\sD}(\vtheta)
+      % \grad{\vtheta}\gL_{\sD}(\vtheta)
+      \right)
+      {\left(
+      \grad{\vtheta} \ell(\vf_{n}, \vy_n) - \vg_{\sD}(\vtheta)
+      % \grad{\vtheta}\gL_{\sD}(\vtheta)
+      \right)}^{\top}
+    \\
+    &=
+      \mK_{\sD}(\vtheta)
+      -
+      \vg_{\sD}(\vtheta)
+      {\vg_{\sD}(\vtheta)}^{\top}\,,
+      % \grad{\vtheta}\gL_{\sD}(\vtheta)
+      % ({\grad{\vtheta}\gL_{\sD}(\vtheta))}^{\top}\,,
+  \end{split}
+\end{align}
+an update step of the form (usually with $\sD = \sB_t$)%
+\begin{align*}
+  \vtheta_{t+1}
+  =
+  \vtheta_{t}
+  -
+  {\mSigma_{\sD}(\vtheta_t)}^{-1}
+  \vg_{\sD}(\vtheta_t)
+  % \grad{\vtheta}\gL_{\sD}(\vtheta)
+\end{align*}
+can be regarded as re-scaling the gradient according to fluctuations: directions
+that are subject to stronger noise will be shortened more strongly than
+directions of small noise.
+
+\marginnote[*-15]{
+  \begin{center}
+    \input{figures/backpack/style_variance_adaptation}
+    \captionsetup[sub]{labelformat=parens}
+    \begingroup
+    \captionsetup{type=figure}
+    \begin{subfigure}{\linewidth}
+      \caption{Train loss}\label{subfig:background::gradientVariance1}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          BackPACKVarianceAdaptationMNIST,
+          xlabel = \empty,
+          xticklabel style = {opacity = 0},
+        }
+      }
+      \tikzexternalenable
+      \input{figures/backpack/examples/mnist_logreg/loss_epoch49.tex}
+      \tikzexternaldisable
+      \vspace{-4ex}
+    \end{subfigure}
+    \begin{subfigure}{\linewidth}
+      \caption{Gradient signal-to-noise
+        ratio}\label{subfig:background::gradientVariance2}
+      \pgfkeys{/pgfplots/zmystyle/.style={
+          BackPACKVarianceAdaptationMNIST,
+        }
+      }
+      \tikzexternalenable
+      \hspace{0.7ex}\input{figures/backpack/examples/mnist_logreg/snr_epoch49.tex}
+      \tikzexternaldisable
+    \end{subfigure}
+    \endgroup
+    \captionof{figure}{\textbf{Illustration of gradient noise during training.}
+      Evolution of \subfigref{subfig:background::gradientVariance1} training
+      loss and \subfigref{subfig:background::gradientVariance2} gradient
+      signal-to-noise ratio (computed with \backpack, \Cref{chap:backpack})
+      during training (logistic regression on \mnist). As the loss decreases,
+      the gradient noise increases.}\label{fig:background::gradientVariance}
+  \end{center}
+}
+
+The gradient covariance has also been proposed to adapt the batch size during
+training~\cite{balles2017coupling,byrd2012sample,bollapragada2017adaptive,bahamou2019dynamic}
+and to stop training before overfitting sets in~\cite{mahsereci2017early}.
+Similar ideas of variance-adaptation can be found in currently popular deep
+learning optimizers such as Adam (\Cref{ex:background::Adam}), that keep an
+exponential average of the squared mini-batch gradient. This shows up in the
+diagonal of the gradient covariance (second term)
+\begin{align}\label{eq:background::GradientCovarianceDiag}
+  \diag(\mSigma_{\sD}(\vtheta))
+  =
+  \frac{1}{|\sD|}
+  \left(
+  \sum_{(\vx_n, \vy_n) \in \sD}
+  {(\grad{\vtheta} \ell(\vf_n, \vy_n))}^{\odot 2}
+  \right)
+  -
+  {\vg_{\sD}(\vtheta)}^{\odot 2}\,.
+  % {(\grad{\vtheta}\gL_{\sD}(\vtheta))}^{\odot 2}\,.
+\end{align}
+See~\cite{balles2018dissecting} for a precise analysis of the connections.
+
+The empirical Fisher is formed by the gradients that make up the mini-batch
+average gradient $\grad{\vtheta}\gL(\vtheta)$, and therefore basically free to
+compute on top of the gradient. But the required per-sample gradients are
+difficult to access in popular ML libraries because they are not agnostic to
+this per-sample structure (see
+\Cref{sec:background:GradientBackpropagationInMLLibraries}). This complicates
+efficient usage of the gradient covariance matrix for applications like
+optimization, where performance is key.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

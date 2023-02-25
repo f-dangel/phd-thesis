@@ -1,0 +1,176 @@
+The modular decomposition of curvature backpropagation facilitates the analysis
+of modules composed of multiple operations. Now, we analyze the composition of
+two modules. This yields the recursive schemes presented by
+\citet{botev2017practical} (KFRA) and \citet{wei2018bdapch} (BDA-PCH).
+
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}[t]{\linewidth}
+    \centering
+    \tikzexternalenable
+    \resizebox{!}{3.25cm}{\footnotesize\input{figures/hbp/kfra_bdapch_composition}}
+    \tikzexternaldisable
+    \caption{Activation and linear layer as two separate modules}
+    \label{hbp::subfig:composition1}
+  \end{subfigure}
+
+  \begin{subfigure}{\linewidth}
+    \centering
+    \tikzexternalenable
+    \hspace{0.14\linewidth}\resizebox{!}{3.25cm}{\footnotesize\input{figures/hbp/kfra_bdapch_composition_grouped}}
+    \tikzexternaldisable
+    \caption{Activation and linear layer fused into a single module}
+    \label{hbp::subfig:composition2}
+  \end{subfigure}
+  \caption{\textbf{The sequence of elementwise activation $\vphi$ and linear
+      layer can be interpreted as two modules, or a single one.}
+    \subfigref{hbp::subfig:composition1} Both operations are analyzed separately
+    to derive the HBP. \subfigref{hbp::subfig:composition2} Backpropagation of
+    $\gradsquared{\vz}\ell$ is expressed in terms of $\gradsquared{\vx}\ell$
+    without intermediate message.}
+  \label{hbp::fig:composition}
+\end{figure}
+
+\subsubsection{Analytic Composition of Multiple Modules}
+Consider the module $\vg = \vf \circ \vphi, \vx \mapsto \vy := \vphi(\vx)
+\mapsto \vz = \vf(\vy(\vx))$. Assume $\vphi$ to act elementwise on the input,
+followed by a linear layer $\vf: \vz(\vy) = \mW\vy + \vb$
+(\Cref{hbp::subfig:composition1}). Analytic elimination of the intermediate
+backward pass recovers the backward pass of the fused module that consists of
+both operations (\Cref{hbp::subfig:composition2}). The first Hessian backward
+pass through the linear module $\vf$
+(\Cref{hbp::equ:linearHessianBackpropagation}) implies
+\begin{subequations}\label{hbp::equ:compositionCurvatureBackpropagation}
+  \begin{alignat}{2}
+    \nonumber \gradsquared{\vy}\ell
+    &=
+      \mW^\top
+      \left(\gradsquared{\vz}\ell\right)
+      \mW\,,
+    \\
+    \gradsquared{\mW}\ell
+    &=
+      \vy \otimes \vy^\top \otimes \gradsquared{\vz}\ell
+      =
+      \vphi(\vx) \otimes \vphi(\vx)^\top \otimes \gradsquared{\vz}\ell\,,
+      \label{hbp::equ:compositionWeightHessian}
+    \\
+    \gradsquared{\vb}\ell
+    &=
+      \gradsquared{\vz}\ell\,.
+      \label{hbp::equ:compositionBiasHessian}
+  \end{alignat}
+  Further backpropagation through $\vphi$ with
+  \Cref{hbp::equ:nonlinearHessianBackpropagation} results in
+  \begin{align}
+    \begin{split}
+      \gradsquared{\vx}\ell
+      &=
+        \diag\left[\vphi'(\vx)\right]
+        \left(\gradsquared{\vy}\ell\right)
+        \diag\left[\vphi'(\vx)\right]
+        +
+        \diag\left[\vphi''(\vx) \odot (\grad{\vy}\ell) \right]
+      \\
+      &=
+        \diag\left[\vphi'(\vx)\right]
+        \left[\mW^\top \left(\gradsquared{\vz}\ell \right) \mW \right]
+        \diag\left[\vphi'(\vx)\right]
+      \\
+      &\phantom{=}\,
+        +
+        \diag\left[\vphi''(\vx) \odot \mW^\top (\grad{\vz}\ell) \right]
+      \\
+      &=
+        \left\{ \mW \diag\left[\vphi'(\vx)\right] \right\}^\top
+        \left(\gradsquared{\vz}\ell\right)
+        \left\{ \mW \diag\left[\vphi'(\vx)\right] \right\}
+      \\
+      &\phantom{=}\,
+        +
+        \diag\left[\vphi''(\vx) \odot \mW^\top (\grad{\vz}\ell) \right]\,.
+    \end{split}
+        \label{hbp::equ:compositionInputHessian}
+  \end{align}
+\end{subequations}
+We use invariance of a diagonal matrix under transposition and $\grad{\vy}\ell =
+\mW^\top (\grad{\vz}\ell)$ for the backpropagated gradient for the last
+equality. The Jacobian $\jac_{\vx} \vg(\vx)$ of the module shown in
+\Cref{hbp::subfig:composition2} is $\jac_{\vx}\vg(\vx) = \mW \diag [ \vphi(x) ]
+= [ \mW^\top \odot \vphi'(\vx) ]^\top$ (broadcasting $\vphi'(\vx))$. In summary,
+HBP for the composite layer $\vz(\vx) = \mW \vphi(\vx)+ \vb$ is given
+by~\Cref{hbp::equ:compositionCurvatureBackpropagation}.
+
+\subsubsection{Obtaining the Relations of KFRA and BDA-PCH}
+
+The derivations for the composite module given above are closely related to the
+recursive schemes of \citet{botev2017practical,wei2018bdapch}. Their relations
+are obtained from a straightforward conversion of the HBP
+rules~\eqref{hbp::equ:compositionCurvatureBackpropagation}. Consider a sequence
+of a linear layer $f_{\vtheta^{(1)}}^{(1)}$ and multiple composite modules
+$f_{\vtheta^{(2)}}^{(2)}, \dots, f_{\vtheta^{(L)}}^{(L)}$ as shown in
+\Cref{hbp::fig:groupedScheme}.
+
+According to \Cref{hbp::equ:compositionBiasHessian} both the linear layer and
+the composite $f_{\vtheta^{(l)}}^{(l)}$ identify the gradient (Hessian) \wrt
+their outputs, $\grad{\vz^{(l)}} \ell$ ($\gradsquared{\vz^{(l)}}\ell$), as the
+gradient (Hessian) \wrt their bias term, $\grad{\vb^{(l)}}\ell$ ($\gradsquared{
+  \vb^{(l)}}\ell$). Introducing layer indices for all quantities, one finds the
+recursion
+\begin{subequations}
+  \label{hbp::equ:kfraAndBdapch}
+  \begin{alignat}{2}
+    \gradsquared{\vb^{(l)}}\ell
+    &=
+      \gradsquared{\vz^{(l)}}\ell \,,
+    \\
+    \gradsquared{\mW^{(l)}}\ell
+    &=
+      \vphi(\vz^{(l-1)}) \otimes \vphi(\vz^{(l-1)})^\top \otimes \gradsquared{\vb^{(l)}}\ell \,,
+    \\
+    \intertext{for $l = L-1, \ldots, 1$, and}
+    \begin{split}
+      \gradsquared{\vz^{(l-1)}}\ell
+      &=
+        \left\{ \mW^{(l)} \diag\left[\vphi'(\vz^{(l-1)})\right] \right\}^\top
+        \gradsquared{\vb^{(l)}}\ell
+        \left\{ \mW^{(l)} \diag\left[\vphi'(\vz^{(l - 1)})\right] \right\}
+      \\
+      &\phantom{=}\,
+        +
+        \diag\left[\vphi''(\vz^{(l - 1)}) \odot \mW^{(l)\top} \grad{\vb^{(l)}}\ell  \right]
+      \\
+      &=
+        \left\{ \mW^{(l)\top} \odot \vphi'(\vz^{(l-1)}) \right\}
+        \gradsquared{\vb^{(l)}}\ell
+        \left\{ \mW^{(l)\top} \odot \vphi'(\vz^{(l-1)}) \right\}^\top
+      \\
+      &\phantom{=}\,
+        +
+        \diag\left[\vphi''(\vz^{(l-1)}) \odot \mW^{(l)\top} \grad{\vb^{(l)}}\ell  \right]
+    \end{split}
+  \end{alignat}
+\end{subequations}
+for $l = L - 1, \ldots, 2$. It is initialized with the loss function's gradient
+(Hessian) $\grad{\vz^{(L)}}\ell$ ($\gradsquared{\vz^{(L)}}\ell$).
+
+\begin{figure*}[t]
+  \tikzexternalenable
+  \centering \resizebox{!}{3.25cm}{\input{figures/hbp/net_backward_pass_hessian_kfra_bdapch}}
+  \tikzexternaldisable
+  \caption{\textbf{Grouping scheme for the recursive Hessian computation
+      proposed by KFRA and BDA-PCH.} The backward messages between the linear
+    layer and the preceding nonlinear activation are analytically
+    fused.}\label{hbp::fig:groupedScheme}
+\end{figure*}
+
+\Cref{hbp::equ:kfraAndBdapch} are equivalent to the expressions provided in
+\cite{botev2017practical, wei2018bdapch}. Their emergence from compositions of
+HBP equations of simple operations represents one key insight of
+\Cref{chap:hbp}. Both works use the batch average strategy presented in
+\Cref{hbp::subsec:batchLearning} to obtain curvature estimates.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

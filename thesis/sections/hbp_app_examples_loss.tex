@@ -1,0 +1,93 @@
+\subsection{Square Loss}\label{hbp::subsec:mselossBackwardPass}
+Square loss of the model prediction $\vf \in \mathbb{R}^C$ and the true label $\vy
+\in \mathbb{R}^C$ is computed by (\Cref{eq:background::squareLoss})
+\begin{align*}
+  \ell(\vf, \vy) = \frac{1}{C} (\vy - \vf)^\top (\vy - \vf)\,.
+\end{align*}
+Differentiating
+\begin{equation*}
+  \diff \ell(\vf)
+  =
+  \frac{1}{C}\left[
+    - (\diff \vf)^\top \left( \vy - \vf \right)
+    -
+    \left( \vy - \vf \right)^\top \diff\vf
+  \right]
+  =
+  -\frac{2}{C}
+  \left(\vy - \vf\right)^\top \diff\vf
+\end{equation*}
+once more yields
+\begin{align}
+  \nonumber
+  \diff^2 \ell(\vf)
+  &=
+    \frac{2}{C}
+    (\diff \vf)^\top \diff \vf
+    =
+    \frac{2}{C}
+    (\diff\vf)^\top \mI_C (\diff \vf)\,.
+    \intertext{The Hessian is extracted with the \emph{second identification
+    tables} from \citet[Chapter 10.4]{magnus1999MatrixDifferentialCalculus}
+    and reproduces the expected result}
+    \gradsquared{\vf}\ell(\vf)
+  &=
+    \frac{2}{C} \mI_C\,.
+\end{align}
+
+\subsection{Softmax Cross-entropy Loss}\label{hbp::subsec:crossentropylossBackwardPass}
+
+The computation of cross-entropy from logits
+(\Cref{eq:background::softmaxCrossEntropyLoss}) is composed of two operations.
+First, the neural network outputs are transformed into log-probabilities by the
+softmax function. Then, the cross-entropy with the distribution implied by the
+label is computed.
+
+\subsubsection{Log-softmax}
+
+The output's elements $\vf\in \mathbb{R}^C$ of a neural
+network are assigned to log-probabilities $\vz(\vf) = \log p(\vf) \in
+\mathbb{R}^C$ by means of the softmax function $p(\vf) =
+\nicefrac{\exp(\vf)}{\sum_{i} \exp(\evf_i)}$. Consequently,
+\begin{align*}
+  \vz(\vf) =  \vf - \log \left[\sum_i \exp(\evf_i)\right]\,,
+\end{align*}
+and the Jacobian reads $\jac_{\vf} \vz(\vf) = \mI_C - {\mathbf{1}}_C
+p(\vf)^\top$ with ${\mathbf{1}}_C \in \mathbb{R}^C$ denoting a vector of ones.
+The log-probability Hessians \wrt $\vf$ are given by
+\begin{align*}
+  \gradsquared{\vf} [\vz(\vf)]_k = -\diag\left[p(\vf)\right] + p(\vf)
+  p(\vf)^\top\,.
+\end{align*}
+
+\subsubsection{Cross-entropy}
+The negative log-probabilities are used for the cross-entropy with the
+probability distribution of the label $y\in \{1, \dots, c\}$,
+\begin{align*}
+  \ell(\vz, y) = - \onehot(y)^\top \vz\,.
+\end{align*}
+Since $\ell$ is linear in the log-probabilities $\vz$, \ie
+$\gradsquared{\vz}\ell(\vz) = \vzero$, the HBP is
+\begin{align*}
+  \begin{split}
+    \gradsquared{\vf}\ell(\vf)
+    &=
+      \left[\jac_{\vf} \vz(\vf)\right]^\top
+      \gradsquared{\vz}\ell(\vz)
+      \left[\jac_{\vf} \vz(\vf)\right]
+      +
+      \sum_k \gradsquared{\vf} [\vz(\vf)]_k \frac{\partial \ell(\vz)}{\partial [\vz]_k}
+    \\
+    &=
+      \left\{ -\diag\left[p(\vf)\right] + p(\vf) p(\vf)^\top \right\}
+      \sum_k [-\onehot(y)]_k
+    \\
+    &=
+      \diag\left[p(\vf)\right] - p(\vf) p(\vf)^\top\,.
+  \end{split}
+\end{align*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

@@ -1,0 +1,77 @@
+% This file was created by tikzplotlib v0.9.7.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.937254901960784,0.231372549019608,0.172549019607843}
+\definecolor{color1}{rgb}{0.274509803921569,0.6,0.564705882352941}
+\definecolor{color2}{rgb}{0.870588235294118,0.623529411764706,0.0862745098039216}
+\definecolor{color3}{rgb}{0.501960784313725,0.184313725490196,0.6}
+
+\begin{axis}[
+axis line style={white!80!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.03,0.97)}, anchor=north west, draw=white!80!black},
+tick pos=left,
+title={cifar100\_allcnnc, N=64, cuda, one\_group},
+xlabel={top eigenpairs (\(\displaystyle k\))},
+xmin=0.55, xmax=10.45,
+ylabel={time [s]},
+ymin=0.0230255965505877, ymax=14.6918532017484,
+ymode=log,
+zmystyle
+]
+\addplot [, color0, dashed, mark=pentagon*, mark size=3, mark options={solid}]
+table {%
+1 0.886074103007559
+2 2.02152736901189
+3 3.37827011797344
+4 3.91675637400476
+5 5.6643504719832
+6 6.52234170999145
+7 7.16257282497827
+8 9.24401111400221
+9 10.1827108059952
+10 10.9542509349994
+};
+\addlegendentry{power iteration}
+\addplot [, color1, dashed, mark=diamond*, mark size=3, mark options={solid}]
+table {%
+1 1.14568673400208
+2 1.15923632399063
+3 1.16384675900918
+4 1.17219515002216
+5 1.17467796101118
+6 1.17597774000023
+7 1.17535984099959
+8 1.17781126400223
+9 1.18129663201398
+10 1.18212396098534
+};
+\addlegendentry{sub, exact}
+\addplot [, color2, dashed, mark=square*, mark size=3, mark options={solid}]
+table {%
+1 0.088385869981721
+2 0.0892419499868993
+3 0.0891673169971909
+4 0.0894071240036283
+5 0.089427873987006
+6 0.0895107639953494
+7 0.089238487998955
+8 0.0895071359991562
+9 0.0897746040136553
+10 0.0892908759997226
+};
+\addlegendentry{mb, mc}
+\addplot [, color3, dashed, mark=triangle*, mark size=3, mark options={solid,rotate=180}]
+table {%
+1 0.0311014159815386
+2 0.0311253659892827
+3 0.0309164009813685
+4 0.0309275010076817
+5 0.0310676799854264
+6 0.0310028200037777
+7 0.0309121290047187
+8 0.0308819549973123
+};
+\addlegendentry{sub, mc}
+\end{axis}
+
+\end{tikzpicture}

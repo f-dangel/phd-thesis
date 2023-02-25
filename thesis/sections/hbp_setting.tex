@@ -1,0 +1,42 @@
+We consider feedforward neural networks $f_{\vtheta}(\vx)$ composed of $L$ modules
+$f^{(l)}_{\vtheta^{(l)}}, l = 1, \ldots, L$, which can be represented as a
+computational graph mapping the input $\vz^{(0)}=\vx$ to the output $\vz^{(L)}$
+(\Cref{hbp::fig:setting}). A module~$f^{(l)}_{\vtheta^{(l)}}$ receives the parental
+output~$\vz^{(l-1)}$, applies an operation involving the module
+parameters~$\vtheta^{(l)}$, and sends the output $\vz^{(l)}$ to its child. Thus,
+$f^{(l)}_{\vtheta^{(l)}}$ is of the form
+\begin{math}
+  \vz^{(l)} = f^{(l)}_{\vtheta^{(l)}}(\vz^{(l-1)}). %\,.
+\end{math}
+Typical choices include element-wise nonlinear activation without any parameters
+and affine transformations $\vz^{(l)} = \mW^{(l)} \vz^{(l-1)} + \vb^{(l)}$ with
+parameters given by the weights $\mW^{(l)}$ and the bias $\vb^{(l)} $. Affine and
+activation modules are usually considered as a single conceptual unit, one
+\emph{layer} of the network. However, for backpropagation of derivatives it is
+simpler to consider them separately as two \emph{modules}.
+
+Given the network output $\vz^{(L)}(\vx, \vtheta^{(1, \dots, L)}) = f_{\vtheta}(\vx)$ of a datum
+$\vx$ with label $\vy$, the goal is to minimize the expected risk of the loss
+function $\ell(\vz^{(L)}, \vy)$. Under the framework of empirical risk minimization,
+the parameters are tuned to optimize the loss on the training set $\sD_{\text{train}}=
+\{(\vx_{n},\vy_{n})\}_{n=1}^N$,
+\begin{align}
+  \label{hbp::equ:objective}
+  \min_{\vtheta^{(1,\dots, L)}} \gL_{\sD_{\text{train}}}(\vtheta^{(1,\dots, L)})
+  =
+  \min_{\vtheta^{(1,\dots, L)}} \frac{1}{|\sD_{\text{train}}|}
+  \sum_{n=1}^{N}
+  \ell(f_{\vtheta}(\vx_{n}), \vy_{n})\,.
+\end{align}
+In practice, the objective is typically further approximated stochastically by
+drawing a mini-batch $\sB \subset \sD_{\text{train}}$ from the training set. We
+will treat both scenarios without further distinction, since the structure
+relevant to our purposes is that \Cref{hbp::equ:objective} is an average of
+terms depending on individual data points. Quantities for optimization, be it
+gradients or second derivatives of the loss \wrt the network parameters, can be
+processed in parallel, then averaged.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

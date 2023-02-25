@@ -1,0 +1,142 @@
+
+\begin{figure}[!b]
+  \centering
+
+  % pgfplots style "overlapdefault"
+  \pgfkeys{/pgfplots/overlapdefault/.style={
+      width=\linewidth,
+      height=0.18\textheight,
+      every axis plot/.append style={line width = 1.2pt},
+      every axis plot post/.append style={
+        mark size=1, mark options={opacity=0.3}
+      },
+      tick pos = left,
+      xmajorticks = true,
+      ymajorticks = true,
+      ylabel near ticks,
+      xlabel near ticks,
+      xtick align = inside,
+      ytick align = inside,
+      legend cell align = left,
+      legend columns = 1,
+      legend pos = south east,
+      legend style = {
+        fill opacity = 0.9,
+        text opacity = 1,
+        font = \small,
+      },
+      xticklabel style = {font = \small, inner xsep = -5ex},
+      xlabel style = {font = \small},
+      axis line style = {black},
+      yticklabel style = {font = \small, inner ysep = -4ex},
+      ylabel style = {font = \small, inner ysep = -4ex},
+      title style = {font = \small, inner ysep = -3ex},
+      grid = major,
+      grid style = {dashed}
+    }
+  }
+
+  % pgfplots style for first few rows "overlapdefaultfirst"
+  \pgfkeys{/pgfplots/overlapdefaultfirst/.style={
+      overlapdefault,
+      xlabel=\empty,
+      xticklabels=\empty,
+      title=\empty,
+  }}
+
+  % pgfplots style for first last row "overlapdefaultfirst"
+  \pgfkeys{/pgfplots/overlapdefaultlast/.style={
+      overlapdefault,
+      title=\empty,
+    }}
+
+  \begin{flushleft}
+    \vspace{1ex}
+    (a)
+  \end{flushleft}
+  \vspace{-2\baselineskip}
+
+  \hfill
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={overlapdefaultfirst,
+        title = {Gradient-\ggn overlap},
+      }}
+    \input{../../fig/exp02_gradient_curvature_overlap/fig/overlap_000000/Overlap.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={overlapdefaultfirst,
+        title = {Overlap histogram},
+      }}
+    \input{../../fig/exp02_gradient_curvature_overlap/fig/overlap_000000/OverlapHistogram.tex}
+  \end{minipage}
+  \hfill
+
+  \vspace{-2.5\baselineskip}
+
+  \begin{flushleft}
+    \vspace{1ex}
+    (b)
+  \end{flushleft}
+  \vspace{-2\baselineskip}
+
+  \hfill
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={overlapdefaultfirst,
+      }}
+    \input{../../fig/exp02_gradient_curvature_overlap/fig/overlap_000010/Overlap.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={overlapdefaultfirst,
+      }}
+    \input{../../fig/exp02_gradient_curvature_overlap/fig/overlap_000010/OverlapHistogram.tex}
+  \end{minipage}
+  \hfill
+
+  \vspace{-2.5\baselineskip}
+
+  \begin{flushleft}
+    \vspace{1ex}
+    (c)
+  \end{flushleft}
+  \vspace{-2\baselineskip}
+
+  \hfill
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={overlapdefaultlast,
+      }}
+    \input{../../fig/exp02_gradient_curvature_overlap/fig/overlap_000200/Overlap.tex}
+  \end{minipage}
+  \begin{minipage}[t]{0.495\linewidth}
+    \centering
+    % customize "zmystyle" as you wish
+    \pgfkeys{/pgfplots/zmystyle/.style={overlapdefaultlast,
+      }}
+    \input{../../fig/exp02_gradient_curvature_overlap/fig/overlap_000200/OverlapHistogram.tex}
+  \end{minipage}
+  \hfill
+  \vspace{-2\baselineskip}
+
+  \caption{\textbf{Mini-batch gradient overlap along \ggn curvature directions:}
+    Left column shows curvature-overlap pairs $(\lambda_i, p_i)$. Right column
+    shows the gradient overlap with bins of EVecs. The net (a simple, but
+    deep convolutional neural net on \mnist) is trained with \sgd ($N=128$).
+    Rows show the distributions at \textbf{(a)} initialization,
+    \textbf{(b)} early phase (step 10), and \textbf{(c)} end of training
+    (step 200).}
+  \label{fig:gradient-curvature-overlap}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

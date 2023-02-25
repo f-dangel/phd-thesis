@@ -1,0 +1,179 @@
+In this section, we provide more details about our implementation
+(\Cref{cockpit::app:hooks_benchmarks}) to access the desired quantities with as
+little overhead as possible. Additionally, we present more benchmarks for
+individual instruments (\Cref{cockpit::app:benchmark-instruments}) and \cockpit
+configurations (\Cref{cockpit::app:benchmark-configuration}). These are similar
+but extended versions of the ones presented in
+\Cref{cockpit::fig:benchmark-instruments,cockpit::fig:benchmark_heatmap} in the
+main text. Lastly, we benchmark different implementations of computing the
+two-dimensional gradient histogram (\Cref{cockpit::app:histograms}), identifying
+a computational bottleneck for its current GPU implementation.
+
+\subsubsection{Hardware Details}
+
+We conducted benchmarks on the following setup:
+\begin{itemize}
+\item \textbf{CPU:} Intel Core i7-8700K CPU @ 3.70\,GHz × 12 (32\,GB)
+\item \textbf{GPU:} NVIDIA GeForce RTX 2080 Ti (11\,GB)
+\end{itemize}
+
+\subsubsection{Test Problem Details}
+
+The experiments in this paper rely mostly on optimization problems provided by
+the \deepobs benchmark suite \citep{schneider2019deepobs}. If not stated
+otherwise, we use the default training details suggested by \deepobs, that are
+summarized below. For more details see the original paper.
+\begin{itemize}
+\item \textbf{Quadratic Deep:} A stochastic quadratic problem with an
+  eigenspectrum similar to what has been reported for neural nets. Default batch
+  size $128$, default number of epochs $100$.
+\item \textbf{\mnist Log. Reg.:} Multinomial logistic regression on \mnist
+  \citep{lecun1998gradient}. Default batch size $128$, default number of epochs $50$.
+\item \textbf{\mnist \mlp:} Multi-layer perceptron on \mnist.
+  Default batch size $128$, default number of epochs $100$.
+\item \textbf{\fmnist \mlp:} Multi-layer perceptron on \fmnist
+  \citep{xiao2017fashion}. Default batch size $128$, default number of epochs $100$.
+\item \textbf{\fmnist \twoctwod:} A two convolutional and two dense layered
+  neural network on \fmnist. Default batch size $128$, default number of epochs
+  $100$.
+\item \textbf{\cifarten \threecthreed:} A three convolutional and three dense
+  layered neural network on \cifarten \citep{krizhevsky2009learning}. Default batch size
+  $128$, default number of epochs $100$.
+\item \textbf{\cifarhun \allcnnc:} All Convolutional Neural Network C (\allcnnc
+  \citep{springenberg2015striving}) on \cifarhun \citep{krizhevsky2009learning}. Default batch
+  size $256$, default number of epochs $350$.
+\item \textbf{\svhn \threecthreed:} A three convolutional and three dense
+  layered neural network on \svhn \citep{netzer2011reading}. Default batch size $128$,
+  default number of epochs $100$.
+\end{itemize}
+
+\subsection{Hooks \& Memory Benchmarks}\label{cockpit::app:hooks_benchmarks}
+
+To improve memory consumption, we compact information during the backward pass
+by adding hooks to the neural network's layers. These are executed after
+\backpack extensions and have access to the quantities computed therein. They
+compress information to what is requested by a quantity and free the memory
+occupied by \backpack buffers. Such savings primarily depend on the parameter
+distribution over layers, and are bigger for more balanced architectures
+(compare \Cref{cockpit::fig:memory-benchmark}).
+
+
+\subsubsection{Example}
+
+Say, we want to compute a histogram over the $|\sB| \times D$ individual
+gradient elements of a network. Suppose that $|\sB| = 128$ and the model is
+\deepobs's \cifarten \threecthreed test problem with $895,210$ parameters. Given
+that every parameter is stored in single precision, the model requires $895,210
+\times 4\,\text{Bytes} \approx 3.41\,\text{MB}$.
+% computation performed with https://www.gbmb.org/bytes-to-mb, MB in binary
+Storing the individual gradients will require $128 \times 895,210 \times
+4\,\text{Bytes} \approx 437\,\text{MB}$ (for larger networks this quickly
+exceeds the available memory as the individual gradients occupy $|\sB|$ times
+the model size). If instead, the layer-wise individual gradients are condensed
+into histograms of negligible size and immediately freed afterwards during
+backpropagation, the maximum memory overhead reduces to storing the individual
+gradients of the largest layer. For our example, the largest layer has
+$589,824$ parameters, and the associated individual gradients will require $128
+\times 589,824\times 4\,\text{Bytes} \approx 288\,\text{MB}$, saving roughly
+$149\,\text{MB}$ of RAM. In practice, we observe these expected savings, see
+\Cref{cockpit::fig:memory-benchmark-cifar10}.
+
+\pgfkeys{/pgfplots/memorybenchmarkdefault/.style={
+    enlarge x limits=-0.05,
+    width=1.0\linewidth,
+    height=0.45\linewidth,
+    every axis plot/.append style={line width = 1.5pt},
+    ymin=0,
+    tick pos = left,
+    ylabel near ticks,
+    xlabel near ticks,
+    xtick align = inside,
+    ytick align = inside,
+    legend cell align = left,
+    legend columns = 1,
+    legend pos = south east,
+    legend style = {
+      fill opacity = 0.7,
+      text opacity = 1,
+      font = \footnotesize,
+    },
+    xticklabel style = {font = \footnotesize, inner xsep = -5ex},
+    xlabel style = {font = \footnotesize},
+    axis line style = {black},
+    yticklabel style = {font = \footnotesize, inner ysep = 0ex},
+    ylabel style = {font = \footnotesize},
+    title style = {font = \footnotesize, inner ysep = -3ex},
+    grid = major,
+    grid style = {dashed}
+  }
+}
+
+\captionsetup[subfigure]{justification=justified,singlelinecheck=false}
+
+\begin{figure}[!bt]
+  \centering
+  \begin{subfigure}[t]{0.99\textwidth}
+    \pgfkeys{/pgfplots/zmystyle/.style={ memorybenchmarkdefault, xlabel = {},
+        legend pos = north west}}
+    \caption{\fmnist \twoctwod}
+    \tikzexternalenable
+    \input{../repos/cockpit-paper/tex/fig/04_benchmark_memory/fmnist_2c2d.tex}
+    \tikzexternaldisable
+    \label{cockpit::fig:memory-benchmark-fmnist}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.99\textwidth}
+    \pgfkeys{/pgfplots/zmystyle/.style={ memorybenchmarkdefault, xlabel = {},
+        legend pos = north west}}
+    \caption{\mnist \mlp}
+    \tikzexternalenable
+    \input{../repos/cockpit-paper/tex/fig/04_benchmark_memory/mnist_mlp.tex}
+    \tikzexternaldisable
+    \label{cockpit::fig:memory-benchmark-mnist}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.99\textwidth}
+    \pgfkeys{/pgfplots/zmystyle/.style={ memorybenchmarkdefault, xlabel = {},
+        legend pos = north west}}
+    \caption{\cifarten \threecthreed}
+    \tikzexternalenable
+    \input{../repos/cockpit-paper/tex/fig/04_benchmark_memory/cifar10_3c3d.tex}
+    \tikzexternaldisable
+    \label{cockpit::fig:memory-benchmark-cifar10}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.99\textwidth}
+    \pgfkeys{/pgfplots/zmystyle/.style={ memorybenchmarkdefault,
+        legend pos = north west}}
+    \caption{\cifarhun \allcnnc}
+    \tikzexternalenable
+    \input{../repos/cockpit-paper/tex/fig/04_benchmark_memory/cifar100_allcnnc.tex}
+    \tikzexternaldisable
+    \label{cockpit::fig:memory-benchmark-cifar100}
+  \end{subfigure}
+  \caption{\textbf{Memory consumption and savings with hooks} during one
+    forward-backward step on a CPU for different \deepobs problems. We compare
+    three settings; i) without \cockpit (baseline); ii) \cockpit with
+    \robustInlinecode{GradHist1d} with \backpack (expensive); iii) \cockpit with
+    \robustInlinecode{GradHist1d} with \backpack and additional hooks
+    (optimized). Peak memory consumptions are highlighted by horizontal dashed
+    bars and shown in the legend. Shaded areas, if visible, fill two standard
+    deviations above and below the mean value, all of them result from ten
+    independent runs. Dotted lines indicate individual runs. Our optimized
+    approach allows to free obsolete tensors during backpropagation and thereby
+    reduces memory consumption. From top to bottom: the effect is less
+    pronounced for architectures that concentrate the majority of parameters in
+    a single layer (\subfigref{cockpit::fig:memory-benchmark-fmnist} $3,274,634$
+    total, $3,211,264$ largest layer) and increases for more balanced networks
+    \subfigref{cockpit::fig:memory-benchmark-mnist} $1,336,610$ total, $784,000$
+    largest layer, \subfigref{cockpit::fig:memory-benchmark-cifar10}: $895,210$
+    total, $589,824$ largest layer).}
+  \label{cockpit::fig:memory-benchmark}
+\end{figure}
+
+\captionsetup[subfigure]{justification=centering, singlelinecheck=true}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

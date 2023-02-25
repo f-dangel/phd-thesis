@@ -1,0 +1,83 @@
+Benchmark: CIFAR10 on 3C3D
+    Batch size = 32
+           Grad (ref.): 100%
+            2nd Moment:  96%
+              Variance: 114%
+              Batch L2: 101%
+           Indiv. Grad: 101%
+            DiagGGN-MC: 129%
+                  KFAC: 112%
+                  KFLR: 145%
+               DiagGGN: 149%
+    Batch size = 64
+           Grad (ref.): 100%
+            2nd Moment: 100%
+              Variance: 128%
+              Batch L2: 109%
+           Indiv. Grad: 117%
+            DiagGGN-MC: 122%
+                  KFAC: 107%
+                  KFLR: 141%
+               DiagGGN: 181%
+    Batch size = 96
+           Grad (ref.): 100%
+            2nd Moment:  94%
+              Variance: 127%
+              Batch L2: 112%
+           Indiv. Grad: 104%
+            DiagGGN-MC:  98%
+                  KFAC: 119%
+                  KFLR: 158%
+               DiagGGN: 171%
+    Batch size = 128
+           Grad (ref.): 100%
+            2nd Moment: 117%
+              Variance: 133%
+              Batch L2: 117%
+           Indiv. Grad: 125%
+            DiagGGN-MC: 124%
+                  KFAC: 123%
+                  KFLR: 174%
+               DiagGGN: 193%
+Benchmark: CIFAR100 on All-CNN-C
+    Batch size = 16
+           Grad (ref.): 100%
+            2nd Moment: 147%
+              Batch L2: 193%
+            DiagGGN-MC: 159%
+                  KFAC: 207%
+           Indiv. Grad: 277%
+              Variance: 310%
+    Batch size = 32
+           Grad (ref.): 100%
+            2nd Moment: 136%
+              Batch L2: 176%
+            DiagGGN-MC: 159%
+                  KFAC: 227%
+           Indiv. Grad: 325%
+              Variance: 360%
+    Batch size = 48
+           Grad (ref.): 100%
+            2nd Moment: 138%
+              Batch L2: 168%
+            DiagGGN-MC: 162%
+                  KFAC: 231%
+           Indiv. Grad: 349%
+              Variance: 387%
+    Batch size = 64
+           Grad (ref.): 100%
+            2nd Moment: 139%
+              Batch L2: 163%
+            DiagGGN-MC: 161%
+                  KFAC: 232%
+           Indiv. Grad: 359%
+              Variance: 396%
+KFLR
+    Batch size = 16
+           Grad (ref.): 100%
+                  KFAC: 207%
+                  KFLR: 2305%
+    Batch size = 32
+           Grad (ref.): 100%
+                  KFAC: 227%
+                  KFLR: 3020%

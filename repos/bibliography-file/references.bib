@@ -1,0 +1,3042 @@
+@Comment Keywords:
+@Comment Processing stage: todo, doing, done
+@Comment Project: cockpit, backpack, hbp, spectrum, vivit
+@Comment concepts: hessian, autodiff
+@Comment Conference:
+@Comment     iclr2021, icml2021
+@Comment     aistats2020, neurips2020
+@Comment     neurips2019 iclr2019 aistats2019
+@Comment     neurips2018
+@Comment Auxiliary: skill
+
+@misc{martens2020new,
+  title =        {New insights and perspectives on the natural gradient method},
+  author =       {James Martens},
+  year =         2020,
+  eprint =       {1412.1193},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@article{mizutani2008second,
+  title =        {Second-order stagewise backpropagation for Hessian-matrix
+                  analyses and investigation of negative curvature},
+  journal =      {Neural Networks},
+  volume =       21,
+  number =       2,
+  pages =        {193-203},
+  year =         2008,
+  note =         {Advances in Neural Networks Research: IJCNN ’07},
+  issn =         {0893-6080},
+  doi =          {https://doi.org/10.1016/j.neunet.2007.12.038},
+  url =
+                  {https://www.sciencedirect.com/science/article/pii/S0893608007002729},
+  author =       {Eiji Mizutani and Stuart E. Dreyfus},
+  tags =         {hbp},
+}
+
+@article{bakker2018outer,
+  title =        {The outer product structure of neural network derivatives},
+  author =       {Bakker, Craig and Henry, Michael J and Hodas, Nathan O},
+  journal =      {arXiv preprint arXiv:1810.03798},
+  year =         2018,
+  tags =         {hbp},
+}
+
+@inproceedings{grosse2016kroneckerfactored,
+  author =       {Grosse, Roger and Martens, James},
+  title =        {A Kronecker-Factored Approximate {F}isher Matrix for
+                  Convolution Layers},
+  year =         2016,
+  booktitle =    {International Conference on Machine Learning (ICML)},
+}
+
+@article{pearlmutter1994fast,
+  author =       {Pearlmutter, Barak A.},
+  title =        {Fast Exact Multiplication by the {H}essian},
+  journal =      {Neural Computation},
+  volume =       6,
+  year =         1994,
+  tags =         {hessian},
+}
+
+@article{schraudolph2002fast,
+  title =        {Fast curvature matrix-vector products for second-order
+                  gradient descent},
+  author =       {Schraudolph, Nicol N},
+  journal =      {Neural computation},
+  volume =       14,
+  year =         2002,
+  tags =         {hessian},
+}
+
+@book{tao2012topics,
+  title =        {Topics in Random Matrix Theory},
+  author =       {Tao, Terence},
+  isbn =         9780821885079,
+  series =       {Graduate studies in mathematics},
+  publisher =    {American Mathematical Soc.}
+}
+
+@InProceedings{martens2015optimizing,
+  title =        {Optimizing Neural Networks with {K}ronecker-factored
+                  Approximate Curvature},
+  author =       {Martens, James and Grosse, Roger},
+  booktitle =    {International Conference on Machine Learning (ICML)},
+  year =         2015,
+}
+
+@misc{chen2020fast,
+  title =        {Fast Approximation of the Gauss-Newton Hessian Matrix for the
+                  Multilayer Perceptron},
+  author =       {Chao Chen and Severin Reiz and Chenhan Yu and Hans-Joachim
+                  Bungartz and George Biros},
+  year =         2020,
+  eprint =       {1910.12184},
+  archivePrefix ={arXiv},
+  primaryClass = {math.NA},
+  tags =         {spectrum},
+}
+
+@misc{drgona2020spectral,
+  title =        {Spectral Analysis and Stability of Deep Neural Dynamics},
+  author =       {Jan Drgona and Elliott Skomski and Soumya Vasisht and Aaron
+                  Tuor and Draguna Vrabie},
+  year =         2020,
+  eprint =       {2011.13492},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {cockpit},
+}
+
+@misc{richards2021learning,
+  title =        {Learning with Gradient Descent and Weakly Convex Losses},
+  author =       {Dominic Richards and Mike Rabbat},
+  year =         2021,
+  eprint =       {2101.04968},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {hessian},
+}
+
+@misc{yao2020adahessian,
+  title =        {ADAHESSIAN: An Adaptive Second Order Optimizer for Machine
+                  Learning},
+  author =       {Zhewei Yao and Amir Gholami and Sheng Shen and Mustafa Mustafa
+                  and Kurt Keutzer and Michael W. Mahoney},
+  year =         2020,
+  tags =         {hessian},
+}
+
+@misc{nakatsukasa2019lowrank,
+  title =        {The low-rank eigenvalue problem},
+  author =       {Yuji Nakatsukasa},
+  year =         2019,
+  eprint =       {1905.11490},
+  archivePrefix ={arXiv},
+  primaryClass = {math.NA},
+  tags =         {spectrum},
+}
+
+@article{fan2020spectra,
+  title =        {Spectra of the Conjugate Kernel and Neural Tangent Kernel for
+                  linear-width neural networks},
+  author =       {Zhou Fan and Zhichao Wang},
+  year =         2020,
+  eprint =       {2005.11879},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {neurips2020, spectrum},
+}
+
+@article{lee2020correctness,
+  title =        {On Correctness of Automatic Differentiation for
+                  Non-Differentiable Functions},
+  author =       {Wonyeol Lee and Hangyeol Yu and Xavier Rival and Hongseok
+                  Yang},
+  year =         2020,
+  eprint =       {2006.06903},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {neurips2020, autodiff},
+}
+
+@article{fort2020deep,
+  title =        {Deep learning versus kernel learning: an empirical study of
+                  loss landscape geometry and the time evolution of the Neural
+                  Tangent Kernel},
+  author =       {Stanislav Fort and Gintare Karolina Dziugaite and Mansheej
+                  Paul and Sepideh Kharaghani and Daniel M. Roy and Surya
+                  Ganguli},
+  year =         2020,
+  eprint =       {2010.15110},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {neurips2020, cockpit},
+}
+
+@article{lecun1991eigenvalues,
+  author =       {Lecun, Yann and Kanter, Ido and Solla, Sara},
+  year =         1991,
+  month =        05,
+  pages =        {2396-2399},
+  title =        {Eigenvalues of covariance matrices: Application to
+                  neural-network learning},
+  volume =       66,
+  journal =      {Physical Review Letters},
+  doi =          {10.1103/PhysRevLett.66.2396},
+  tags =         {spectrum},
+}
+
+@misc{karakida2019universal,
+  title =        {Universal Statistics of Fisher Information in Deep Neural
+                  Networks: Mean Field Approach},
+  author =       {Ryo Karakida and Shotaro Akaho and Shun-ichi Amari},
+  year =         2019,
+  eprint =       {1806.01316},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {spectrum, aistats2019},
+}
+
+@misc{hayase2020spectrum,
+  title =        {The Spectrum of Fisher Information of Deep Networks Achieving
+                  Dynamical Isometry},
+  author =       {Tomohiro Hayase and Ryo Karakida},
+  year =         2020,
+  eprint =       {2006.07814},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {spectrum},
+}
+
+@inproceedings{pennington2018spectrum,
+  title =        {The spectrum of the fisher information matrix of a
+                  single-hidden-layer neural network},
+  author =       {Pennington, Jeffrey and Worah, Pratik},
+  booktitle =    {Proceedings of the 32nd International Conference on Neural
+                  Information Processing Systems},
+  pages =        {5415--5424},
+  year =         2018,
+  tags =         {neurips2018, hbp, spectrum},
+}
+
+@misc{arjevani2020analytic,
+  title =        {Analytic Characterization of the Hessian in Shallow ReLU
+                  Models: A Tale of Symmetry},
+  author =       {Yossi Arjevani and Michael Field},
+  year =         2020,
+  eprint =       {2008.01805},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {neurips2020, hbp, spectrum},
+}
+
+@misc{goldfarb2021practical,
+  title =        {Practical Quasi-Newton Methods for Training Deep Neural
+                  Networks},
+  author =       {Donald Goldfarb and Yi Ren and Achraf Bahamou},
+  year =         2021,
+  eprint =       {2006.08877},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {neurips2020, hbp},
+}
+
+@inproceedings{kunin2021symmetry,
+  title =        {Symmetry, Conservation Laws, and Learning Dynamics in Neural
+                  Networks},
+  author =       {Daniel Kunin and Javier Sagastuy-Brena and Surya Ganguli and
+                  Daniel LK Yamins and Hidenori Tanaka},
+  booktitle =    {International Conference on Learning Representations},
+  year =         2021,
+  url =          {https://openreview.net/forum?id=q8qLAbQBupm},
+  tags =         {iclr2021},
+}
+
+@misc{mutschler2020parabolic,
+  title =        {Parabolic Approximation Line Search for DNNs},
+  author =       {Maximus Mutschler and Andreas Zell},
+  year =         2020,
+  eprint =       {1903.11991},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {neurips2020, cockpit},
+}
+
+@inproceedings{gu2020characterize,
+  title =        {How to Characterize The Landscape of Overparameterized
+                  Convolutional Neural Networks},
+  author =       {Yihong Gu and Weizhong Zhang and Cong Fang and J. Lee and Tong
+                  Zhang},
+  booktitle =    {NeurIPS},
+  year =         2020,
+  tags =         {neurips2020},
+}
+
+@misc{parkerholder2020ridge,
+  title =        {Ridge Rider: Finding Diverse Solutions by Following
+                  Eigenvectors of the Hessian},
+  author =       {Jack Parker-Holder and Luke Metz and Cinjon Resnick and
+                  Hengyuan Hu and Adam Lerer and Alistair Letcher and Alex
+                  Peysakhovich and Aldo Pacchiano and Jakob Foerster},
+  year =         2020,
+  eprint =       {2011.06505},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {neurips2020},
+}
+
+@InProceedings{jastrzebski2021catastrophic,
+  title =        {Catastrophic Fisher Explosion: Early Phase Fisher Matrix
+                  Impacts Generalization},
+  author =       {Jastrzebski, Stanislaw and Arpit, Devansh and Astrand, Oliver
+                  and Kerg, Giancarlo B and Wang, Huan and Xiong, Caiming and
+                  Socher, Richard and Cho, Kyunghyun and Geras, Krzysztof J},
+  booktitle =    {Proceedings of the 38th International Conference on Machine
+                  Learning},
+  pages =        {4772--4784},
+  year =         2021,
+  editor =       {Meila, Marina and Zhang, Tong},
+  volume =       139,
+  series =       {Proceedings of Machine Learning Research},
+  month =        {18--24 Jul},
+  publisher =    {PMLR},
+  pdf =
+                  {http://proceedings.mlr.press/v139/jastrzebski21a/jastrzebski21a.pdf},
+  url =          {https://proceedings.mlr.press/v139/jastrzebski21a.html},
+}
+
+@book{nielsen2010quantum,
+  author =       {Nielsen, Michael A. and Chuang, Isaac L.},
+  title =        {Quantum Computation and Quantum Information: 10th Anniversary
+                  Edition},
+  year =         2011,
+  isbn =         1107002176,
+  publisher =    {Cambridge University Press},
+  address =      {USA},
+  edition =      {10th},
+  tags =         {skill},
+}
+
+@misc{nguyen2020tight,
+  title =        {Tight Bounds on the Smallest Eigenvalue of the Neural Tangent
+                  Kernel for Deep ReLU Networks},
+  author =       {Quynh Nguyen and Marco Mondelli and Guido Montufar},
+  year =         2020,
+  eprint =       {2012.11654},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {spectrum},
+}
+
+@misc{tselepidis2020twolevel,
+  title =        {Two-Level K-FAC Preconditioning for Deep Learning},
+  author =       {Nikolaos Tselepidis and Jonas Kohler and Antonio Orvieto},
+  year =         2020,
+  eprint =       {2011.00573},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {backpack, neurips2020},
+}
+
+@misc{lengyel2020genni,
+  title =        {GENNI: Visualising the Geometry of Equivalences for Neural
+                  Network Identifiability},
+  author =       {Daniel Lengyel and Janith Petangoda and Isak Falk and Kate
+                  Highnam and Michalis Lazarou and Arinbjörn Kolbeinsson and
+                  Marc Peter Deisenroth and Nicholas R. Jennings},
+  year =         2020,
+  eprint =       {2011.07407},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {cockpit, neurips2020},
+}
+
+@misc{murfet2020deep,
+  title =        {Deep Learning is Singular, and That's Good},
+  author =       {Daniel Murfet and Susan Wei and Mingming Gong and Hui Li and
+                  Jesse Gell-Redman and Thomas Quella},
+  year =         2020,
+  eprint =       {2010.11560},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {hessian},
+}
+
+@misc{agrawal2020investigating,
+  title =        {Investigating Learning in Deep Neural Networks using
+                  Layer-Wise Weight Change},
+  author =       {Ayush Manish Agrawal and Atharva Tendle and Harshvardhan Sikka
+                  and Sahib Singh and Amr Kayid},
+  year =         2020,
+  eprint =       {2011.06735},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo, cockpit},
+}
+
+@misc{sagun2017eigenvalues,
+  title =        {Eigenvalues of the Hessian in Deep Learning: Singularity and
+                  Beyond},
+  author =       {Levent Sagun and Leon Bottou and Yann LeCun},
+  year =         2017,
+  eprint =       {1611.07476},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {done, cockpit},
+}
+
+@misc{sagun2018empirical,
+  title =        {Empirical Analysis of the Hessian of Over-Parametrized Neural
+                  Networks},
+  author =       {Levent Sagun and Utku Evci and V. Ugur Guney and Yann Dauphin
+                  and Leon Bottou},
+  year =         2018,
+  eprint =       {1706.04454},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {done, cockpit},
+}
+
+@misc{springenberg2015striving,
+  title =        {Striving for Simplicity: The All Convolutional Net},
+  author =       {Jost Tobias Springenberg and Alexey Dosovitskiy and Thomas
+                  Brox and Martin Riedmiller},
+  year =         2015,
+  eprint =       {1412.6806},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {done, cockpit, backpack},
+}
+
+@misc{thompson2020computational,
+  title =        {The Computational Limits of Deep Learning},
+  author =       {Neil C. Thompson and Kristjan Greenewald and Keeheon Lee and
+                  Gabriel F. Manso},
+  year =         2020,
+  eprint =       {2007.05558},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {done, cockpit},
+}
+
+@misc{rochette2019efficient,
+  title =        {Efficient Per-Example Gradient Computations in Convolutional
+                  Neural Networks},
+  author =       {Gaspar Rochette and Andre Manoel and Eric W. Tramel},
+  year =         2019,
+  eprint =       {1912.06015},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {done, backpack},
+}
+
+@misc{meyer2020hutch,
+  title =        {Hutch++: Optimal Stochastic Trace Estimation},
+  author =       {Raphael A. Meyer and Cameron Musco and Christopher Musco and
+                  David P. Woodruff},
+  year =         2020,
+  eprint =       {2010.09649},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.DS},
+  tags =         {backpack},
+}
+
+@misc{wu2020dissecting,
+  title =        {Dissecting Hessian: Understanding Common Structure of Hessian
+                  in Neural Networks},
+  author =       {Yikai Wu and Xingyu Zhu and Chenwei Wu and Annie Wang and Rong
+                  Ge},
+  year =         2020,
+  eprint =       {2010.04261},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {hbp},
+}
+
+@inproceedings{anonymous2021nngeometry,
+  title =        {{\{}NNG{\}}eometry: Easy and Fast Fisher Information Matrices
+                  and Neural Tangent Kernels in PyTorch},
+  author =       {Anonymous},
+  booktitle =    {Submitted to International Conference on Learning
+                  Representations},
+  year =         2021,
+  url =          {https://openreview.net/forum?id=wabe-NE8-AX},
+  note =         {under review},
+  tags =         {todo, backpack},
+}
+
+@inproceedings{balles2017coupling,
+  title =        {Coupling Adaptive Batch Sizes with Learning Rates},
+  author =       {Balles, L. and Romero, J. and Hennig, P.},
+  booktitle =    {Conference on Uncertainty in Artificial Intelligence (UAI)},
+  year =         2017,
+  tags =         {done, cockpit},
+}
+
+@misc{mahsereci2017early,
+  title =        {Early Stopping without a Validation Set},
+  author =       {Maren Mahsereci and Lukas Balles and Christoph Lassner and
+                  Philipp Hennig},
+  year =         2017,
+  tags =         {done, cockpit},
+}
+
+@inproceedings{becigneul2018riemannian,
+  title =        {Riemannian Adaptive Optimization Methods},
+  author =       {Gary Becigneul and Octavian-Eugen Ganea},
+  booktitle =    {International Conference on Learning Representations},
+  year =         2019,
+  url =          {https://openreview.net/forum?id=r1eiqi09K7},
+  tags =         {skill, iclr2019},
+}
+
+@conference{schmidt2021descending,
+  title =        {Descending through a Crowded Valley - Benchmarking Deep
+                  Learning Optimizers},
+  author =       {Schmidt, R. M. and Schneider, F. and Hennig, P.},
+  booktitle =    {International Conference on Machine Learning (ICML)},
+  year =         2021,
+}
+
+@software{bradbury2018jax,
+  author = {James Bradbury and Roy Frostig and Peter Hawkins and Matthew James Johnson and Chris Leary and Dougal Maclaurin and Skye Wanderman-Milne},
+  title = {{JAX}: composable transformations of {P}ython+{N}um{P}y programs},
+  year = {2018},
+}
+
+@misc{panigrahi2019nongaussianity,
+  title =        {Non-Gaussianity of Stochastic Gradient Noise},
+  author =       {Abhishek Panigrahi and Raghav Somani and Navin Goyal and
+                  Praneeth Netrapalli},
+  year =         2019,
+  eprint =       {1910.09626},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo, cockpit, neurips2019},
+}
+
+@misc{granziol2019deep,
+  title =        {Deep Curvature Suite},
+  author =       {Diego Granziol and Xingchen Wan and Timur Garipov},
+  year =         2019,
+  eprint =       {1912.09656},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {done, backpack, hessian},
+}
+
+@article{akaike1974look,
+  title =        {A new look at the statistical model identification},
+  author =       {Akaike, Hirotugu},
+  journal =      {IEEE transactions on automatic control},
+  volume =       19,
+  number =       6,
+  pages =        {716--723},
+  year =         1974,
+  publisher =    {Ieee},
+  tags =         {todo, skill},
+}
+
+@article{schmidt2014convergence,
+  title =        {Convergence rate of stochastic gradient with constant step
+                  size},
+  author =       {Schmidt, Mark},
+  year =         2014,
+  pdf =
+                  {https://www.cs.ubc.ca/~schmidtm/Documents/2014_Notes_ConstantStepSG.pdf},
+  tags =         {todo, skill},
+}
+
+@inproceedings{thomas2020interplay,
+  title =        {On the interplay between noise and curvature and its effect on
+                  optimization and generalization},
+  author =       {Thomas, Valentin and Pedregosa, Fabian and van Merri\"enboer,
+                  Bart and Manzagol, Pierre-Antoine and Bengio, Yoshua and Roux,
+                  Nicolas Le},
+  booktitle =    {International Conference on Artificial Intelligence and
+                  Statistics (AISTATS)},
+  year =         2020,
+}
+
+@inproceedings{wang2020assessing,
+  title =        {Assessing Local Generalization Capability in Deep Models},
+  author =       {Wang, Huan and Keskar, Nitish Shirish and Xiong, Caiming and
+                  Socher, Richard},
+  booktitle =    {International Conference on Artificial Intelligence and
+                  Statistics},
+  pages =        {2077--2087},
+  year =         2020,
+  tags =         {done, aistats2020},
+}
+
+@InProceedings{liao2020automatic,
+  title =        {Automatic Differentiation of Sketched Regression},
+  author =       {Liao, Hang and Pearlmutter, Barak and Potluru, Vamsi and
+                  Woodruff, David},
+  pages =        {4367--4376},
+  year =         2020,
+  editor =       {Silvia Chiappa and Roberto Calandra},
+  volume =       108,
+  series =       {Proceedings of Machine Learning Research},
+  address =      {Online},
+  month =        {26--28 Aug},
+  publisher =    {PMLR},
+  pdf =          {http://proceedings.mlr.press/v108/liao20a/liao20a.pdf},
+  url =          {http://proceedings.mlr.press/v108/liao20a.html},
+  tags =         {done, aistats2020},
+}
+
+@misc{cai2020inversefree,
+  title =        {An Inverse-free Truncated Rayleigh-Ritz Method for Sparse
+                  Generalized Eigenvalue Problem},
+  author =       {Yunfeng Cai and Ping Li},
+  year =         2020,
+  eprint =       {2003.10897},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {done, aistats2020},
+}
+
+@misc{jiang2019accelerating,
+  title =        {Accelerating Deep Learning by Focusing on the Biggest Losers},
+  author =       {Angela H. Jiang and Daniel L. -K. Wong and Giulio Zhou and
+                  David G. Andersen and Jeffrey Dean and Gregory R. Ganger and
+                  Gauri Joshi and Michael Kaminksy and Michael Kozuch and
+                  Zachary C. Lipton and Padmanabhan Pillai},
+  year =         2019,
+  eprint =       {1910.00762},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {done},
+}
+
+@misc{gabrielsson2019topology,
+  title =        {A Topology Layer for Machine Learning},
+  author =       {Rickard Brüel-Gabrielsson and Bradley J. Nelson and Anjan
+                  Dwaraknath and Primoz Skraba and Leonidas J. Guibas and Gunnar
+                  Carlsson},
+  year =         2019,
+  eprint =       {1905.12200},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {done, aistats2020},
+}
+
+@misc{jahani2018efficient,
+  title =        {Efficient Distributed Hessian Free Algorithm for Large-scale
+                  Empirical Risk Minimization via Accumulating Sample Strategy},
+  author =       {Majid Jahani and Xi He and Chenxin Ma and Aryan Mokhtari and
+                  Dheevatsa Mudigere and Alejandro Ribeiro and Martin Takáč},
+  year =         2018,
+  eprint =       {1810.11507},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {done, aistats2020},
+}
+
+@article{bollapragada2017adaptive,
+  title =        {Adaptive Sampling Strategies for Stochastic Optimization},
+  author =       {Raghu Bollapragada and Richard H. Byrd and Jorge Nocedal},
+  journal =      {SIAM Journal on Optimization},
+  year =         2017,
+  volume =       28,
+  tags =         {done, inner product test, orthogonality test, batch size
+                  selection, cockpit},
+}
+
+@article{byrd2012sample,
+  author =       {Byrd, Richard H. and Chin, Gillian M. and Nocedal, Jorge and
+                  Wu, Yuchen},
+  title =        {Sample Size Selection in Optimization Methods for Machine
+                  Learning},
+  year =         2012,
+  volume =       134,
+  journal =      {Math. Program.},
+  tags =         {done, norm test, batch size selection, cockpit},
+}
+
+@article{fu2020waste,
+  title =        {Don’t Waste Your Bits! Squeeze Activations and Gradients for
+                  Deep Neural Networks via TINYSCRIPT},
+  author =       {Fu, Fangcheng and Hu, Yuzheng and He, Yihan and Jiang, Jiawei
+                  and Shao, Yingxia and Zhang, Ce and Cui, Bin},
+  tags =         {todo},
+}
+
+@misc{anil2020second,
+  title =        {Second Order Optimization Made Practical},
+  author =       {Rohan Anil and Vineet Gupta and Tomer Koren and Kevin Regan
+                  and Yoram Singer},
+  year =         2020,
+  eprint =       {2002.09018},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {done, hessian},
+}
+
+@book{petersen2015mastering,
+  title =        {Mastering Emacs},
+  author =       {Petersen, M.},
+  isbn =         9781320673914,
+  url =          {https://books.google.de/books?id=Gu7qsgEACAAJ},
+  year =         2015,
+  publisher =    {Blurb, Incorporated},
+  tags =         {todo, fun, emacs},
+}
+
+@misc{chatterjee2020making,
+  title =        {Making Coherence Out of Nothing At All: Measuring the
+                  Evolution of Gradient Alignment},
+  author =       {Satrajit Chatterjee and Piotr Zielinski},
+  year =         2020,
+  eprint =       {2008.01217},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo, cockpit, generalization},
+}
+
+@inproceedings{yao2020pyhessian,
+  author =       {Yao, Zhewei and Gholami, Amir and Keutzer, Kurt and Mahoney,
+                  Michael W.},
+  booktitle =    {IEEE International Conference on Big Data},
+  title =        {Py{H}essian: Neural Networks Through the Lens of the
+                  {H}essian},
+  year =         2020,
+}
+
+@misc{forouzesh2020generalization,
+  title =        {Generalization Comparison of Deep Neural Networks via Output
+                  Sensitivity},
+  author =       {Mahsa Forouzesh and Farnood Salehi and Patrick Thiran},
+  year =         2020,
+  eprint =       {2007.15378},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo, generalization},
+}
+
+@misc{khan2019approximate,
+  title =        {Approximate Inference Turns Deep Networks into Gaussian
+                  Processes},
+  author =       {Mohammad Emtiyaz Khan and Alexander Immer and Ehsan Abedi and
+                  Maciej Korzepa},
+  year =         2019,
+  eprint =       {1906.01930},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {todo, hessian, sameasimmer20disentangling},
+}
+
+@misc{immer2020disentangling,
+  title =        {Disentangling the Gauss-Newton Method and Approximate
+                  Inference for Neural Networks},
+  author =       {Alexander Immer},
+  year =         2020,
+  eprint =       {2007.11994},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {todo, hessian, sameaskhan201approximate},
+}
+
+@misc{tropp2015introduction,
+  title =        {An Introduction to Matrix Concentration Inequalities},
+  author =       {Joel A. Tropp},
+  year =         2015,
+  eprint =       {1501.01571},
+  archivePrefix ={arXiv},
+  primaryClass = {math.PR},
+  tags =         {todo, fun},
+}
+
+@misc{dinh2017sharp,
+  title =        {Sharp Minima Can Generalize For Deep Nets},
+  author =       {Laurent Dinh and Razvan Pascanu and Samy Bengio and Yoshua
+                  Bengio},
+  year =         2017,
+  eprint =       {1703.04933},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {done, hessian, generalization},
+}
+
+@misc{sankararaman2019impact,
+  title =        {The Impact of Neural Network Overparameterization on Gradient
+                  Confusion and Stochastic Gradient Descent},
+  author =       {Karthik A. Sankararaman and Soham De and Zheng Xu and W. Ronny
+                  Huang and Tom Goldstein},
+  year =         2019,
+  eprint =       {1904.06963},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo, generalization},
+}
+
+@article{ginsburg2020regularization,
+  author =       {Boris Ginsburg},
+  title =        {On regularization of gradient descent, layer imbalance and
+                  flat minima},
+  year =         2020,
+  tags =         {done, hessian},
+}
+
+@misc{bahamou2019dynamic,
+  title =        {A Dynamic Sampling Adaptive-SGD Method for Machine Learning},
+  author =       {Achraf Bahamou and Donald Goldfarb},
+  year =         2019,
+  eprint =       {1912.13357},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {cockpit},
+}
+
+@InProceedings{ghorbani2019investigation,
+  title =        {An Investigation into Neural Net Optimization via Hessian
+                  Eigenvalue Density},
+  author =       {Ghorbani, Behrooz and Krishnan, Shankar and Xiao, Ying},
+  booktitle =    {Proceedings of the 36th International Conference on Machine
+                  Learning},
+  pages =        {2232--2241},
+  year =         2019,
+  editor =       {Chaudhuri, Kamalika and Salakhutdinov, Ruslan},
+  volume =       97,
+  series =       {Proceedings of Machine Learning Research},
+  address =      {Long Beach, California, USA},
+  month =        {09--15 Jun},
+  publisher =    {PMLR},
+  pdf =          {http://proceedings.mlr.press/v97/ghorbani19b/ghorbani19b.pdf},
+  url =          {http://proceedings.mlr.press/v97/ghorbani19b.html},
+  abstract =     {To understand the dynamics of training in deep neural
+                  networks, we study the evolution of the Hessian eigenvalue
+                  density throughout the optimization process. In non-batch
+                  normalized networks, we observe the rapid appearance of large
+                  isolated eigenvalues in the spectrum, along with a surprising
+                  concentration of the gradient in the corresponding
+                  eigenspaces. In a batch normalized network, these two effects
+                  are almost absent. We give a theoretical rationale to
+                  partially explain these phenomena. As part of this work, we
+                  adapt advanced tools from numerical linear algebra that allow
+                  scalable and accurate estimation of the entire Hessian
+                  spectrum of ImageNet-scale neural networks; this technique may
+                  be of independent interest in other applications.},
+  tags =         {todo, hessian},
+}
+
+@incollection{zhang2018local,
+  title =        {On the Local Hessian in Back-propagation},
+  author =       {Zhang, Huishuai and Chen, Wei and Liu, Tie-Yan},
+  booktitle =    {Advances in Neural Information Processing Systems 31},
+  editor =       {S. Bengio and H. Wallach and H. Larochelle and K. Grauman and
+                  N. Cesa-Bianchi and R. Garnett},
+  pages =        {6520--6530},
+  year =         2018,
+  publisher =    {Curran Associates, Inc.},
+  url =
+                  {http://papers.nips.cc/paper/7887-on-the-local-hessian-in-back-propagation.pdf},
+  tags =         {todo, hessian},
+}
+
+@misc{jospin2020handson,
+  title =        {Hands-on Bayesian Neural Networks -- a Tutorial for Deep
+                  Learning Users},
+  author =       {Laurent Valentin Jospin and Wray Buntine and Farid Boussaid
+                  and Hamid Laga and Mohammed Bennamoun},
+  year =         2020,
+  eprint =       {2007.06823},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo, fun},
+}
+
+@article{shalev2010learnability,
+  title =        {Learnability, stability and uniform convergence},
+  author =       {Shalev-Shwartz, Shai and Shamir, Ohad and Srebro, Nathan and
+                  Sridharan, Karthik},
+  journal =      {The Journal of Machine Learning Research},
+  volume =       11,
+  pages =        {2635--2670},
+  year =         2010,
+  publisher =    {JMLR. org},
+  tags =         {todo, cockpit},
+}
+
+@misc{nagarajan2019uniform,
+  title =        {Uniform convergence may be unable to explain generalization in
+                  deep learning},
+  author =       {Vaishnavh Nagarajan and J. Zico Kolter},
+  year =         2019,
+  eprint =       {1902.04742},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo, cockpit},
+}
+
+@misc{fort2019stiffness,
+  title =        {Stiffness: A New Perspective on Generalization in Neural
+                  Networks},
+  author =       {Stanislav Fort and Paweł Krzysztof Nowak and Stanislaw
+                  Jastrzebski and Srini Narayanan},
+  year =         2019,
+  eprint =       {1901.09491},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo, cockpit},
+}
+
+@misc{frankle2020early,
+  title =        {The Early Phase of Neural Network Training},
+  author =       {Jonathan Frankle and David J. Schwab and Ari S. Morcos},
+  year =         2020,
+  eprint =       {2002.10365},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {cockpit},
+}
+
+@misc{faghri2020study,
+  title =        {A Study of Gradient Variance in Deep Learning},
+  author =       {Fartash Faghri and David Duvenaud and David J. Fleet and Jimmy
+                  Ba},
+  year =         2020,
+  tags =         {cockpit},
+}
+
+@inproceedings{kunstner2019limitations,
+  author =       {Kunstner, Frederik and Hennig, Philipp and Balles, Lukas},
+  booktitle =    {Advances in Neural Information Processing Systems},
+  editor =       {H. Wallach and H. Larochelle and A. Beygelzimer and F.
+                  d\textquotesingle Alch\'{e}-Buc and E. Fox and R. Garnett},
+  publisher =    {Curran Associates, Inc.},
+  title =        {Limitations of the empirical Fisher approximation for natural
+                  gradient descent},
+  url =
+                  {https://proceedings.neurips.cc/paper/2019/file/46a558d97954d0692411c861cf78ef79-Paper.pdf},
+  volume =       32,
+  year =         2019,
+  tags =         {done},
+}
+
+@article{livan2018introduction,
+  title =        {Introduction to Random Matrices},
+  ISBN =         9783319708850,
+  ISSN =         {2197-1765},
+  url =          {http://dx.doi.org/10.1007/978-3-319-70885-0},
+  DOI =          {10.1007/978-3-319-70885-0},
+  journal =      {SpringerBriefs in Mathematical Physics},
+  publisher =    {Springer International Publishing},
+  author =       {Livan, Giacomo and Novaes, Marcel and Vivo, Pierpaolo},
+  year =         2018,
+  tags =         {todo, fun},
+}
+
+@misc{pesme2020convergence,
+  title =        {On Convergence-Diagnostic based Step Sizes for Stochastic
+                  Gradient Descent},
+  author =       {Scott Pesme and Aymeric Dieuleveut and Nicolas Flammarion},
+  year =         2020,
+  eprint =       {2007.00534},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo, cockpit},
+}
+
+@misc{sun2020global,
+  title =        {The Global Landscape of Neural Networks: An Overview},
+  author =       {Ruoyu Sun and Dawei Li and Shiyu Liang and Tian Ding and R
+                  Srikant},
+  year =         2020,
+  eprint =       {2007.01429},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo, cockpit},
+}
+
+@inproceedings{zhang2020clipping,
+  title =        {Why Gradient Clipping Accelerates Training: A Theoretical
+                  Justification for Adaptivity},
+  author =       {Jingzhao Zhang and Tianxing He and Suvrit Sra and Ali
+                  Jadbabaie},
+  booktitle =    {International Conference on Learning Representations},
+  year =         2020,
+  url =          {https://openreview.net/forum?id=BJgnXpVYwS},
+  tags =         {todo, cockpit},
+}
+
+@inproceedings{chatterjee2020coherent,
+  title =        {Coherent Gradients: An Approach to Understanding
+                  Generalization in Gradient Descent-based Optimization},
+  author =       {Satrajit Chatterjee},
+  booktitle =    {International Conference on Learning Representations},
+  year =         2020,
+  url =          {https://openreview.net/forum?id=ryeFY0EFwS},
+  tags =         {doing, cockpit},
+}
+
+@inproceedings{liu2020understanding,
+  title =        {Understanding Why Neural Networks Generalize Well Through
+                  {GSNR} of Parameters},
+  author =       {Jinlong Liu and Yunzhi Bai and Guoqing Jiang and Ting Chen and
+                  Huayan Wang},
+  booktitle =    {International Conference on Learning Representations (ICLR)},
+  year =         2020,
+  tags =         {done, cockpit},
+}
+
+@incollection{derezinski2019distributed,
+  title =        {Distributed estimation of the inverse Hessian by determinantal
+                  averaging},
+  author =       {Derezinski, Michal and Mahoney, Michael W},
+  booktitle =    {Advances in Neural Information Processing Systems 32},
+  editor =       {H. Wallach and H. Larochelle and A. Beygelzimer and F.
+                  d\textquotesingle Alch\'{e}-Buc and E. Fox and R. Garnett},
+  pages =        {11405--11415},
+  year =         2019,
+  publisher =    {Curran Associates, Inc.},
+  url =
+                  {http://papers.nips.cc/paper/9317-distributed-estimation-of-the-inverse-hessian-by-determinantal-averaging.pdf},
+  tags =         {todo},
+}
+
+@incollection{edelman2013random,
+  title =        {Random matrix theory and its innovative applications},
+  author =       {Edelman, Alan and Wang, Yuyang},
+  booktitle =    {Advances in Applied Mathematics, Modeling, and Computational
+                  Science},
+  pages =        {91--116},
+  year =         2013,
+  publisher =    {Springer},
+  tags =         {todo},
+}
+
+@misc{adams2018estimating,
+  title =        {Estimating the Spectral Density of Large Implicit Matrices},
+  author =       {Ryan P. Adams and Jeffrey Pennington and Matthew J. Johnson
+                  and Jamie Smith and Yaniv Ovadia and Brian Patton and James
+                  Saunderson},
+  year =         2018,
+  eprint =       {1802.03451},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {todo, spectrum},
+}
+
+@inproceedings{jastrzebski2020break,
+  title =        {The Break-Even Point on Optimization Trajectories of Deep
+                  Neural Networks},
+  author =       {Stanislaw Jastrzebski and Maciej Szymczak and Stanislav Fort
+                  and Devansh Arpit and Jacek Tabor and Kyunghyun Cho* and
+                  Krzysztof Geras*},
+  booktitle =    {International Conference on Learning Representations},
+  year =         2020,
+  url =          {https://openreview.net/forum?id=r1g87C4KwB},
+  tags =         {done, cockpit},
+}
+
+@misc{leclerc2020regimes,
+  title =        {The Two Regimes of Deep Network Training},
+  author =       {Guillaume Leclerc and Aleksander Madry},
+  year =         2020,
+  eprint =       {2002.10376},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {done, cockpit},
+}
+
+@misc{lewkowycz2020large,
+  title =        {The large learning rate phase of deep learning: the catapult
+                  mechanism},
+  author =       {Aitor Lewkowycz and Yasaman Bahri and Ethan Dyer and Jascha
+                  Sohl-Dickstein and Guy Gur-Ari},
+  year =         2020,
+  eprint =       {2003.02218},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {done, cockpit},
+}
+
+@misc{arjevani2020second,
+  title =        {Second-Order Information in Non-Convex Stochastic
+                  Optimization: Power and Limitations},
+  author =       {Yossi Arjevani and Yair Carmon and John C. Duchi and Dylan J.
+                  Foster and Ayush Sekhari and Karthik Sridharan},
+  year =         2020,
+  eprint =       {2006.13476},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo},
+}
+
+@inproceedings{martens2010deep,
+  author =       {Martens, James},
+  year =         2010,
+  title =        {Deep learning via {H}essian-free optimization},
+  booktitle =    {International Conference on Machine Learning (ICML)},
+  tags =         {done},
+}
+
+@misc{neklyudov2020involutive,
+  title =        {Involutive MCMC: a Unifying Framework},
+  author =       {Kirill Neklyudov and Max Welling and Evgenii Egorov and Dmitry
+                  Vetrov},
+  year =         2020,
+  eprint =       {2006.16653},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo},
+}
+
+@book{magnus1999matrix,
+  title =        {{M}atrix {D}ifferential {C}alculus with {A}pplications in
+                  {S}tatistics and {E}conometrics},
+  author =       {Magnus, J. R. and Neudecker, H.},
+  isbn =         9780471986331,
+  lccn =         98053556,
+  series =       {Probabilistics and Statistics},
+  year =         1999,
+  publisher =    {Wiley},
+  tags =         {done},
+}
+
+@misc{yang2020structured,
+  title =        {Structured Stochastic Quasi-Newton Methods for Large-Scale
+                  Optimization Problems},
+  author =       {Minghan Yang and Dong Xu and Yongfeng Li and Zaiwen Wen and
+                  Mengyun Chen},
+  year =         2020,
+  eprint =       {2006.09606},
+  archivePrefix ={arXiv},
+  primaryClass = {math.OC},
+  tags =         {todo},
+}
+
+@misc{zhang2020stochastic,
+  title =        {Stochastic Optimization with Non-stationary Noise},
+  author =       {Jingzhao Zhang and Hongzhou Lin and Subhro Das and Suvrit Sra
+                  and Ali Jadbabaie},
+  year =         2020,
+  eprint =       {2006.04429},
+  archivePrefix ={arXiv},
+  primaryClass = {math.OC},
+  tags =         {done},
+}
+
+@inproceedings{dangel2020backpack,
+  title =        {{B}ack{PACK}: Packing more into Backprop},
+  author =       {Felix Dangel and Frederik Kunstner and Philipp Hennig},
+  booktitle =    {International Conference on Learning Representations (ICLR)},
+  year =         2020,
+  tags =         {done},
+}
+
+@InProceedings{dangel2020modular,
+  title =        {Modular Block-diagonal Curvature Approximations for
+                  Feedforward Architectures},
+  author =       {Dangel, Felix and Harmeling, Stefan and Hennig, Philipp},
+  booktitle =    {International Conference on Artificial Intelligence and
+                  Statistics (AISTATS)},
+  year =         2020,
+  tags =         {done, aistats2020},
+}
+
+@InProceedings{wen2020empirical,
+  title =        {An Empirical Study of Stochastic Gradient Descent with
+                  Structured Covariance Noise},
+  author =       {Wen, Yeming and Luk, Kevin and Gazeau, Maxime and Zhang,
+                  Guodong and Chan, Harris and Ba, Jimmy},
+  booktitle =    {International Conference on Artificial Intelligence and
+                  Statistics (AISTATS)},
+  year =         2020,
+  tags =         {done, aistats2020},
+}
+
+@InProceedings{lorraine2020optimizing,
+  title =        {Optimizing Millions of Hyperparameters by Implicit
+                  Differentiation},
+  author =       {Lorraine, Jonathan and Vicol, Paul and Duvenaud, David},
+  booktitle =    {Proceedings of the Twenty Third International Conference on
+                  Artificial Intelligence and Statistics},
+  pages =        {1540--1552},
+  year =         2020,
+  editor =       {Chiappa, Silvia and Calandra, Roberto},
+  volume =       108,
+  series =       {Proceedings of Machine Learning Research},
+  address =      {Online},
+  month =        {26--28 Aug},
+  publisher =    {PMLR},
+  pdf =
+                  {http://proceedinkawaguchi2020orderedgs.mlr.press/v108/lorraine20a/lorraine20a.pdf},
+  url =          {http://proceedings.mlr.press/v108/lorraine20a.html},
+  tags =         {done, aistats2020},
+}
+
+@InProceedings{kawaguchi2020ordered,
+  title =        {Ordered SGD: A New Stochastic Optimization Framework for
+                  Empirical Risk Minimization},
+  author =       {Kawaguchi, Kenji and Lu, Haihao},
+  booktitle =    {Proceedings of the Twenty Third International Conference on
+                  Artificial Intelligence and Statistics},
+  pages =        {669--679},
+  year =         2020,
+  editor =       {Chiappa, Silvia and Calandra, Roberto},
+  volume =       108,
+  series =       {Proceedings of Machine Learning Research},
+  address =      {Online},
+  month =        {26--28 Aug},
+  publisher =    {PMLR},
+  pdf =
+                  {http://proceedings.mlr.press/v108/kawaguchi20a/kawaguchi20a.pdf},
+  url =          {http://proceedings.mlr.press/v108/kawaguchi20a.html},
+  tags =         {done, aistats2020},
+}
+
+@InProceedings{li2020understanding,
+  title =        {Understanding Generalization in Deep Learning via Tensor
+                  Methods},
+  author =       {Li, Jingling and Sun, Yanchao and Su, Jiahao and Suzuki, Taiji
+                  and Huang, Furong},
+  booktitle =    {Proceedings of the Twenty Third International Conference on
+                  Artificial Intelligence and Statistics},
+  pages =        {504--515},
+  year =         2020,
+  editor =       {Chiappa, Silvia and Calandra, Roberto},
+  volume =       108,
+  series =       {Proceedings of Machine Learning Research},
+  address =      {Online},
+  month =        {26--28 Aug},
+  publisher =    {PMLR},
+  pdf =          {http://proceedings.mlr.press/v108/li20c/li20c.pdf},
+  url =          {http://proceedings.mlr.press/v108/li20c.html},
+  tags =         {todo, aistats2020},
+}
+
+@misc{gargiani2020promise,
+  title =        {On the Promise of the Stochastic Generalized {G}auss-{N}ewton
+                  Method for Training {DNN}s},
+  author =       {Matilde Gargiani and Andrea Zanelli and Moritz Diehl and Frank
+                  Hutter},
+  year =         2020,
+  tags =         {done},
+}
+
+@misc{granziol2020curvature,
+  title =        {Curvature is Key: Sub-Sampled Loss Surfaces and the
+                  Implications for Large Batch Training},
+  author =       {Diego Granziol},
+  year =         2020,
+  eprint =       {2006.09092},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {done, cockpit},
+}
+
+@misc{granziol2020flatness,
+  title =        {Flatness is a False Friend},
+  author =       {Diego Granziol},
+  year =         2020,
+  eprint =       {2006.09091},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {done, cockpit},
+}
+
+@misc{cong2020hessian,
+  title =        {GO Hessian for Expectation-Based Objectives},
+  author =       {Yulai Cong and Miaoyun Zhao and Jianqiao Li and Junya Chen and
+                  Lawrence Carin},
+  year =         2020,
+  eprint =       {2006.08873},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML},
+  tags =         {todo},
+}
+
+@inproceedings{li2018visualizing,
+  title =        {Visualizing the loss landscape of neural nets},
+  author =       {Li, Hao and Xu, Zheng and Taylor, Gavin and Studer, Christoph
+                  and Goldstein, Tom},
+  booktitle =    {Advances in Neural Information Processing Systems},
+  pages =        {6389--6399},
+  year =         2018,
+  tags =         {todo, cockpit},
+}
+
+@misc{ishida2020do,
+  title =        {Do We Need Zero Training Loss After Achieving Zero Training
+                  Error?},
+  author =       {Takashi Ishida and Ikko Yamane and Tomoya Sakai and Gang Niu
+                  and Masashi Sugiyama},
+  year =         2020,
+  eprint =       {2002.08709},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo, cockpit},
+}
+
+@misc{sivaprasad2019optimizer,
+  title =        {Optimizer Benchmarking Needs to Account for Hyperparameter
+                  Tuning},
+  author =       {Prabhu Teja Sivaprasad and Florian Mai and Thijs Vogels and
+                  Martin Jaggi and François Fleuret},
+  year =         2019,
+  eprint =       {1910.11758},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+}
+
+@misc{pilanci2020neural,
+  title =        {Neural Networks are Convex Regularizers: Exact Polynomial-time
+                  Convex Optimization Formulations for Two-Layer Networks},
+  author =       {Mert Pilanci and Tolga Ergen},
+  year =         2020,
+  eprint =       {2002.10553},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo},
+}
+
+@misc{wu2019on,
+  title =        {On the Noisy Gradient Descent that Generalizes as SGD},
+  author =       {Jingfeng Wu and Wenqing Hu and Haoyi Xiong and Jun Huan and
+                  Vladimir Braverman and Zhanxing Zhu},
+  year =         2019,
+  eprint =       {1906.07405},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo},
+}
+
+@misc{tran-dinh2020stochastic,
+  title =        {Stochastic Gauss-Newton Algorithms for Nonconvex Compositional
+                  Optimization},
+  author =       {Quoc Tran-Dinh and Nhan H. Pham and Lam M. Nguyen},
+  year =         2020,
+  eprint =       {2002.07290},
+  archivePrefix ={arXiv},
+  primaryClass = {math.OC},
+  tags =         {todo},
+}
+
+@inproceedings{mulayoff2020unique,
+  title =        {Unique Properties of Flat Minima in Deep Networks},
+  author =       {Mulayoff, Rotem and Michaeli, Tomer},
+  booktitle =    {International Conference on Machine Learning (ICML)},
+  year =         2020,
+  tags =         {done, cockpit, neurips2020},
+}
+
+@InProceedings{katharopoulos18not,
+  title =        {Not All Samples Are Created Equal: Deep Learning with
+                  Importance Sampling},
+  author =       {Katharopoulos, Angelos and Fleuret, Francois},
+  booktitle =    {Proceedings of the 35th International Conference on Machine
+                  Learning},
+  pages =        {2525--2534},
+  year =         2018,
+  editor =       {Dy, Jennifer and Krause, Andreas},
+  volume =       80,
+  series =       {Proceedings of Machine Learning Research},
+  address =      {Stockholmsmässan, Stockholm Sweden},
+  month =        {10--15 Jul},
+  publisher =    {PMLR},
+  pdf =
+                  {http://proceedings.mlr.press/v80/katharopoulos18a/katharopoulos18a.pdf},
+  url =          {http://proceedings.mlr.press/v80/katharopoulos18a.html},
+  abstract =     {Deep Neural Network training spends most of the computation on
+                  examples that are properly handled, and could be ignored. We
+                  propose to mitigate this phenomenon with a principled
+                  importance sampling scheme that focuses computation on
+                  "informative" examples, and reduces the variance of the
+                  stochastic gradients during training. Our contribution is
+                  twofold: first, we derive a tractable upper bound to the
+                  per-sample gradient norm, and second we derive an estimator of
+                  the variance reduction achieved with importance sampling,
+                  which enables us to switch it on when it will result in an
+                  actual speedup. The resulting scheme can be used by changing a
+                  few lines of code in a standard SGD procedure, and we
+                  demonstrate experimentally on image classification, CNN
+                  fine-tuning, and RNN training, that for a fixed wall-clock
+                  time budget, it provides a reduction of the train losses of up
+                  to an order of magnitude and a relative improvement of test
+                  errors between 5\% and 17\%.},
+}
+
+@misc{li2019tunefree,
+  title =        {Almost Tune-Free Variance Reduction},
+  author =       {Bingcong Li and Lingda Wang and Georgios B. Giannakis},
+  year =         2019,
+  eprint =       {1908.09345},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo},
+}
+
+@misc{bolte2020mathematical,
+  title =        {A mathematical model for automatic differentiation in machine
+                  learning},
+  author =       {Jerome Bolte and Edouard Pauwels},
+  year =         2020,
+  eprint =       {2006.02080},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {done},
+}
+
+@misc{ly2017tutorial,
+  title =        {A Tutorial on Fisher Information},
+  author =       {Alexander Ly and Maarten Marsman and Josine Verhagen and Raoul
+                  Grasman and Eric-Jan Wagenmakers},
+  year =         2017,
+  eprint =       {1705.01064},
+  archivePrefix ={arXiv},
+  primaryClass = {math.ST},
+  tags =         {vivit},
+}
+
+@article{chen2020selftuning,
+  title =        {Self-Tuning Stochastic Optimization with Curvature-Aware
+                  Gradient Filtering},
+  author =       {Chen, Ricky T. Q. and Choi, Dami and Balles, Lukas and
+                  Duvenaud, David and Hennig, Philipp},
+  journal =      {Advances in Neural Information Processing Systems (NeurIPS),
+                  Workshop I Can't Believe It's Not Better!},
+  year =         2020
+}
+
+@misc{krishnan2017neumann,
+  title =        {Neumann Optimizer: A Practical Optimization Algorithm for Deep
+                  Neural Networks},
+  author =       {Shankar Krishnan and Ying Xiao and Rif A. Saurous},
+  year =         2017,
+  eprint =       {1712.03298},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {vivit},
+}
+
+@article{amari2000natural,
+  author =       {Amari, Shun-Ichi},
+  year =         2000,
+  title =        {Natural Gradient Works Efficiently in Learning},
+  volume =       10,
+  journal =      {Neural Computation},
+  tags =         {vivit},
+}
+
+@inproceedings{singh2020woodfisher,
+  author =       {Singh, Sidak Pal and Alistarh, Dan},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  title =        {WoodFisher: Efficient Second-Order Approximation for Neural
+                  Network Compression},
+  year =         2020,
+  tags =         {vivit},
+}
+
+@misc{gressmann2020improving,
+  title =        {Improving Neural Network Training in Low Dimensional Random
+                  Bases},
+  author =       {Frithjof Gressmann and Zach Eaton-Rosen and Carlo Luschi},
+  year =         2020,
+  eprint =       {2011.04720},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {vivit},
+}
+
+@misc{gurari2018gradient,
+  title =        {Gradient Descent Happens in a Tiny Subspace},
+  author =       {Guy Gur-Ari and Daniel A. Roberts and Ethan Dyer},
+  year =         2018,
+  tags =         {vivit},
+}
+
+@article{gratton2007approximate,
+  title =        {Approximate Gauss--Newton methods for nonlinear least squares
+                  problems},
+  author =       {Gratton, Serge and Lawless, Amos S and Nichols, Nancy K},
+  journal =      {SIAM Journal on Optimization},
+  volume =       18,
+  number =       1,
+  pages =        {106--132},
+  year =         2007,
+  publisher =    {SIAM},
+  tags =         {vivit},
+}
+
+@inproceedings{schneider2021cockpit,
+  title =        {Cockpit: A Practical Debugging Tool for the Training of Deep
+                  Neural Networks},
+  author =       {Schneider, Frank and Dangel, Felix and Hennig, Philipp},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  year =         2021
+}
+
+@misc{balestriero2021fast,
+  title =        {Fast Jacobian-Vector Product for Deep Networks},
+  author =       {Randall Balestriero and Richard Baraniuk},
+  year =         2021,
+  eprint =       {2104.00219},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@book{heinrichs2013thank,
+  title =        {Thank You For Arguing, Revised and Updated Edition: What
+                  Aristotle, Lincoln, And Homer Simpson Can Teach Us About the
+                  Art of Persuasion},
+  author =       {Jay Heinrichs},
+  isbn =         9780385347785,
+  lccn =         2014378537,
+  url =          {https://books.google.de/books?id=xzDKMNju-V4C},
+  year =         2013,
+  publisher =    {Crown/Archetype}
+}
+
+@inproceedings{dauphin2019metainit,
+  author =       {Dauphin, Yann N and Schoenholz, Samuel},
+  booktitle =    {Advances in Neural Information Processing Systems},
+  editor =       {H. Wallach and H. Larochelle and A. Beygelzimer and F.
+                  d\textquotesingle Alch\'{e}-Buc and E. Fox and R. Garnett},
+  publisher =    {Curran Associates, Inc.},
+  title =        {MetaInit: Initializing learning by learning to initialize},
+  url =
+                  {https://proceedings.neurips.cc/paper/2019/file/876e8108f87eb61877c6263228b67256-Paper.pdf},
+  volume =       32,
+  year =         2019,
+  tags =         {neurips2019, hessian},
+}
+
+@misc{papyan2019spectrum,
+  title =        {The Full Spectrum of Deepnet Hessians at Scale: Dynamics with
+                  SGD Training and Sample Size},
+  author =       {Vardan Papyan},
+  year =         2019,
+  eprint =       {1811.07062},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {hessian, vivit},
+}
+
+@article{corallo2021emacs,
+  author =       {Andrea Corallo and Luca Nassi and Nicola Manca},
+  title =        {Bringing {GNU} Emacs to Native Code},
+  journal =      {CoRR},
+  volume =       {abs/2004.02504},
+  year =         2020,
+  url =          {https://arxiv.org/abs/2004.02504},
+  archivePrefix ={arXiv},
+  eprint =       {2004.02504},
+  timestamp =    {Wed, 08 Apr 2020 17:08:25 +0200},
+  biburl =       {https://dblp.org/rec/journals/corr/abs-2004-02504.bib},
+  bibsource =    {dblp computer science bibliography, https://dblp.org}
+}
+
+@misc{li2021low,
+  title =        {Low Dimensional Landscape Hypothesis is True: DNNs can be
+                  Trained in Tiny Subspaces},
+  author =       {Tao Li and Lei Tan and Qinghua Tao and Yipeng Liu and Xiaolin
+                  Huang},
+  year =         2021,
+  eprint =       {2103.11154},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@misc{jorda2021cuconv,
+  title =        {cuConv: A CUDA Implementation of Convolution for CNN
+                  Inference},
+  author =       {Marc Jordà and Pedro Valero-Lara and Antonio J. Peña},
+  year =         2021,
+  eprint =       {2103.16234},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.DC},
+  tags =         {backpack},
+}
+
+@incollection{paszke2019pytorch,
+  title =        {{PyTorch}: An Imperative Style, High-Performance Deep Learning
+                  Library},
+  author =       {Paszke, Adam and Gross, Sam and Massa, Francisco and Lerer,
+                  Adam and Bradbury, James and Chanan, Gregory and Killeen,
+                  Trevor and Lin, Zeming and Gimelshein, Natalia and Antiga,
+                  Luca and Desmaison, Alban and Kopf, Andreas and Yang, Edward
+                  and DeVito, Zachary and Raison, Martin and Tejani, Alykhan and
+                  Chilamkurthy, Sasank and Steiner, Benoit and Fang, Lu and Bai,
+                  Junjie and Chintala, Soumith},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  year =         2019,
+}
+
+@misc{abadi2015tensorflow,
+  title =        {{TensorFlow}: Large-Scale Machine Learning on Heterogeneous
+                  Systems},
+  author =       { Mart\'{\i}n~Abadi and Ashish~Agarwal and Paul~Barham and
+                  Eugene~Brevdo and Zhifeng~Chen and Craig~Citro and
+                  Greg~S.~Corrado and Andy~Davis and Jeffrey~Dean and
+                  Matthieu~Devin and Sanjay~Ghemawat and Ian~Goodfellow and
+                  Andrew~Harp and Geoffrey~Irving and Michael~Isard and Yangqing
+                  Jia and Rafal~Jozefowicz and Lukasz~Kaiser and
+                  Manjunath~Kudlur and Josh~Levenberg and Dan~Man\'{e} and
+                  Rajat~Monga and Sherry~Moore and Derek~Murray and Chris~Olah
+                  and Mike~Schuster and Jonathon~Shlens and Benoit~Steiner and
+                  Ilya~Sutskever and Kunal~Talwar and Paul~Tucker and
+                  Vincent~Vanhoucke and Vijay~Vasudevan and Fernanda~Vi\'{e}gas
+                  and Oriol~Vinyals and Pete~Warden and Martin~Wattenberg and
+                  Martin~Wicke and Yuan~Yu and Xiaoqiang~Zheng},
+  year =         2015,
+}
+
+@inproceedings{osawa2019large,
+  author =       {Osawa, Kazuki and Tsuji, Yohei and Ueno, Yuichiro and Naruse,
+                  Akira and Yokota, Rio and Matsuoka, Satoshi},
+  booktitle =    {2019 IEEE/CVF Conference on Computer Vision and Pattern
+                  Recognition (CVPR)},
+  title =        {Large-Scale Distributed Second-Order Optimization Using
+                  Kronecker-Factored Approximate Curvature for Deep
+                  Convolutional Neural Networks},
+  year =         2019,
+  pages =        {12351-12359},
+  doi =          {10.1109/CVPR.2019.01264}
+}
+
+@InProceedings{botev2017practical,
+  title =        {Practical {G}auss-{N}ewton Optimisation for Deep Learning},
+  author =       {Aleksandar Botev and Hippolyt Ritter and David Barber},
+  booktitle =    {International Conference on Machine Learning (ICML)},
+  year =         2017,
+}
+
+@inproceedings{schneider2019deepobs,
+  title =        {Deep{OBS}: A Deep Learning Optimizer Benchmark Suite},
+  author =       {Schneider, Frank and Balles, Lukas and Hennig, Philipp},
+  booktitle =    {International Conference on Learning Representations (ICLR)},
+  year =         2019,
+}
+
+@inproceedings{papyan2019measurements,
+  author =       {Vardan Papyan},
+  title =        {Measurements of Three-Level Hierarchical Structure in the
+                  Outliers in the Spectrum of Deepnet {H}essians},
+  booktitle =    {International Conference on Machine Learning (ICML)},
+  year =         2019,
+}
+
+@article{cai2020gramgaussnewton,
+  title =        {Gram-Gauss-Newton Method: Learning Overparameterized Neural
+                  Networks for Regression Problems},
+  author =       {Tianle Cai and Ruiqi Gao and Jikai Hou and Siyu Chen and Dong
+                  Wang and Di He and Zhihua Zhang and Liwei Wang},
+  year =         2020,
+  url =          {https://openreview.net/forum?id=H1gCeyHFDS}
+}
+
+@article{chen2021fast,
+  author =       {Chen, Chao and Reiz, Severin and Yu, Chenhan D. and Bungartz,
+                  Hans-Joachim and Biros, George},
+  title =        {Fast Approximation of the Gauss--Newton Hessian Matrix for the
+                  Multilayer Perceptron},
+  journal =      {SIAM Journal on Matrix Analysis and Applications},
+  volume =       42,
+  number =       1,
+  pages =        {165-184},
+  year =         2021,
+  doi =          {10.1137/19M129961X},
+  URL =          { https://doi.org/10.1137/19M129961X},
+  eprint =       { https://doi.org/10.1137/19M129961X }
+}
+
+@article{papyan2020prevalence,
+  title =        {Prevalence of neural collapse during the terminal phase of
+                  deep learning training},
+  volume =       117,
+  ISSN =         {1091-6490},
+  url =          {http://dx.doi.org/10.1073/pnas.2015509117},
+  DOI =          {10.1073/pnas.2015509117},
+  number =       40,
+  journal =      {Proceedings of the National Academy of Sciences},
+  publisher =    {Proceedings of the National Academy of Sciences},
+  author =       {Papyan, Vardan and Han, X. Y. and Donoho, David L.},
+  year =         2020,
+  month =        {Sep},
+  pages =        {24652–24663}
+}
+
+@article{papyan2020traces,
+  author =       {Vardan Papyan},
+  title =        {Traces of Class/Cross-Class Structure Pervade Deep Learning
+                  Spectra},
+  journal =      {Journal of Machine Learning Research (JMLR)},
+  year =         2020,
+}
+
+@inproceedings{lecun1889optimal,
+  author =       {LeCun, Yann and Denker, John and Solla, Sara},
+  booktitle =    {Advances in Neural Information Processing Systems (NIPS)},
+  title =        {Optimal Brain Damage},
+  year =         1989
+}
+
+@misc{wei2020how,
+  title =        {How noise affects the Hessian spectrum in overparameterized
+                  neural networks},
+  author =       {Mingwei Wei and David Schwab},
+  year =         2020,
+  url =          {https://openreview.net/forum?id=Hklcm0VYDS}
+}
+
+@inproceedings{bernacchia2018exact,
+  author =       {Bernacchia, Alberto and Lengyel, Mate and Hennequin,
+                  Guillaume},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  title =        {Exact natural gradient in deep linear networks and its
+                  application to the nonlinear case},
+  year =         2018,
+  tags =         {vivit},
+}
+
+@book{kahneman2011thinking,
+  author =       {Kahneman, Daniel},
+  isbn =         {9780374275631 0374275637},
+  publisher =    {Farrar, Straus and Giroux},
+  refid =        706020998,
+  title =        {Thinking, fast and slow},
+  year =         2011
+}
+
+@article{dangel2021vivit,
+  title =        {{ViViT}: {C}urvature access through the generalized
+                  {G}auss-{N}ewton's low-rank structure},
+  author =       {Felix Dangel and Lukas Tatzel and Philipp Hennig},
+  year =         2021,
+  primaryClass = {cs.LG}
+}
+
+@book{bluedorn2015fallacy,
+  title =        {The Fallacy Detective: Thirty-Eight Lessons on How to
+                  Recognize Bad Reasoning},
+  author =       {Bluedorn, N. and Bluedorn, H. and Corley, R.},
+  isbn =         9780974531595,
+  lccn =         2013944061,
+  url =          {https://books.google.de/books?id=Uvs7xQEACAAJ},
+  year =         2015,
+  publisher =    {Christian Logic}
+}
+
+@InProceedings{finn2017model,
+  title =        {Model-Agnostic Meta-Learning for Fast Adaptation of Deep
+                  Networks},
+  author =       {Chelsea Finn and Pieter Abbeel and Sergey Levine},
+  booktitle =    {Proceedings of the 34th International Conference on Machine
+                  Learning},
+  pages =        {1126--1135},
+  year =         2017,
+  editor =       {Precup, Doina and Teh, Yee Whye},
+  volume =       70,
+  series =       {Proceedings of Machine Learning Research},
+  month =        {06--11 Aug},
+  publisher =    {PMLR},
+  pdf =          {http://proceedings.mlr.press/v70/finn17a/finn17a.pdf},
+  url =          { http://proceedings.mlr.press/v70/finn17a.html},
+  tags =         {skill},
+}
+
+@article{bridgeman2017hand,
+  title =        {Hand-waving and interpretive dance: an introductory course on
+                  tensor networks},
+  volume =       50,
+  ISSN =         {1751-8121},
+  url =          {http://dx.doi.org/10.1088/1751-8121/aa6dc3},
+  DOI =          {10.1088/1751-8121/aa6dc3},
+  number =       22,
+  journal =      {Journal of Physics A: Mathematical and Theoretical},
+  publisher =    {IOP Publishing},
+  author =       {Bridgeman, Jacob C and Chubb, Christopher T},
+  year =         2017,
+  month =        {May},
+  pages =        223001
+}
+
+@misc{frankle2019lottery,
+  title =        {The Lottery Ticket Hypothesis: Finding Sparse, Trainable
+                  Neural Networks},
+  author =       {Jonathan Frankle and Michael Carbin},
+  year =         2019,
+  eprint =       {1803.03635},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@misc{jacot2020neural,
+  title =        {Neural Tangent Kernel: Convergence and Generalization in
+                  Neural Networks},
+  author =       {Arthur Jacot and Franck Gabriel and Clément Hongler},
+  year =         2020,
+  eprint =       {1806.07572},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG},
+  tags =         {todo},
+}
+
+@misc{xu2018secondorder,
+  title =        {Second-Order Optimization for Non-Convex Machine Learning: An
+                  Empirical Study},
+  author =       {Peng Xu and Farbod Roosta-Khorasani and Michael W. Mahoney},
+  year =         2018,
+  eprint =       {1708.07827},
+  archivePrefix ={arXiv},
+  primaryClass = {math.OC}
+}
+
+@misc{ortizjiménez2021linearized,
+  title =        {What can linearized neural networks actually say about
+                  generalization?},
+  author =       {Guillermo Ortiz-Jiménez and Seyed-Mohsen Moosavi-Dezfooli and
+                  Pascal Frossard},
+  year =         2021,
+  eprint =       {2106.06770},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@misc{papamakarios2021normalizing,
+  title =        {Normalizing Flows for Probabilistic Modeling and Inference},
+  author =       {George Papamakarios and Eric Nalisnick and Danilo Jimenez
+                  Rezende and Shakir Mohamed and Balaji Lakshminarayanan},
+  year =         2021,
+  eprint =       {1912.02762},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML}
+}
+
+@misc{frantar2021efficient,
+  title =        {Efficient Matrix-Free Approximations of Second-Order
+                  Information, with Applications to Pruning and Optimization},
+  author =       {Elias Frantar and Eldar Kurtic and Dan Alistarh},
+  year =         2021,
+  eprint =       {2107.03356},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@misc{ren2019efficient,
+  title =        {Efficient Subsampled Gauss-Newton and Natural Gradient Methods
+                  for Training Neural Networks},
+  author =       {Yi Ren and Donald Goldfarb},
+  year =         2019,
+  eprint =       {1906.02353},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@misc{zhang2019fixup,
+  title =        {Fixup Initialization: Residual Learning Without Normalization},
+  author =       {Hongyi Zhang and Yann N. Dauphin and Tengyu Ma},
+  year =         2019,
+  eprint =       {1901.09321},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@book{nocedal2006numerical,
+  Title =        {Numerical Optimization},
+  Author =       {Jorge Nocedal and Stephen J. Wright},
+  Publisher =    {Springer},
+  Year =         2006,
+  Address =      {New York, NY, USA},
+  Edition =      {second}
+}
+
+@misc{george2018fast,
+  title =        {Fast Approximate Natural Gradient Descent in a
+                  Kronecker-factored Eigenbasis},
+  author =       {Thomas George and César Laurent and Xavier Bouthillier and
+                  Nicolas Ballas and Pascal Vincent},
+  year =         2018,
+  eprint =       {1806.03884},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@inproceedings{daxberger2021bayesian,
+  title =        {Bayesian Deep Learning via Subnetwork Inference},
+  author =       {Daxberger, E. and Nalisnick, E. and Allingham, J. and Antorán,
+                  J. and Hernández-Lobato, J. M.},
+  booktitle =    {38th International Conference on Machine Learning},
+  month =        jul,
+  year =         2021,
+  month_numeric =7
+}
+
+@book{sarkka2013bayesian,
+  title =        {Bayesian Filtering and Smoothing},
+  author =       {Simo S{\"a}rkk{\"a}},
+  year =         2013,
+  isbn =         9781107619289,
+  publisher =    {Cambridge University Press},
+  address =      {United Kingdom},
+  url =
+                  {https://users.aalto.fi/~ssarkka/pub/cup_book_online_20131111.pdf},
+}
+
+@inproceedings{huh2020curvature,
+  title =        {Curvature-corrected learning dynamics in deep neural networks},
+  author =       {Huh, Dongsung},
+  booktitle =    {Proceedings of the 37th International Conference on Machine
+                  Learning},
+  pages =        {4552--4560},
+  year =         2020,
+  editor =       {III, Hal Daumé and Singh, Aarti},
+  volume =       119,
+  series =       {Proceedings of Machine Learning Research},
+  month =        {13--18 Jul},
+  publisher =    {PMLR},
+  pdf =          {http://proceedings.mlr.press/v119/huh20a/huh20a.pdf},
+  url =          {http://proceedings.mlr.press/v119/huh20a.html},
+}
+
+@misc{saxe2014exact,
+  title =        {Exact solutions to the nonlinear dynamics of learning in deep
+                  linear neural networks},
+  author =       {Andrew M. Saxe and James L. McClelland and Surya Ganguli},
+  year =         2014,
+  eprint =       {1312.6120},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.NE}
+}
+
+@inproceedings{welling2011bayesian,
+  author =       {Welling, Max and Teh, Yee Whye},
+  title =        {Bayesian Learning via Stochastic Gradient Langevin Dynamics},
+  year =         2011,
+  isbn =         9781450306195,
+  publisher =    {Omnipress},
+  address =      {Madison, WI, USA},
+  booktitle =    {Proceedings of the 28th International Conference on
+                  International Conference on Machine Learning},
+  pages =        {681–688},
+  numpages =     8,
+  location =     {Bellevue, Washington, USA},
+  series =       {ICML'11}
+}
+
+@misc{kao2021natural,
+  title =        {Natural continual learning: success is a journey, not (just) a
+                  destination},
+  author =       {Ta-Chu Kao and Kristopher T. Jensen and Alberto Bernacchia and
+                  Guillaume Hennequin},
+  year =         2021,
+  eprint =       {2106.08085},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@inproceedings{vinyals2012krylov,
+  title =        {Krylov Subspace Descent for Deep Learning},
+  author =       {Oriol Vinyals and Daniel Povey},
+  booktitle =    {Proceedings of the Fifteenth International Conference on
+                  Artificial Intelligence and Statistics},
+  pages =        {1261--1268},
+  year =         2012,
+  editor =       {Neil D. Lawrence and Mark Girolami},
+  volume =       22,
+  series =       {Proceedings of Machine Learning Research},
+  address =      {La Palma, Canary Islands},
+  month =        {21--23 Apr},
+  publisher =    {PMLR},
+  pdf =          {http://proceedings.mlr.press/v22/vinyals12/vinyals12.pdf},
+  url =          {http://proceedings.mlr.press/v22/vinyals12.html},
+}
+
+@misc{song2018accelerating,
+  title =        {Accelerating Natural Gradient with Higher-Order Invariance},
+  author =       {Yang Song and Jiaming Song and Stefano Ermon},
+  year =         2018,
+  eprint =       {1803.01273},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@misc{zhang2017blockdiagonal,
+  title =        {Block-diagonal {H}essian-free Optimization for Training Neural
+                  Networks},
+  author =       {Huishuai Zhang and Caiming Xiong and James Bradbury and
+                  Richard Socher},
+  year =         2017,
+}
+
+@misc{hooker2020hardware,
+  title =        {The Hardware Lottery},
+  author =       {Sara Hooker},
+  year =         2020,
+  eprint =       {2009.06489},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.CY}
+}
+
+@misc{hasse2020exercise,
+  title =        {Exercise Book Improved Reading (workshop)},
+  author =       {Friedrich Hasse},
+  year =         2020,
+  url =
+                  {https://webcoachedtraining.de/app/content/shared/pdf/workbook_en.pdf}
+}
+
+@misc{hasse2020course,
+  title =        {Couse Book Book Improved Reading (workshop)},
+  author =       {Friedrich Hasse},
+  year =         2020,
+  url =
+                  {https://webcoachedtraining.de/app/content/shared/pdf/workbook_en.pdf}
+}
+
+@misc{mishchenko2021regularized,
+  title =        {Regularized Newton Method with Global O(1/k2) Convergence},
+  author =       {Konstantin Mishchenko},
+  year =         2021,
+  url =
+                  {https://drive.google.com/file/d/1Y7kE4ZzWlF1K5Ao6DvVmFJmvqkLHAL_t/view}
+}
+
+@book{pan2019sorry,
+  title =        {Sorry I'm Late, I Didn't Want to Come: An Introvert’s Year of
+                  Living Dangerously},
+  author =       {Pan, J.},
+  isbn =         9781473562707,
+  url =          {https://books.google.de/books?id=VCJsDwAAQBAJ},
+  year =         2019,
+  publisher =    {Transworld}
+}
+
+@InProceedings{ioffe2015batch,
+  title =        {Batch Normalization: Accelerating Deep Network Training by
+                  Reducing Internal Covariate Shift},
+  author =       {Ioffe, Sergey and Szegedy, Christian},
+  booktitle =    {Proceedings of the 32nd International Conference on Machine
+                  Learning},
+  pages =        {448--456},
+  year =         2015,
+  editor =       {Bach, Francis and Blei, David},
+  volume =       37,
+  series =       {Proceedings of Machine Learning Research},
+  address =      {Lille, France},
+  month =        {07--09 Jul},
+  publisher =    {PMLR},
+  pdf =          {http://proceedings.mlr.press/v37/ioffe15.pdf},
+  url =          {https://proceedings.mlr.press/v37/ioffe15.html},
+}
+
+@misc{khan2021bayesian,
+  title =        {The Bayesian Learning Rule},
+  author =       {Mohammad Emtiyaz Khan and Håvard Rue},
+  year =         2021,
+  eprint =       {2107.04562},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML}
+}
+
+@misc{smith2021origin,
+  title =        {On the Origin of Implicit Regularization in Stochastic
+                  Gradient Descent},
+  author =       {Samuel L. Smith and Benoit Dherin and David G. T. Barrett and
+                  Soham De},
+  year =         2021,
+  eprint =       {2101.12176},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@misc{lin2021tractable,
+  title =        {Tractable structured natural gradient descent using local
+                  parameterizations},
+  author =       {Wu Lin and Frank Nielsen and Mohammad Emtiyaz Khan and Mark
+                  Schmidt},
+  year =         2021,
+  eprint =       {2102.07405},
+  archivePrefix ={arXiv},
+  primaryClass = {stat.ML}
+}
+
+@inproceedings{daxberger2021laplace,
+  title =        {Laplace Redux - Effortless Bayesian Deep Learning},
+  author =       {Erik Daxberger and Agustinus Kristiadi and Alexander Immer and
+                  Runa Eschenhagen and Matthias Bauer and Philipp Hennig},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  year =         2021,
+}
+
+@inproceedings{martens2018kroneckerfactored,
+  title =        {Kronecker-factored Curvature Approximations for Recurrent
+                  Neural Networks},
+  author =       {James Martens and Jimmy Ba and Matt Johnson},
+  booktitle =    {International Conference on Learning Representations},
+  year =         2018,
+  url =          {https://openreview.net/forum?id=HyMTkQZAb},
+}
+
+@article{deroos2017krylov,
+  title =        {Krylov Subspace Recycling for Fast Iterative Least-Squares in
+                  Machine Learning},
+  author =       {de Roos, Filip and Hennig, Philipp},
+  journal =      {arXiv preprint arXiv:1706.00241},
+  year =         2017,
+  url =          {https://arxiv.org/abs/1706.00241}
+}
+
+@inproceedings{sohldickstein2014fast,
+  title =        {Fast large-scale optimization by unifying stochastic gradient
+                  and quasi-Newton methods},
+  author =       {Sohl-Dickstein, Jascha and Poole, Ben and Ganguli, Surya},
+  booktitle =    {International Conference on Machine Learning (ICML)},
+  year =         2014,
+}
+
+@misc{tuddenham2020quasinewtons,
+  title =        {Quasi-Newton's method in the class gradient defined
+                  high-curvature subspace},
+  author =       {Mark Tuddenham and Adam Prügel-Bennett and Jonathan Hare},
+  year =         2020,
+  eprint =       {2012.01938},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@article{ubaru2017fast,
+  title =        {Fast Estimation of tr(f(A)) via Stochastic Lanczos Quadrature},
+  author =       {Shashanka Ubaru and Jie Chen and Yousef Saad},
+  journal =      {SIAM J. Matrix Anal. Appl.},
+  year =         2017,
+  volume =       38,
+  pages =        {1075-1099}
+}
+
+@article{lin2013approximating,
+  author =       {Lin, Lin and Saad, Yousef and Yang, Chao},
+  year =         2013,
+  month =        08,
+  title =        {Approximating Spectral Densities of Large Matrices},
+  volume =       58,
+  journal =      {SIAM Review},
+  doi =          {10.1137/130934283}
+}
+
+@misc{amos2017input,
+  title =        {Input Convex Neural Networks},
+  author =       {Brandon Amos and Lei Xu and J. Zico Kolter},
+  year =         2017,
+  eprint =       {1609.07152},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.LG}
+}
+
+@article{zhou2021damped,
+  author =       {Zhou, Jingcheng and Wei, Wei and Zhang, Ruizhi and Zheng,
+                  Zhiming},
+  title =        {Damped Newton Stochastic Gradient Descent Method for Neural
+                  Networks Training},
+  journal =      {Mathematics},
+  volume =       9,
+  year =         2021,
+  number =       13,
+  article-number =1533,
+  url =          {https://www.mdpi.com/2227-7390/9/13/1533},
+  issn =         {2227-7390},
+  doi =          {10.3390/math9131533}
+}
+
+@inproceedings{liu2021learning,
+  title =        {Learning by Turning: Neural Architecture Aware Optimisation},
+  author =       {Yang Liu and Jeremy Bernstein and Markus Meister and Yisong
+                  Yue},
+  year =         2021,
+  eprint =       {2102.07227},
+  archivePrefix ={arXiv},
+  primaryClass = {cs.NE},
+  tags =         {icml2021}
+}
+
+@article{nicholas2011quick,
+  author =       {Nicholas, Kimberly A. and Gordon, Wendy S.},
+  title =        {A quick guide to writing a solid peer review},
+  journal =      {Eos, Transactions American Geophysical Union},
+  volume =       92,
+  number =       28,
+  pages =        {233-234},
+  keywords =     {peer review, professional development, scientific skills,
+                  graduate training},
+  doi =          {https://doi.org/10.1029/2011EO280001},
+  url =
+                  {https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2011EO280001},
+  eprint =
+                  {https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/2011EO280001},
+  year =         2011
+}
+
+@misc{sankaran2022benchmarking,
+  title =        {Benchmarking the Linear Algebra Awareness of {T}ensor{F}low
+                  and {P}y{T}orch},
+  author =       {Aravind Sankaran and Navid Akbari Alashti and Christos Psarras
+                  and Paolo Bientinesi},
+  year =         2022,
+}
+
+@article{hughes1989functional,
+  AUTHOR =       {J. Hughes},
+  TITLE =        {{Why Functional Programming Matters}},
+  JOURNAL =      {Computer Journal},
+  VOLUME =       32,
+  NUMBER =       2,
+  PAGES =        {98--107},
+  YEAR =         1989
+}
+
+@article{amid2021locoprop,
+  title =        {Locoprop: Enhancing backprop via local loss optimization},
+  author =       {Amid, Ehsan and Anil, Rohan and Warmuth, Manfred K},
+  journal =      {arXiv preprint arXiv:2106.06199},
+  year =         2021
+}
+
+@article{bahamou2022mini,
+  title =        {A Mini-Block Natural Gradient Method for Deep Neural Networks},
+  author =       {Bahamou, Achraf and Goldfarb, Donald and Ren, Yi},
+  journal =      {arXiv preprint arXiv:2202.04124},
+  year =         2022
+}
+
+@inproceedings{hayashi2019einconv,
+  author =       {Hayashi, Kohei and Yamaguchi, Taiki and Sugawara, Yohei and
+                  Maeda, Shin-ichi},
+  booktitle =    {Advances in Neural Information Processing Systems},
+  editor =       {H. Wallach and H. Larochelle and A. Beygelzimer and F.
+                  d\textquotesingle Alch\'{e}-Buc and E. Fox and R. Garnett},
+  publisher =    {Curran Associates, Inc.},
+  title =        {Exploring Unexplored Tensor Network Decompositions for
+                  Convolutional Neural Networks},
+  url =
+                  {https://proceedings.neurips.cc/paper/2019/file/2bd2e3373dce441c6c3bfadd1daa953e-Paper.pdf},
+  volume =       32,
+  year =         2019
+}
+
+@article{marklin2001effect,
+  author =       {Marklin, Richard W and Simoneau, Guy G},
+  title =        "{Effect of Setup Configurations of Split Computer Keyboards on
+                  Wrist Angle}",
+  journal =      {Physical Therapy},
+  volume =       81,
+  number =       4,
+  pages =        {1038-1048},
+  year =         2001,
+  month =        04,
+  issn =         {0031-9023},
+  doi =          {10.1093/ptj/81.4.1038},
+  url =          {https://doi.org/10.1093/ptj/81.4.1038},
+  eprint =
+                  {https://academic.oup.com/ptj/article-pdf/81/4/1038/31683805/ptj1038.pdf},
+}
+
+@inproceedings{paszke2021getting,
+  title =        {Getting to the Point. Index Sets and Parallelism-Preserving
+                  Autodiff for Pointful Array Programming},
+  author =       {Paszke, Adam and Johnson, Daniel and Duvenaud, David and
+                  Vytiniotis, Dimitrios and Radul, Alexey and Johnson, Matthew
+                  and Ragan-Kelley, Jonathan and Maclaurin, Dougal},
+  booktitle =    {International Conference on Functional Programming},
+  year =         2021
+}
+
+@inproceedings{oktay2021randomized,
+  title =        {Randomized Automatic Differentiation},
+  author =       {Deniz Oktay and Nick McGreivy and Joshua Aduol and Alex
+                  Beatson and Ryan P Adams},
+  booktitle =    {International Conference on Learning Representations},
+  year =         2021,
+  url =          {https://openreview.net/forum?id=xpx9zj7CUlY}
+}
+
+@misc{yang2020sketchy,
+  doi =          {10.48550/ARXIV.2006.05924},
+  url =          {https://arxiv.org/abs/2006.05924},
+  author =       {Yang, Minghan and Xu, Dong and Wen, Zaiwen and Chen, Mengyun
+                  and Xu, Pengxiang},
+  keywords =     {Optimization and Control (math.OC), Machine Learning
+                  (stat.ML), FOS: Mathematics, FOS: Mathematics, FOS: Computer
+                  and information sciences, FOS: Computer and information
+                  sciences},
+  title =        {Sketchy Empirical Natural Gradient Methods for Deep Learning},
+  publisher =    {arXiv},
+  year =         2020,
+  copyright =    {arXiv.org perpetual, non-exclusive license}
+}
+
+@book{clark2011fit,
+  title =        {Fit ohne Ger{\"a}te: Trainieren mit dem eigenen
+                  K{\"o}rpergewicht},
+  author =       {Clark, J. and Lauren, M.},
+  isbn =         9783864131523,
+  url =          {https://books.google.de/books?id=XUgWuwSVI0wC},
+  year =         2011,
+  publisher =    {Riva}
+}
+
+@misc{zhang2022stack,
+  doi =          {10.48550/ARXIV.2203.16338},
+  url =          {https://arxiv.org/abs/2203.16338},
+  author =       {Zhang, Tianning and Ang, L. K. and Chen, Tianqi and Yang, Bo
+                  and Li, Erping},
+  title =        {Stack operation of tensor networks},
+  publisher =    {arXiv},
+  year =         2022,
+  copyright =    {Creative Commons Attribution 4.0 International}
+}
+
+@article{bottou2016machine,
+  author =       {Bottou, Léon and Curtis, Frank E. and Nocedal, Jorge},
+  title =        {Optimization Methods for Large-Scale Machine Learning},
+  volume =       60,
+  journal =      {SIAM Review (SIREV)},
+  year =         2016,
+}
+
+@misc{frostig2021decomposing,
+  doi =          {10.48550/ARXIV.2105.09469},
+  url =          {https://arxiv.org/abs/2105.09469},
+  author =       {Frostig, Roy and Johnson, Matthew J. and Maclaurin, Dougal and
+                  Paszke, Adam and Radul, Alexey},
+  keywords =     {Programming Languages (cs.PL), Machine Learning (cs.LG), FOS:
+                  Computer and information sciences, FOS: Computer and
+                  information sciences},
+  title =        {Decomposing reverse-mode automatic differentiation},
+  publisher =    {arXiv},
+  year =         2021,
+  copyright =    {arXiv.org perpetual, non-exclusive license}
+}
+
+@misc{radul2022you,
+  doi =          {10.48550/ARXIV.2204.10923},
+  url =          {https://arxiv.org/abs/2204.10923},
+  author =       {Radul, Alexey and Paszke, Adam and Frostig, Roy and Johnson,
+                  Matthew and Maclaurin, Dougal},
+  keywords =     {Programming Languages (cs.PL), FOS: Computer and information
+                  sciences, FOS: Computer and information sciences},
+  title =        {You Only Linearize Once: Tangents Transpose to Gradients},
+  publisher =    {arXiv},
+  year =         2022,
+  copyright =    {arXiv.org perpetual, non-exclusive license}
+}
+
+@incollection{rumelhart1986learning,
+  address =      {Cambridge, MA},
+  author =       {Rumelhart, David E. and Hinton, Geoffrey E. and Williams,
+                  Ronald J.},
+  booktitle =    {Parallel Distributed Processing: Explorations in the
+                  Microstructure of Cognition, {V}olume 1: {F}oundations},
+  description =  {idsia},
+  editor =       {Rumelhart, David E. and Mcclelland, James L.},
+  pages =        {318--362},
+  publisher =    {MIT Press},
+  title =        {Learning Internal Representations by Error Propagation},
+  year =         1986
+}
+
+@article{chen2018bdapch,
+  title =        {{BDA-PCH}: Block-Diagonal Approximation of Positive-Curvature
+                  {H}essian for Training Neural Networks},
+  author =       {Chen, Sheng-Wei and Chou, Chun-Nan and Chang, Edward},
+  year =         2018
+}
+
+@inproceedings{becker1989improving,
+  author =       {Becker, Suzanna and Lecun, Yann},
+  year =         1989,
+  title =        {Improving the Convergence of Back-Propagation Learning with
+                  Second-Order Methods}
+}
+
+@software{novik2020torchoptimizer,
+    title        = {{torch-optimizer -- collection of optimization algorithms for {P}y{T}orch}},
+    author       = {Novik, Mykola},
+    year         = 2020,
+}
+
+@software{he2021functorch,
+  author =       {Horace He, Richard Zou},
+  title =        {functorch: {JAX}-like composable function transforms for {P}y{T}orch},
+  year =         {2021}
+}
+
+@misc{shao2022tensor,
+  author =       {Shao, Junru and Zhou, Xiyou and Feng, Siyuan and Hou, Bohan
+                  and Lai, Ruihang and Jin, Hongyi and Lin, Wuwei and Masuda,
+                  Masahiro and Yu, Cody Hao and Chen, Tianqi},
+  title =        {Tensor Program Optimization with Probabilistic Programs},
+  year =         2022,
+}
+
+@article{smith2018opteinsum,
+  author =       {Daniel G. A. Smith and Johnnie Gray},
+  title =        {opt{\textbackslash}{\_}einsum - {A} Python package for
+                  optimizing contraction order for einsum-like expressions},
+  journal =      {Journal of Open Source Software},
+  volume =       3,
+  year =         2018,
+}
+
+@inproceedings{paszke2017automatic,
+  author =       {Paszke, Adam and Gross, Sam and Chintala, Soumith and Chanan,
+                  Gregory and Yang, Edward and DeVito, Zachary and Lin, Zeming
+                  and Desmaison, Alban and Antiga, Luca and Lerer, Adam},
+  booktitle =    {NIPS Workshop on Autodiff},
+  title =        {Automatic Differentiation in {P}y{T}orch},
+  year =         2017
+}
+
+@inproceedings{rame2022fishr,
+  title =        {Fishr: Invariant Gradient Variances for Out-of-distribution
+                  Generalization},
+  author =       {Alexandre Rame and Corentin Dancette and Matthieu Cord},
+  year =         2022,
+  booktitle =    {International Conference on Machine Learning (ICML)}
+}
+
+@inproceedings{immer2021improving,
+  title =        { Improving predictions of {B}ayesian neural nets via local
+                  linearization },
+  author =       {Immer, Alexander and Korzepa, Maciej and Bauer, Matthias},
+  booktitle =    {International Conference on Artificial Intelligence and
+                  Statistics (AISTATS)},
+  year =         2021,
+}
+
+@inproceedings{gulrajani2021in,
+  title =        {In Search of Lost Domain Generalization},
+  author =       {Ishaan Gulrajani and David Lopez-Paz},
+  booktitle =    {International Conference on Learning Representations (ICLR)},
+  year =         2021,
+}
+
+@inproceedings{yousefpour2021opacus,
+  title =        {Opacus: User-Friendly Differential Privacy Library in PyTorch},
+  author =       {Ashkan Yousefpour and Igor Shilov and Alexandre Sablayrolles
+                  and Davide Testuggine and Karthik Prasad and Mani Malek and
+                  John Nguyen and Sayan Ghosh and Akash Bharadwaj and Jessica
+                  Zhao and Graham Cormode and Ilya Mironov},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS),
+                  Workshop Privacy in Machine Learning},
+  year =         2021,
+}
+
+@inproceedings{chen2019hollownet,
+  title =        {Neural Networks with Cheap Differential Operators},
+  author =       {Chen, Ricky T. Q. and Duvenaud, David},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  year =         2019,
+}
+
+@software{maclaurin2015autograd,
+  author = {Dougal Maclaurin and David Duvenaud and Matthew Johnson and Ryan P. Adams},
+  title = {Autograd: Reverse-mode differentiation of native {P}ython},
+  year = {2015},
+}
+
+@article {maclaurin2019dex,
+  title =        {Dex: array programming with typed indices},
+  journal =      {Advances in Neural Information Processing Systems, Workshop
+                  Program Transformations},
+  year =         2019,
+  author =       {Dougal Maclaurin and Radul, Alexey and Johnson, Matthew J and
+                  Vytiniotis, Dimitrios}
+}
+
+@inproceedings{zhang2019fast,
+  author =       {Zhang, Guodong and Martens, James and Grosse, Roger B},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  title =        {Fast Convergence of Natural Gradient Descent for
+                  Over-Parameterized Neural Networks},
+  year =         2019
+}
+
+@article{loan2000ubiquitous,
+  title =        {The ubiquitous {K}ronecker product},
+  journal =      {Journal of Computational and Applied Mathematics},
+  year =         2000,
+  author =       {Charles F.Van Loan},
+}
+
+@conference{balles2018dissecting,
+  title =        {Dissecting Adam: The Sign, Magnitude and Variance of
+                  Stochastic Gradients},
+  author =       {Balles, Lukas and Hennig, Philipp},
+  booktitle =    {International Conference on Machine Learning (ICML)},
+  year =         2018,
+}
+
+@inproceedings{lecun1889optimal,
+  author =       {LeCun, Yann and Denker, John and Solla, Sara},
+  booktitle =    {Advances in Neural Information Processing Systems (NIPS)},
+  title =        {Optimal Brain Damage},
+  year =         1989
+}
+
+@inproceedings{hassibi1992second,
+  author =       {Hassibi, Babak and Stork, David},
+  booktitle =    {Advances in Neural Information Processing Systems (NIPS)},
+  title =        {Second order derivatives for network pruning: Optimal Brain
+                  Surgeon},
+  year =         1992
+}
+
+@inproceedings{zhao2015stochastic,
+  title =        {Stochastic Optimization with Importance Sampling for
+                  Regularized Loss Minimization},
+  author =       {Zhao, Peilin and Zhang, Tong},
+  booktitle =    {International Conference on Machine Learning (ICML)},
+  year =         2015,
+}
+
+@inproceedings{needell2014stochastic,
+  author =       {Needell, Deanna and Ward, Rachel and Srebro, Nati},
+  booktitle =    {Advances in Neural Information Processing Systems (NIPS)},
+  title =        {Stochastic Gradient Descent, Weighted Sampling, and the
+                  Randomized {K}aczmarz algorithm},
+  year =         2014
+}
+
+@article{wang2017accelerating,
+  title =        {Accelerating Deep Neural Network Training with Inconsistent
+                  Stochastic Gradient Descent},
+  author =       {Linnan Wang and Yi Yang and Martin Renqiang Min and Srimat T.
+                  Chakradhar},
+  journal =      {Neural networks},
+  year =         2017,
+}
+
+@inproceedings{abadi2016deep,
+  author =       {Abadi, Martin and Chu, Andy and Goodfellow, Ian and McMahan,
+                  H. Brendan and Mironov, Ilya and Talwar, Kunal and Zhang, Li},
+  title =        {Deep Learning with Differential Privacy},
+  year =         2016,
+  booktitle =    {ACM SIGSAC Conference on Computer and Communications Security},
+}
+
+@inproceedings{fredrikson2015model,
+  title =        {Model Inversion Attacks That Exploit Confidence Information
+                  and Basic Countermeasures},
+  year =         2015,
+  author =       {Fredrikson, Matt and Jha, Somesh and Ristenpart, Thomas},
+  booktitle =    {ACM Conference on Computer and Communications Security (CCS)}
+}
+
+@inproceedings{shokri2015privacy,
+  author =       {Shokri, Reza and Shmatikov, Vitaly},
+  title =        {Privacy-Preserving Deep Learning},
+  year =         2015,
+  booktitle =    {ACM SIGSAC Conference on Computer and Communications Security},
+}
+
+@article{robbins1951stochastic,
+  author =       {Herbert Robbins and Sutton Monro},
+  title =        {{A Stochastic Approximation Method}},
+  journal =      {The Annals of Mathematical Statistics},
+  year =         1951,
+}
+
+@article{polyak1964some,
+  title =        {Some methods of speeding up the convergence of iteration
+                  methods},
+  journal =      {USSR Computational Mathematics and Mathematical Physics},
+  year =         1964,
+  author =       {B.T. Polyak},
+}
+
+@article{nesterov1983method,
+  title =        {A method for solving the convex programming problem with
+                  convergence rate $O(1/k^2)$},
+  author =       {Yurii Nesterov},
+  journal =      {Proceedings of the USSR Academy of Sciences},
+  year =         1983,
+}
+
+@article{duchi2011adaptive,
+  author =       {John Duchi and Elad Hazan and Yoram Singer},
+  title =        {Adaptive Subgradient Methods for Online Learning and
+                  Stochastic Optimization},
+  journal =      {Journal of Machine Learning Research (JMLR)},
+  year =         2011,
+}
+
+@article{tieleman2012lecture,
+  title =        {Lecture 6.5-rmsprop: Divide the gradient by a running average
+                  of its recent magnitude},
+  author =       {Tieleman, Tijmen and Hinton, Geoffrey and others},
+  journal =      {COURSERA: Neural networks for machine learning},
+  year =         2012
+}
+
+@article{zeiler2012adadelta,
+  author =       {Zeiler, Matthew},
+  year =         2012,
+  title =        {ADADELTA: An adaptive learning rate method},
+}
+
+@inproceedings{kingma2015adam,
+  title =        {{A}dam: A Method for Stochastic Optimization},
+  author =       {Kingma, Diederik P and Ba, Jimmy},
+  booktitle =    {International Conference on Learning Representations (ICLR)},
+  year =         2015
+}
+
+@inproceedings{reddi2018on,
+  title =        {On the Convergence of Adam and Beyond},
+  author =       {Sashank J. Reddi and Satyen Kale and Sanjiv Kumar},
+  booktitle =    {International Conference on Learning Representations (ICLR)},
+  year =         2018,
+}
+
+@misc{choi2020on,
+  title =        {On Empirical Comparisons of Optimizers for Deep Learning},
+  author =       {Dami Choi and Christopher J. Shallue and Zachary Nado and
+                  Jaehoon Lee and Chris J. Maddison and George E. Dahl},
+  year =         2020,
+}
+
+@article{rosenblatt1958perceptron,
+  title =        {The perceptron: a probabilistic model for information storage
+                  and organization in the brain.},
+  author =       {Frank Rosenblatt},
+  journal =      {Psychological Review},
+  year =         1958,
+}
+
+@article{wu2019group,
+  title =        {Group Normalization},
+  author =       {Yuxin Wu and Kaiming He},
+  journal =      {International Journal of Computer Vision},
+  year =         2019,
+}
+
+@article{cho2014properties,
+  author =       {Cho, Kyunghyun and Merrienboer, Bart and Bahdanau, Dzmitry and
+                  Bengio, Y.},
+  year =         2014,
+  title =        {On the Properties of Neural Machine Translation:
+                  Encoder-Decoder Approaches},
+}
+
+@article{elman1990finding,
+  title =        {Finding structure in time},
+  journal =      {Cognitive Science},
+  year =         1990,
+  author =       {Jeffrey L. Elman},
+}
+
+@InProceedings{henriques2019small,
+  author =       {Henriques, João F. and Ehrhardt, Sebastien and Albanie, Samuel
+                  and Vedaldi, Andrea},
+  title =        {Small Steps and Giant Leaps: Minimal Newton Solvers for Deep
+                  Learning},
+  booktitle =    {International Conference on Computer Vision (ICCV)},
+  year =         2019
+}
+
+@inproceedings{foret2021sharpnessaware,
+  title =        {Sharpness-aware Minimization for Efficiently Improving
+                  Generalization},
+  author =       {Pierre Foret and Ariel Kleiner and Hossein Mobahi and Behnam
+                  Neyshabur},
+  booktitle =    {International Conference on Learning Representations (ICLR)},
+  year =         2021,
+}
+
+@inproceedings{kim2022fisher,
+  author =       {Kim, Minyoung and Li, Da and Hu, Shell and Hospedales,
+                  Timothy},
+  year =         2022,
+  title =        {Fisher SAM: Information Geometry and Sharpness Aware
+                  Minimisation},
+  booktitle =    {International Conference on Machine Learning (ICML)},
+}
+
+@inproceedings{hochreiter1994simplifying,
+  author =       {Hochreiter, Sepp and Schmidhuber, J\"{u}rgen},
+  booktitle =    {Advances in Neural Information Processing Systems (NIPS)},
+  title =        {Simplifying Neural Nets by Discovering Flat Minima},
+  year =         1994
+}
+
+@inproceedings{jiang2019fantastic,
+  author =       {Jiang, Yiding and Neyshabur, Behnam and Mobahi, Hossein and
+                  Krishnan, Dilip and Bengio, Samy},
+  title =        {Fantastic Generalization Measures and Where to Find Them},
+  booktitle =    {International Conference on Learning Representations (ICLR)},
+  year =         2019,
+}
+
+@inproceedings{li2020hessian,
+  title =        {Hessian based analysis of {SGD} for deep nets: Dynamics and
+                  generalization},
+  author =       {Li, Xinyan and Gu, Qilong and Zhou, Yingxue and Chen, Tiancong
+                  and Banerjee, Arindam},
+  booktitle =    {SIAM International Conference on Data Mining (SMD)},
+  year =         2020,
+}
+
+@book{colvin2008talent,
+  title =        {Talent Is Overrated: What Really Separates World-Class
+                  Performers from Everybody Else},
+  author =       {Colvin, Geoff},
+  year =         2008,
+  publisher =    {Penguin Publishing Group}
+}
+
+@article{li2017preconditioned,
+  title =        {Preconditioned stochastic gradient descent},
+  author =       {Li, Xi-Lin},
+  journal =      {IEEE Transactions on Neural Networks and Learning Systems},
+  year =         2017,
+}
+
+@phdthesis{adebayo2022towards,
+  title =        {Towards Effective Tools for Debugging Machine Learning Models},
+  author =       {Adebayo, Julius},
+  year =         2022,
+}
+
+@inproceedings{petzka2021relative,
+  author =       {Petzka, Henning and Kamp, Michael and Adilova, Linara and
+                  Sminchisescu, Cristian and Boley, Mario},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  title =        {Relative Flatness and Generalization},
+  year =         2021
+}
+
+@article{liu2021novel,
+  title =        {A Novel Structured Natural Gradient Descent for Deep Learning},
+  author =       {Liu, Weihua and Liu, Xiabi},
+  year =         2021
+}
+
+@article{yang2022sketch,
+  title =        {Sketch-Based Empirical Natural Gradient Methods for Deep
+                  Learning},
+  author =       {Yang, Minghan and Xu, Dong and Wen, Zaiwen and Chen, Mengyun
+                  and Xu, Pengxiang},
+  journal =      {Journal of Scientific Computing},
+  year =         2022,
+}
+
+@article{cohen2022adaptive,
+  title =        {Adaptive Gradient Methods at the Edge of Stability},
+  author =       {Cohen, Jeremy M and Ghorbani, Behrooz and Krishnan, Shankar
+                  and Agarwal, Naman and Medapati, Sourabh and Badura, Michal
+                  and Suo, Daniel and Cardoze, David and Nado, Zachary and Dahl,
+                  George E and others},
+  year =         2022
+}
+
+@article{cohen2021gradient,
+  title =        {Gradient descent on neural networks typically occurs at the
+                  edge of stability},
+  author =       {Cohen, Jeremy M and Kaur, Simran and Li, Yuanzhi and Kolter, J
+                  Zico and Talwalkar, Ameet},
+  year =         2021
+}
+
+@inproceedings{skorski2021revisiting,
+  title =        {Revisiting Weight Initialization of Deep Neural Networks},
+  author =       {Skorski, Maciej and Temperoni, Alessandro and Theobald,
+                  Martin},
+  booktitle =    {Asian Conference on Machine Learning (ACML)},
+  year =         2021,
+}
+
+@book{griewank2008evaluating,
+  title =        {Evaluating derivatives: principles and techniques of
+                  algorithmic differentiation},
+  author =       {Griewank, Andreas and Walther, Andrea},
+  year =         2008,
+  publisher =    {SIAM}
+}
+
+@article{reiz2022neural,
+  title =        {Neural Nets with a Newton Conjugate Gradient Method on
+                  Multiple GPUs},
+  author =       {Reiz, Severin and Neckel, Tobias and Bungartz, Hans-Joachim},
+  year =         2022
+}
+
+@article{mohtashami2022avoiding,
+  title =        {On Avoiding Local Minima Using Gradient Descent With Large
+                  Learning Rates},
+  author =       {Mohtashami, Amirkeivan and Jaggi, Martin and Stich, Sebastian},
+  year =         2022
+}
+
+@article{lorraine2018stochastic,
+  title =        {Stochastic hyperparameter optimization through hypernetworks},
+  author =       {Lorraine, Jonathan and Duvenaud, David},
+  year =         2018
+}
+
+@article{karakida2020understanding,
+  title =        {Understanding approximate fisher information for fast
+                  convergence of natural gradient descent in wide neural
+                  networks},
+  author =       {Karakida, Ryo and Osawa, Kazuki},
+  journal =      {Advances in Neural Information Processing Systems (NeurIPS)},
+  year =         2020
+}
+
+@article{raab2022conjugate,
+  title =        {Conjugate Natural Selection},
+  author =       {Raab, Reilly and de Alfaro, Luca and Liu, Yang},
+  year =         2022
+}
+
+@inproceedings{ravishankar2022stochastic,
+  title =        {Stochastic Weight Perturbations Along the Hessian: A
+                  Plug-and-Play Method to Compute Uncertainty},
+  author =       {Ravishankar, Hariharan and Patil, Rohan and Anand, Deepa and
+                  Singhal, Vanika and Agrawal, Utkarsh and Venkataramani, Rahul
+                  and Sudhakar, Prasad},
+  booktitle =    {International Workshop on Uncertainty for Safe Utilization of
+                  Machine Learning in Medical Imaging},
+  year =         2022,
+}
+
+@inproceedings{zhu2022hessian,
+  title =        {Heslsian-Aided Random Perturbation (HARP) Using Noisy
+                  Zeroth-Order Queries},
+  author =       {Zhu, Jingyi},
+  booktitle =    {Mathematical and Scientific Machine Learning (MSML)},
+  year =         2022,
+}
+
+@article{chaskalovic2022refined,
+  title =        {A refined first-order expansion formula in Rn: Application to
+                  interpolation and finite element error estimates},
+  author =       {Chaskalovic, Joel and Assous, Franck},
+  year =         2022
+}
+
+@article{fawzi2022discovering,
+  title =        {Discovering faster matrix multiplication algorithms with
+                  reinforcement learning},
+  author =       {Fawzi, Alhussein and Balog, Matej and Huang, Aja and Hubert,
+                  Thomas and Romera-Paredes, Bernardino and Barekatain,
+                  Mohammadamin and Novikov, Alexander and R Ruiz, Francisco J
+                  and Schrittwieser, Julian and Swirszcz, Grzegorz and others},
+  journal =      {Nature},
+  year =         2022,
+}
+
+@book{kommer2018souveraen,
+  title =        {Souver{\"a}n investieren f{\"u}r Einsteiger: Wie Sie mit ETFs
+                  ein Verm{\"o}gen bilden},
+  author =       {Kommer, Gerd},
+  year =         2018,
+}
+
+@inproceedings{chen2022efficient,
+  title =        {Efficient Second-Order Optimization for Neural Networks with
+                  Kernel Machines},
+  author =       {Chen, Yawen and Chen, Yile and Chen, Jian and Wen, Zeyi and
+                  Huang, Jin},
+  booktitle =    {ACM International Conference on Information \& Knowledge
+                  Management},
+  year =         2022
+}
+
+@article{pleiss2020fast,
+  title =        {Fast matrix square roots with applications to Gaussian
+                  processes and Bayesian optimization},
+  author =       {Pleiss, Geoff and Jankowiak, Martin and Eriksson, David and
+                  Damle, Anil and Gardner, Jacob},
+  journal =      {Advances in Neural Information Processing Systems (NeurIPS)},
+  year =         2020
+}
+
+@article{advani2020high-dimensional,
+  title =        {High-dimensional dynamics of generalization error in neural
+                  networks},
+  journal =      {Neural Networks},
+  year =         2020,
+  author =       {Madhu S. Advani and Andrew M. Saxe and Haim Sompolinsky},
+}
+
+@inproceedings{martens2012estimating,
+  author =       {Martens, James and Sutskever, Ilya and Swersky, Kevin},
+  title =        {Estimating the Hessian by Back-Propagating Curvature},
+  year =         2012,
+  booktitle =    {International Conference on Machine Learning (ICML)},
+}
+
+@book{breymann2015cpp,
+  title =        {Der C++-Programmierer: C++ lernen--professionell
+                  anwenden--L{\"o}sungen nutzen},
+  author =       {Breymann, Ulrich},
+  year =         2015,
+  publisher =    {Carl Hanser Verlag GmbH Co KG}
+}
+
+@book{sanders2010cuda,
+  title =        {CUDA by example: an introduction to general-purpose GPU
+                  programming},
+  author =       {Sanders, Jason and Kandrot, Edward},
+  year =         2010,
+  publisher =    {Addison-Wesley Professional}
+}
+
+@article{dumoulin2016guide,
+  title =        {A guide to convolution arithmetic for deep learning},
+  author =       {Dumoulin, Vincent and Visin, Francesco},
+  year =         2016
+}
+
+@article{roosta2019sub,
+  title =        {Sub-sampled Newton methods},
+  author =       {Roosta-Khorasani, Farbod and Mahoney, Michael W},
+  journal =      {Mathematical Programming},
+  year =         2019,
+}
+
+@inproceedings{laue2020simple,
+  title =        {A simple and efficient tensor calculus},
+  author =       {Laue, S{\"o}ren and Mitterreiter, Matthias and Giesen,
+                  Joachim},
+  booktitle =    {AAAI Conference on Artificial Intelligence},
+  year =         2020
+}
+
+@article{ruckstiess2011python,
+  title =        {A Python Experiment Suite},
+  author =       {R{\"u}ckstie{\ss}, Thomas and Schmidhuber, J{\"u}rgen},
+  journal =      {The Python Papers},
+  year =         2011
+}
+
+@inproceedings{elsayed2023hesscale,
+  title =        {HesScale: Scalable Computation of Hessian Diagonals},
+  author =       {Anonymous},
+  booktitle =    {Submitted to International Conference on Learning
+                  Representations (ICLR)},
+  year =         2023,
+}
+
+@inproceedings{klaus2022convexity,
+  title =        {Convexity Certificates from Hessians},
+  author =       {Julien Klaus and Niklas Merk and Konstantin Wiedom and
+                  S{\"o}ren Laue and Joachim Giesen},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  year =         2022,
+}
+
+@inproceedings{antonakopoulos2022extranewton,
+  title =        {Extra-Newton: A First Approach to Noise-Adaptive Accelerated
+                  Second-Order Methods},
+  author =       {Kimon Antonakopoulos and Ali Kavis and Volkan Cevher},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  year =         2022,
+}
+
+@book{cormen2009introduction,
+  title =        {Introduction to algorithms},
+  author =       {Cormen, Thomas H and Leiserson, Charles E and Rivest, Ronald L
+                  and Stein, Clifford},
+  year =         2009,
+  publisher =    {MIT press}
+}
+
+@inproceedings{fang2022an,
+  title =        {An In-depth Study of Stochastic Backpropagation},
+  author =       {Jun Fang and Mingze Xu and Hao Chen and Bing Shuai and Zhuowen
+                  Tu and Joseph Tighe},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  year =         2022,
+}
+
+@inproceedings{srinivas2022efficient,
+  title =        {Efficient Training of Low-Curvature Neural Networks},
+  author =       {Suraj Srinivas and Kyle Matoba and Himabindu Lakkaraju and
+                  Fran{\c{c}}ois Fleuret},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  year =         2022,
+}
+
+@inproceedings{chandra2022gradient,
+  title =        {Gradient Descent: The Ultimate Optimizer},
+  author =       {Kartik Chandra and Audrey Xie and Jonathan Ragan-Kelley and
+                  Erik Meijer},
+  booktitle =    {Advances in Neural Information Processing Systems (NeurIPS)},
+  year =         2022,
+}
+
+@article{laue2018computing,
+  title =        {Computing higher order derivatives of matrix and tensor
+                  expressions},
+  author =       {Laue, S{\"o}ren and Mitterreiter, Matthias and Giesen,
+                  Joachim},
+  journal =      {Advances in Neural Information Processing Systems (NeurIPS)},
+  year =         2018
+}
+
+@inproceedings{ma2020autohoot,
+  title =        {Autohoot: Automatic high-order optimization for tensors},
+  author =       {Ma, Linjian and Ye, Jiayu and Solomonik, Edgar},
+  booktitle =    {International Conference on Parallel Architectures and
+                  Compilation Techniques (PACT)},
+  year =         2020
+}
+
+@inproceedings{alwani2016fused,
+  title =        {Fused-layer CNN accelerators},
+  author =       {Alwani, Manoj and Chen, Han and Ferdman, Michael and Milder,
+                  Peter},
+  booktitle =    {International Symposium on Microarchitecture (MICRO)},
+  year =         2016,
+}
+
+@inproceedings{rogozhnikov2022einops,
+  title =        {Einops: Clear and Reliable Tensor Manipulations with
+                  Einstein-like Notation},
+  author =       {Alex Rogozhnikov},
+  booktitle =    {International Conference on Learning Representations (ICLR)},
+  year =         2022,
+}
+
+@article{solomonik2014massively,
+  title =        {A massively parallel tensor contraction framework for
+                  coupled-cluster computations},
+  author =       {Solomonik, Edgar and Matthews, Devin and Hammond, Jeff R and
+                  Stanton, John F and Demmel, James},
+  journal =      {Journal of Parallel and Distributed Computing},
+  year =         2014,
+}
+
+@article{tran2022gradient,
+  title =        {Gradient Descent-Type Methods--Background and Simple Unified
+                  Convergence Analysis},
+  author =       {Tran-Dinh, Quoc and van Dijk, Marten},
+  year =         2022,
+}
+
+@article{aehle2022reverse,
+  title =        {Reverse-Mode Automatic Differentiation of Compiled Programs},
+  author =       {Aehle, Max and Bl{\"u}hdorn, Johannes and Sagebaum, Max and
+                  Gauger, Nicolas R},
+  year =         2022
+}
+
+@book{walker2017we,
+  title =        {Why we sleep: Unlocking the power of sleep and dreams},
+  author =       {Walker, Matthew},
+  year =         2017,
+}
+
+@article{dangel2022vivit,
+  title =        {Vi{V}i{T}: Curvature Access Through The Generalized
+                  Gauss-Newton{\textquoteright}s Low-Rank Structure},
+  author =       {Felix Dangel and Lukas Tatzel and Philipp Hennig},
+  journal =      {Transactions on Machine Learning Research (TMLR)},
+  year =         2022,
+}

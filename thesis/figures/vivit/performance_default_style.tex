@@ -1,0 +1,42 @@
+% defines the pgfplots style "performancedefault"
+\pgfkeys{/pgfplots/performancedefault/.style={
+    width=1.03\linewidth,
+    height=\goldenRatioInv*1.03\linewidth,
+    every axis plot/.append style={line width = 1.5pt},
+    every axis plot post/.append style={
+      mark size=2, mark options={opacity=0.9, solid, line width = 1pt}
+    },
+    tick pos = left,
+    xmajorticks = true,
+    ymajorticks = true,
+    ylabel near ticks,
+    xlabel near ticks,
+    xtick align = inside,
+    ytick align = inside,
+    legend cell align = left,
+    legend columns = 3,
+    % legend pos = north east,
+    legend style = {
+      fill opacity = 0.7,
+      text opacity = 1,
+      font = \footnotesize,
+      at={(1, 1.025)},
+      anchor=south east,
+      column sep=0.25cm,
+    },
+    xticklabel style = {font = \footnotesize, inner xsep = 0ex},
+    xlabel style = {font = \footnotesize},
+    axis line style = {black},
+    yticklabel style = {font = \footnotesize, inner ysep = 0ex},
+    ylabel style = {font = \footnotesize, inner ysep = 0ex},
+    title style = {font = \footnotesize, inner ysep = 0ex, yshift = -0.75ex},
+    grid = major,
+    grid style = {dashed},
+    title = {},
+  }
+}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

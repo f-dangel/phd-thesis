@@ -1,0 +1,843 @@
+``Learning'' is connected to optimization by the risk minimization paradigm. The
+idea is to define a performance metric that assesses the quality of the model's
+prediction. Then, learning happens by maximizing that performance metric.
+Conversely, one can specify a metric for the prediction's error
+(also referred to as \emph{risk}), and minimize the latter.
+
+
+For example, an intuitive way to assess performance for a classification task is
+\emph{accuracy}, the ratio of correct and total predictions (the error would be
+the ratio of incorrect and total predictions). However, such direct performance
+measures are hard to optimize with derivative-based methods\sidenote{\eg the
+  accuracy on one datum is either 0 or 1, and hence its derivative vanishes
+  everywhere it is defined.} and must be substituted by a surrogate function
+that approximates the original performance measure, but is easier to optimize.
+In the deep learning terminology, these surrogates are commonly referred to as
+\emph{loss functions}. This section expands on risk minimization, its
+characteristic properties in deep learning, and its probabilistic
+interpretation.
+
+\subsection{Notation \& Mathematical
+  Details}\label{sec:background::empiricalRiskMinimization}
+
+\subsubsection{Risk \& Empirical Risk}
+
+Consider supervised learning with the goal to learn the functional relation
+between inputs $\vx \in \sX$ and targets $\vy \in \sY$
+(\Cref{fig:background::ModelLossFunctionSplit}). The mapping is described by a
+model $f_{\vtheta}: \sX \to \sF$ with adjustable parameters $\vtheta \in
+\sTheta$ that produces predictions $\vf := f_{\vtheta}(\vx) \in \sF$ for an
+input $\vx$. A prediction's error is assessed through a convex loss function
+$\ell: \sF \times \sY \to \sR$.
+
+\begin{figure}[tb]
+  \centering \tikzexternalenable
+  \resizebox{!}{3.5cm}{\input{figures/background/model_loss_split}}
+  \tikzexternaldisable
+  \caption{\textbf{Components of supervised learning:} The goal is to infer
+    parameters $\vtheta$ of a model $f_{\vtheta}$, that relates inputs $\vx$ to
+    predictions $\vf$, by minimizing a loss function $\ell$ between the
+    prediction $\vf$ and label $\vy$.}
+  \label{fig:background::ModelLossFunctionSplit}
+\end{figure}
+
+\emph{Regression} (\Cref{ex:background::Regression}) and \emph{classification}
+(\Cref{ex:background::Classification}) are two common tasks that will be used
+frequently in later chapters. The remainder of this text sets $\sX = \sR^{M}$
+and $\sF = \sR^{C}$, with input and prediction space dimensions $M, C$,
+respectively ($C$ corresponds to the number of classes for classification).
+Because the discussion focuses on neural networks as model, it sets $\sTheta =
+\sR^{D}$ in what follows.
+
+\begin{figure}[!b]
+  \begin{example}[\textbf{Least squares regression \& square
+      loss}]\label{ex:background::Regression}
+    Regression associates features in $\sX = \sR^M$ with targets in $\sY =
+    \sR^C$. A prediction in $\sF = \sR^{C}$ compares to its ground truth via the
+    mean squared error\sidenote{%
+      There exist different conventions for the normalization factor. This text
+      adapts the implementation of
+      \inlinecode{\href{https://pytorch.org/docs/1.11/generated/torch.nn.MSELoss.html\#torch.nn.MSELoss}{MSELoss}}
+      (with \inlinecode{reduction="mean"} mode) in \pytorch for consistency with
+      the code presented in later chapters. Normalizing by $\nicefrac{1}{C}$ is
+      also close to what the name, mean squared error, suggests.}
+    \begin{align}\label{eq:background::squareLoss}
+      \ell(\vf, \vy)
+      =
+      \frac{1}{C} \sum_{c=1}^C (\evy_c - \evf_c)^2
+      =
+      \frac{1}{C} \lVert \vy - \vf  \rVert_{2}^{2}
+    \end{align}
+  \end{example}
+  \begin{example}[\textbf{$C$-class classification \& softmax cross-entropy
+      loss}]\label{ex:background::Classification}
+    Classification assigns features in $\sX = \sR^{M}$ to classes in $\sY =
+    \left\{ 1, \dots, C \right\}$ using a model to $\sF = \sR^C$. The softmax
+    cross-entropy loss\sidenote{%
+      Sometimes, the softmax is considered part of the model rather than the
+      loss function. This text assigns it to the loss function, in line with the
+      \pytorch implementation of
+      \inlinecode{\href{https://pytorch.org/docs/1.11/generated/torch.nn.CrossEntropyLoss.html\#torch.nn.CrossEntropyLoss}{CrossEntropyLoss}},
+      that combines softmax and cross-entropy, which is numerically more
+      stable~\cite[][Chapter 4]{goodfellow2016deep}.}%
+    maps the model's prediction to a probability distribution over classes, then
+    uses cross-entropy to compare it with the ground truth,
+    \begin{align}
+      \label{eq:background::softmaxCrossEntropyLoss}
+      \ell(\vf, y) = - \log([p(\vf)]_{y})
+      =
+      - {\log p(\vf)}^\top \onehot(y)
+    \end{align}
+    where $p(\vf) = \softmax(\vf)$ and $[\onehot(y)]_{c} = \delta_{c,y}$.
+  \end{example}
+\end{figure}
+
+% \paragraph{Risk minimization:}
+Assume that the population of input-target pairs,
+\ie the \emph{data-generating process}, follows a distribution $\pdata(\vx,
+\vy)$. A model's expected risk under this distribution is defined as
+\begin{subequations}
+  \begin{align}
+    \label{eq:background::expectedRisk}
+    \begin{split}
+      \gL_{\pdata}(\vtheta)
+      &:=
+        \E_{\pdata(\vx, \vy)}
+        \left[
+        \ell(f_{\vtheta}(\vx), \vy)
+        \right]
+      \\
+      &=
+        \iint_{\sX,\sY}
+        \ell(f_{\vtheta}(\vx), \vy)
+        \pdata(\vx, \vy)
+        \,\diff\vx\,\diff\vy\,.
+    \end{split}
+  \end{align}
+  The incentive for a model to perform well is to achieve a small expected risk.
+  Therefore, training a model is minimizing \Cref{eq:background::expectedRisk},
+  \begin{equation}
+    \label{eq:background::minimizeExpectedRisk}
+    \minimize_{\vtheta} \gL_{\pdata}(\vtheta)\,.
+  \end{equation}
+\end{subequations}
+
+% \paragraph{Empirical approximation:}
+But in practice, \Cref{eq:background::minimizeExpectedRisk} is inaccessible
+because the data-generating process $\pdata(\vx, \vy)$ is unknown. Instead, the
+problem is approximated through an \iid dataset $\sD = \{ (\vx_n, \vy_n) \in \sX
+\times \sY \}_n$ of labeled data collected from $\pdata(\vx,\vy)$. $\pdata(\vx,
+\vy)$ is approximated by the empirical distribution
+\begin{subequations}\label{eq:background::supervisedLearning}
+  \begin{equation}
+    \label{eq:background::empiricalDistribution}
+    p_{\sD}(\vx, \vy)
+    =
+    \frac{1}{|\sD|}
+    \sum_{(\vx_{n}, \vy_{n}) \in \sD}
+    \delta(\vx - \vx_{n}) \delta(\vy - \vy_{n})
+  \end{equation}
+  implied by $\sD$. The model's empirical risk on $\sD$ follows from
+  substituting $\pdata$ with $p_{\sD}$ in \Cref{eq:background::expectedRisk},
+  which yields
+  \begin{equation}
+    \label{eq:background::empiricalRisk}
+    \gL_{\sD}(\vtheta)
+    :=
+    \gL_{p_{\sD}}(\vtheta)
+    =
+    \frac{1}{|\sD|}
+    \sum_{(\vx_{n}, \vy_{n}) \in \sD}
+    \ell(f_{\vtheta}(\vx_{n}), \vy_{n})\,.
+  \end{equation}
+  In practice, learning happens by minimizing an empirical risk,
+  \begin{equation}
+    \label{eq:background::empiricalRiskMinimization}
+    \minimize_{\vtheta} \gL_{\sD}(\vtheta)\,.
+  \end{equation}
+\end{subequations}
+
+\subsubsection{Challenges for Optimization}
+
+Training a model relies on optimization algorithms which are initialized at some
+$\vtheta_{0}\in \sTheta$ and seek to iteratively improve the solution to
+\Cref{eq:background::empiricalRiskMinimization}. At an iteration $t$, the
+optimizer is given access to information about the objective at $\vtheta_t$,
+like derivatives (\Cref{sec:background::GradientBackpropagation}), to deduct a
+step $\vtheta_{t+1} \leftarrow \vtheta_t$, potentially using additional
+information from past observations. In general, the more local information is
+available, the more powerful a single update step can be. But richer information
+is often more costly to compute. The large-scale nature of deep learning poses
+challenges on the accessible information:
+\begin{itemize}
+
+\item \textbf{Big data:} deep learning datasets are often large because more
+  data gives better approximations of the true distribution $\pdata$ via
+  $p_{\sD}$, and thus better task performance. The simultaneous computation of
+  all per-datum losses for $\gL_{\sD}(\vtheta)$ does not fit into memory (for
+  many contemporary tasks, it is even infeasible to hold $\sD$ in
+  memory\sidenote{%
+    \Eg \imagenet~\cite{deng2009imagenet} consists of 1,281,167 training images.
+    The Kaggle download requires roughly 166\,GB of memory.%
+  }). Still, to obtain $\gL_{\sD}$, one could sequentially compute and reduce
+  its summands on data chunks of manageable size. In practice, it is more common
+  though to approximate $\gL_{\sD}$ on a randomly drawn small subset, a
+  mini-batch, $\sB \subseteq \sD$ with $|\sB| \ll |\sD|$. While this avoids a
+  computationally expensive full sweep over the data, subsampling introduces
+  \emph{noise} in the loss (\Cref{sec:background::MiniBatching}). This noise is
+  inherited by the computed information supplied to the optimizer. Algorithms
+  must therefore take into account the stochastic nature of their observations.
+
+\item \textbf{Very large models:} the parameter space dimension $D$ of DNNs
+  usually exceeds the (already large) amount of data $|\sD|$, \ie $D \gg |\sD|$.
+  It affects the complexity to store and compute information, such as
+  derivatives of the loss \wrt $\vtheta$, and makes it more challenging to
+  efficiently work with higher-order information\sidenote{%
+    For example, interesting quantities for an optimizer are the loss
+    landscape's local slope (gradient) and curvature (Hessian,
+    \Cref{def:background::Hessian}). While the gradient is cheap to compute and
+    store ($D$ elements), holding the $D\times D$ Hessian in memory is
+    infeasible.%
+  }. Therefore, working with higher-order information relies on implicit schemes
+  (\eg matrix-free Hessian-vector products~\cite{pearlmutter1994fast}) or
+  light-weight structured approximations (\eg through Kronecker
+  products~\cite{martens2015optimizing}). Such approaches are usually technical
+  and challenging to implement. They also add significant computational work
+  that must be compensated for by an improved update step quality in optimizers.
+\end{itemize}
+In addition to these computational aspects, there exist other challenges:
+\begin{itemize}
+\item \textbf{Non-convexity:} although the loss function $\ell$ is convex \wrt
+  the model's output $\vf$, convexity does not carry through to the model's
+  parameters\sidenote[][-2.5\baselineskip]{Convexity of $\ell$ in $\vf$ is still
+    useful to construct PSD approximations to the Hessian, see
+    \Cref{sec:background::ggn}.}. This is because DNNs $f_{\vtheta}$ are highly
+  non-linear, and therefore generally non-convex, in $\vtheta$. Local minima of
+  convex functions are global minima, meaning that local improvement gets us
+  closer to a global solution. But non-convex problems like
+  \Cref{eq:background::empiricalRiskMinimization} have multiple local minima
+  that need not be global. Through local improvements, an optimizer can arrive
+  at one of these local minima, but with no path of improvement to a global
+  solution. This depends on various aspects, such as the update rule,
+  hyperparameters, initialization, \etc.
+
+\item \textbf{Generalization:} learning is not pure optimization. While
+  minimizing the empirical risk \Cref{eq:background::empiricalRiskMinimization}
+  improves the model's performance on the collected data, the actual goal is to
+  obtain good performance on new unseen data, \ie generalize well. To achieve
+  generalization, it is crucial to prevent optimization to overfit specifics in
+  the data.
+  % train-test split
+  It is common practice to split the data into three disjoint sets $\Dtrain$,
+  $\Dvalid$, and $\Dtest$. The train set's empirical risk
+  $\gL_{\Dtrain}(\vtheta)$ is minimized, and the validation loss
+  $\gL_{\Dvalid}(\vtheta)$ serves to identify hyperparameters that lead to
+  generalization on $\Dvalid$. The held-out examples in the test set $\Dtest$
+  are used to assess generalization to new data.
+  % data augmentation
+  Another way to improve generalization is to use more data during training.
+  Data augmentation~\cite{shorten2019survey} allows for cheap generation of new
+  examples without collecting new data.
+  % regularization
+  Sometimes, it may be desirable to penalize model properties by adding a
+  regularization term to the objective in
+  \Cref{eq:background::empiricalRiskMinimization}.
+\end{itemize}
+
+\subsection{Batching \& Noise}\label{sec:background::MiniBatching}
+
+Due to the large-scale nature of $\sD$ and $f_{\vtheta}$ in the empirical risk,
+\Cref{eq:background::empiricalRisk} is usually stochastically approximated
+through a mini-batch $\sB \subseteq \sD$, and assessed through a mini-batch loss
+\begin{equation}
+  \label{eq:background::miniBatchRisk}
+  \gL_{\sB}(\vtheta)
+  =
+  \frac{1}{|\sB|}
+  \sum_{(\vx_n, \vy_n) \in \sB}
+  \ell(f_{\vtheta}(\vx_n), \vy_n)\,.
+\end{equation}
+In the following, per-sample predictions and losses will often be abbreviated as
+$\vf_n := f_{\vtheta}(\vx_n)$ and $\ell_n := \ell(f_{\vtheta}(\vx_n), \vy_n)$.
+
+\subsubsection{Batched Computations}
+
+Evaluation of the mini-batch loss in \Cref{eq:background::miniBatchRisk} can be
+parallelized (\Cref{subfig:background::BatchedComputation1}). All mini-batch
+features $\{ \vx_n \}$ are mapped to predictions $\{ \vf_n \}$ by the \emph{same
+  instructions $f_{\vtheta}$}, and compared in parallel with the labels $\{
+\vy_n \}$, resulting in the per-sample losses $\{ \ell_n\}$. Hardware
+accelerators can use this structure to achieve significant speed-up of
+evaluating the loss, or its derivatives
+(\Cref{sec:background::GradientBackpropagation}).
+
+\begin{figure*}[t]
+  \centering
+  \begin{subfigure}[t]{0.495\linewidth}
+    \centering
+    \caption{Same instructions, multiple data}
+    \label{subfig:background::BatchedComputation1}
+    \tikzexternalenable
+    \resizebox{!}{3.5cm}{\input{figures/background/model_loss_split_unrolled}}
+    \tikzexternaldisable
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.495\linewidth}
+    \centering
+    \caption{Batched operations}
+    \label{subfig:background::BatchedComputation2}
+    \tikzexternalenable
+    \resizebox{!}{3.5cm}{\input{figures/background/model_loss_split_batched}}
+    \tikzexternaldisable
+  \end{subfigure}
+  \caption{\textbf{Different visualizations of empirical risk computation
+      graphs.} \subfigref{subfig:background::BatchedComputation1}, The empirical
+    risk is a weighted sum of per-sample losses that are computed independently
+    and with the same instructions, allowing for efficient parallelization.
+    \subfigref{subfig:background::BatchedComputation2} Many ML libraries
+    natively support batched operations for efficiency. In code, this batching
+    is often assumed, but not explicitly expressed. The $\vmap$ concept allows
+    to make batching explicit: $f_{\vtheta}$ and $\ell$ in
+    \subfigref{subfig:background::BatchedComputation2} correspond to vectorized
+    versions $\vmap(f)$ and $\vmap(\ell)$ from
+    \subfigref{subfig:background::BatchedComputation1}.}
+  \label{fig:background::BatchedComputation}
+\end{figure*}
+
+This single-instruction-multiple-data structure of the loss is often baked into
+ML libraries. Many of their operations natively support batched behavior, \ie
+accept stacked inputs and assume one, usually the first, axis to correspond to a
+batch axis. The operation is then applied to all slices along the batch axis
+(\Cref{subfig:background::BatchedComputation2}).
+
+The concept of \inlinecode{map} in functional
+programming~\cite{hughes1989functional} formalizes applying a function to a
+collection of inputs, which can be seen as a function transformation. Batched
+operations can be understood as transformations of the original operation.
+Recently developed ML libraries~\cite{bradbury2018jax,he2021functorch} make
+batching explicit by providing a $\inlinecode{vmap}$ interface to automatically
+vectorize, \ie parallelize, the application of \inlinecode{map}.
+
+\begin{definition}[\textbf{vmap}]\label{def:background::vmap} Let $f: \sX \to
+  \sY, x \mapsto f(x)$ denote a function. The vectorized \inlinecode{map},
+  $\vmap(f)$, of $f$ \wrt its argument $x$ is a function that accepts a
+  collection of inputs and maps each item by $f$, resulting in a collection of
+  outputs,
+  \begin{align*}
+    \vmap:\quad (\sX \to \sY)
+    \to (\sX^{N} \to \sY^{N})
+    \quad \forall\,N \in \sN
+    \shortintertext{such that}
+    \vmap(f)(\{ x_1, x_2, \dots, x_N\})
+    =
+    \{f(x_1), f(x_2), \dots, f(x_N)\}\,.
+  \end{align*}
+  Collections are often abbreviated as $\{x_n\} := \{ x_1, x_2, \dots, x_N\}$
+  and $\{f(x_n)\} := \{f(x_1), f(x_2), \dots, f(x_N)\}$. Multi-variate functions
+  can be mapped \wrt to a subset of arguments.
+\end{definition}
+
+Making batching explicit with \inlinecode{map}, the mini-batch loss computation
+uses a vectorized model $\vmap(f_{\vtheta})$ \wrt the input features
+$\vx$, such that
+\begin{subequations}
+  \begin{align}
+    \vmap(f_{\vtheta})(\{ \vx_n\}) &= \{ \vf_{n}(\vtheta) \}\,.
+  \end{align}
+  Per-sample losses, which are reduced into the mini-batch loss, are
+  \begin{align}
+    \{ \ell_n(\vtheta) \}
+    &=
+      \vmap(\ell)(\{ \vf_{n}(\vtheta) \}, \{ \vy_n \})\,.
+  \end{align}
+\end{subequations}
+Numerically, collections of vectors like $\{\vx_n\}$ \etc are represented as
+matrices, and more generally, collections of $r$-dimensional arrays are stacked
+into a $(r+1)$-dimensional arrays with an additional batch axis (\eg, $\{ \vx_n
+\}$ is a $|\sB| \times M$ matrix). These arrays can then be efficiently
+processed in hardware accelerators.
+
+\subsubsection{Noise}
+
+While
+%
+\marginnote[*-12]{
+  \begin{center}
+    \tikzexternalenable
+    \resizebox{\linewidth}{!}{\input{figures/background/model_loss_split_noise}}
+    \tikzexternaldisable
+  \end{center}
+  \captionof{figure}{\textbf{Illustration of stochastic sub-sampling:} The
+    computation graph of the empirical risk (with five data in this example) is
+    only evaluated on a subset of data (two in this example) to save
+    computations. While this preserves parallelization, the transparent parts
+    are not evaluated, which introduces noise.}\label{fig:background::MiniBatch}
+}%
+the sum structure in the loss \Cref{eq:background::empiricalRisk} can be
+efficiently parallelized, it can also be used for stochastic approximation via
+sub-sampling (\Cref{fig:background::MiniBatch}). The mini-batch loss $\gL_\sB$
+in \Cref{eq:background::miniBatchRisk} is an estimator of the empirical risk
+$\gL_\sD$ implied by the stochastic sampling procedure of $\sB$. Increasing the
+batch size makes this estimator more precise but more costly to compute.
+
+
+% Batch size = 1
+To see this cost-accuracy trade-off, consider the loss of a single datum
+$\ell_n$ where $n$ is uniformly drawn from $\{1, \dots, |\sD|\}$.
+Then, $\ell_n$ is a random variable, implied by the sampling distribution $n \sim
+p(n) = \gU(\{1, \dots, |\sD|\})$, and an unbiased estimator of the empirical risk,
+\begin{subequations}
+  \begin{align}\label{eq:background::unbiasedEstimator}
+    \E_{p(n)}[\ell_n(\vtheta)]
+    &=
+      \sum_{n=1}^{|\sD|} p(n) \ell_n(\vtheta)
+      =
+      \gL_{\sD}(\vtheta)\,,
+  \end{align}
+  with variance
+  \begin{align}
+    \label{eq:background::unbiasedEstimatorVariance}
+    \begin{split}
+      \sigma^{2}
+      :=
+      \Var_{p(n)}[\ell_n(\vtheta)]
+      &=
+        \E_{p(n)}\left[(\ell_n(\vtheta) - \gL_{\sD}(\vtheta))^2\right]
+      \\
+      &=
+        \E_{p(n)}\left[\ell_n(\vtheta)^2\right]
+        -
+        \gL_{\sD}(\vtheta)^2\,.
+    \end{split}
+  \end{align}
+\end{subequations}
+% Batch size B
+Next, consider a batch with $\sB|$ randomly drawn samples $\vn = (n_1, \dots,
+n_{|\sB|})$ from a joint distribution $p(\vn)$, \ie the mean of $\ell_{n_1},
+\dots, \ell_{n_{|\sB|}}$,
+\begin{subequations}
+  \begin{align}
+    \gL_{\vn}(\vtheta)
+    &=
+      \frac{1}{|\sB|}
+      \sum_{i=1}^{|\sB|} \ell_{n_i}(\vtheta)\,.
+  \end{align}
+  If samples are drawn uniformly \iid ($p(\vn) = \prod_{i=1}^{|\sB|} p(n_i)$
+  with $p(n_i) = \gU(\{1, \dots, |\sD|\})$), this estimator is also unbiased,
+  \begin{align}
+    \label{eq:background::unbiasedBatchEstimator}
+    \E_{p(\vn)}[\gL_\vn(\vtheta)]
+    =
+    \frac{1}{|\sB|}
+    \sum_{i=1}^{|\sB|} \E_{p(n_i)}[\ell_{n_i}(\vtheta)]
+    =
+    \gL_{\sD}(\vtheta)\,,
+  \end{align}
+  but has smaller variance than the single-sample estimator:
+  \begin{align}
+    \label{eq:background::varianceBatchEstimator}
+    \Var_{p(\vn)}[\gL_{\vn}(\vtheta)]
+    =
+    \E_{p(\vn)}[\gL_\vn(\vtheta)^2] - \gL_{\sD}(\vtheta)^2
+    =
+    \frac{\sigma^{2}}{|\sB|}\,.
+  \end{align}
+  Using more samples, \ie a larger $|\sB|$, decreases the variance, and thereby
+  reduces noise in the mini-batch loss.
+\end{subequations}
+The central limit theorem~\cite{fischer2010history} connects the mini-batch
+estimator to a normal distribution. As the mini-batch size $|\sB|$ approaches
+infinity, $\gL_{\vn}$ converges to a normal distribution with mean and variance
+from
+\Cref{eq:background::unbiasedBatchEstimator,eq:background::varianceBatchEstimator}
+\begin{align}\label{eq:background::CentralLimitTheorem}
+  \lim_{|\sB| \to \infty}:
+  \quad
+  \gL_{\vn}
+  \sim
+  \gN(
+  \giventhat{
+  \gL_{\vn}
+  }
+  {
+  \gL_{\sD},
+  \nicefrac{\sigma^{2}}{|\sB|}
+  }
+  )\,.
+\end{align}
+While applications rely on finite batch sizes, it is sometimes useful to assume
+that this Gaussian distribution holds approximately.
+
+Noise in the mini-batch loss propagates to other quantities, like the mini-batch
+gradient $\grad{\vtheta}\gL_{\sB}(\vtheta)$, that are used for applications like
+training. Therefore, it represents a fundamental challenge for deep learning
+methods. It can be assessed through higher-order statistical moments such as the
+variance (the centered second moment, see
+\Cref{sec:background::gradientCovariance,cockpit::app:instruments} for
+examples). Motivated by the central limit theorem
+\Cref{eq:background::CentralLimitTheorem}---if the Gaussian approximation holds
+sufficiently well---only second-order statistical moments are required.
+
+Like higher-order derivatives of multi-variate functions, higher-order
+statistical moments of multi-variate random variables such as the mini-batch
+gradient $\grad{\vtheta}\gL_{\sB}(\vtheta) \in \sR^D$ (first moment) scale
+exponentially with dimension $D$ (\eg the $D \times D$ gradient covariance
+matrix, \Cref{sec:background::gradientCovariance}). Therefore, they are
+challenging to work with using naive approaches.
+
+\subsection{Probabilistic
+  Interpretation}\label{sec:background::ProbabilisticInterpretation}
+
+Risk-based supervised learning is often connected to learning the unknown true
+distribution $\pdata(\vx, \vy)$ through a model distribution $p_{\vtheta}(\vx,
+\vy)$ and data $\sD$, using estimation techniques to finding a good set of
+parameters that minimizes a measure of dissimilarity between $\pdata$ and
+$p_{\vtheta}$. The following section links the loss function $\ell$ and the
+model $f_{\vtheta}$ to probabilistic objects. This will be helpful to identify
+additional structure in the risk minimization problem and use it for structural
+approximation of higher-order information (\eg the Fisher information matrix,
+\Cref{sec:background::naturalGradientDescent}), and to motivate probabilistic
+applications (\eg Laplace approximations,
+\Cref{sec:background::LaplaceApproximation}).
+
+\subsubsection{Connections to Maximum Likelihood Estimation (MLE)}
+The KL-divergence between the true and the model distribution,
+\begin{subequations}
+  \begin{align}
+    \label{eq:background::KLDivergence}
+    \begin{split}
+      &\KLdiv{\pdata(\vx, \vy)}{p_{\vtheta}(\vx, \vy)}
+      \\
+      &\quad =
+        \E_{\pdata(\vx, \vy)}
+        \left[
+        \log\pdata(\vx, \vy)
+        -
+        \log p_{\vtheta}(\vx, \vy)
+        \right]\,,
+    \end{split}
+  \end{align}
+  can be used to measure their dissimilarity. Minimizing the above expression
+  over $\vtheta$, and dropping parameter-independent terms leads to
+  \begin{align}
+    \label{eq:background::minimizeNegativeLogProbability}
+    \begin{split}
+      &\minimize_{\vtheta}
+        \KLdiv{\pdata(\vx, \vy)}{p_{\vtheta}(\vx, \vy)}
+      \\
+      \Leftrightarrow
+      &\minimize_{\vtheta}
+        \E_{\pdata(\vx, \vy)}
+        \left[
+        - \log p_{\vtheta}(\vx, \vy)
+        \right]\,.
+    \end{split}
+  \end{align}
+  $\pdata(\vx, \vy)$ is inaccessible and therefore empirically approximated
+  through data $\sD = \{ (\vx_n, \vy_n) \}_n$. Under the \iid assumption in the
+  data, $\pdata$ is replaced with the empirical distribution $p_{\sD}$ from
+  \Cref{eq:background::empiricalDistribution} and yields the accessible
+  optimization task
+  \begin{align}
+    \label{eq:background::minimizeEmpiricalNegativeLogProbability}
+    \minimize_{\vtheta}
+    \frac{1}{|\sD|}
+    \sum_{(\vx_{n}, \vy_{n}) \in \sD} - \log p_{\vtheta}(\vx_n, \vy_n)
+  \end{align}
+  This expression resembles the empirical risk minimization
+  \Cref{eq:background::empiricalRiskMinimization} with a specific loss function
+  $\ell$ that produces the negative log-probability of a datum $(\vx_n,\vy_n)$.
+\end{subequations}
+
+\begin{subequations}
+  Supervised learning only processes features $\vx$ to predict labels $\vy$. The
+  probabilistic model $p_{\vtheta}(\vx, \vy)$ thus has a more special form, in
+  that it only parameterizes the likelihood $\giventhat{\vy}{\vx}$,
+  \begin{align}
+    \label{eq:background::modelOnlyLikelihood}
+    p_{\vtheta}(\vx, \vy) = p_{\vtheta}(\giventhat{\vy}{\vx}) p(\vx)\,.
+  \end{align}
+  Since only the likelihood contains parameters,
+  \Cref{eq:background::minimizeNegativeLogProbability} simplifies to minimizing
+  the expected negative log-likelihood
+  \begin{align*}
+    &\minimize_{\vtheta}
+      \E_{\pdata(\vx, \vy)}
+      \left[
+      - \log p_{\vtheta}(\giventhat{\vy}{\vx}) - \log p(\vx)
+      \right]
+    \\
+    \Leftrightarrow
+    &\minimize_{\vtheta}
+      \E_{\pdata(\vx, \vy)}
+      \left[
+      - \log p_{\vtheta}(\giventhat{\vy}{\vx})
+      \right]
+  \end{align*}
+  and with empirical approximation through \iid data as \Cref{eq:background::minimizeEmpiricalNegativeLogProbability},
+  \begin{align}
+    \label{eq:background::mnimizeEmpiricalNegativeLogLikelihood}
+    \minimize_{\vtheta}
+    \frac{1}{|\sD|}
+    \sum_{(\vx_{n}, \vy_{n}) \in \sD}
+    - \log p_{\vtheta}(\giventhat{\vy_n}{\vx_n})\,.
+  \end{align}
+\end{subequations}
+This minimization problem corresponds to MLE\sidenote{%
+  \label{side:background::MLE}
+  Finding the negative log-likelihood's minimum,
+  \Cref{eq:background::mnimizeEmpiricalNegativeLogLikelihood}, is equivalent to
+  finding the maximum of the \iid data's likelihood
+  \begin{align*}
+    p(\giventhat{\sD}{\vtheta})
+    =
+    \prod_{(\vx_n, \vy_n)\in\sD}
+    p_{\vtheta}(\giventhat{\vy_n}{\vx_n})
+    p(\vx_n)\,.
+  \end{align*}
+  The MLE satisfies
+  \begin{align*}
+    \vtheta_{\text{MLE}}
+    &= \argmax p(\giventhat{\sD}{\vtheta})
+    \\
+    &= \argmax \log p(\giventhat{\sD}{\vtheta})
+    \\
+    &= \argmin - \log p(\giventhat{\sD}{\vtheta})\,.
+  \end{align*}
+  Inserting $p(\giventhat{\vtheta}{\sD})$ and dropping parameter-independent
+  terms recovers the problem
+  \Cref{eq:background::mnimizeEmpiricalNegativeLogLikelihood}.} with a
+statistical model $p_{\vtheta}(\giventhat{\vy}{\vx})$. This is a specific form
+of empirical risk minimization where the model's prediction $f_{\vtheta}(\vx)$
+parameterizes a likelihood $q$ for $\giventhat{\vy}{\vf}$, and a negative
+log-likelihood loss function $\ell$, \ie
+\begin{subequations}
+  \label{eq:background::connectionsMLEandEmpiricalRiskMinimization}
+  \begin{align}
+    p_{\vtheta}(\giventhat{\vy}{\vx}) &= q(\giventhat{\vy}{f_{\vtheta}(\vx)})\,,
+    \\
+    \ell(\vf, \vy) &= - \log q(\giventhat{\vy}{\vf})\,.
+  \end{align}
+\end{subequations}
+Both the square loss and softmax cross-entropy loss
+(\Cref{ex:background::Regression,ex:background::Classification}) have such a
+probabilistic interpretation, see
+\Cref{ex:background::probabilisticInterpretationMSELoss,ex:background::probabilisticInterpretationCrossEntropyLoss}.
+
+\begin{example}[\textbf{Probabilistic interpretation of square
+    loss}]\label{ex:background::probabilisticInterpretationMSELoss} The square
+  loss \Cref{eq:background::squareLoss} is the negative log-likelihood of a
+  Gaussian centered around the model's prediction with diagonal constant
+  covariance,
+  \begin{align*}
+    \ell(\vf, \vy) &= -\log q(\giventhat{\vy}{\vf})
+    \\
+    \text{with}\quad
+    q(\giventhat{\vy}{f_{\vtheta}(\vx)}) &= \gN(\giventhat{\vy}{\vmu, \mSigma})
+  \end{align*}
+  where%
+  \sidenote[][-4\baselineskip]{Inserting mean and covariance into the negative
+    log-probability yields,
+    \begin{align*}
+      -& \log \gN(\vy; \vmu, \mSigma)
+      \\
+       &=
+         \nicefrac{1}{2} (\vy - \vmu)^{\top} \mSigma^{-1} (\vy - \vmu)
+      \\
+       &\phantom{=}
+         + \nicefrac{1}{2}
+         \left[
+         \log\det\mSigma
+         + C \log 2\pi
+         \right]\,,
+    \end{align*}
+    \ie the square loss \Cref{eq:background::squareLoss} up to a
+    $\vtheta$-independent term which does not affect optimization.}
+  %
+  $\vmu = f_{\vtheta}(\vx)$ and $\mSigma = \nicefrac{C}{2} \mI$.
+\end{example}
+
+\begin{example}[\textbf{Probabilistic interpretation of softmax cross-entropy
+    loss}]\label{ex:background::probabilisticInterpretationCrossEntropyLoss}
+  The softmax cross-entropy loss \Cref{eq:background::softmaxCrossEntropyLoss}
+  is the negative log-likelihood of a multinomial distribution parameterized by
+  the softmax probabilities,
+  \begin{align*}
+    \ell(\vf, y) &= -\log q(\giventhat{y}{\vf})
+    \\
+    \text{with}\quad
+    q(\giventhat{y}{f_{\vtheta}(\vx)}) &= \Cat(y; \vp)
+  \end{align*}
+  where%
+  \sidenote[][-4\baselineskip]{ With $\evp_{c}$ denoting the probability to observe class $y=c$,
+    \begin{align*}
+      - \log \Cat(y; \vp) = -\log \evp_{y}\,,
+    \end{align*}
+    which is the softmax cross-entropy loss \Cref{eq:background::softmaxCrossEntropyLoss}.}
+  %
+  $\vp = \softmax(f_{\vtheta}(\vx))$.
+\end{example}
+
+Following the maximum likelihood principle results in the MLE parameter
+$\vtheta_{\text{MLE}}$ which satisfies
+\Cref{eq:background::mnimizeEmpiricalNegativeLogLikelihood} and gives rise to
+the distribution $p_{\vtheta_{\text{MLE}}}(\giventhat{\vy}{\vx}) =
+q(\giventhat{\vy}{f_{\vtheta_{\text{MLE}}}(\vx)})$ as an approximation to $\pdata(\giventhat{\vy}{\vx})$.
+
+\subsubsection{Connections to Maximum A Posteriori (MAP) Estimation}
+MLE maximizes the likelihood $ p(\giventhat{\sD}{\vtheta})$. In a probabilistic
+formulation with a prior $p(\vtheta)$ over the parameters and evidence $p(\sD) =
+\int_{\sTheta} p(\giventhat{\sD}{\vtheta}) p(\vtheta)\,\diff \vtheta$ for the
+data, one can instead consider the posterior
+\begin{align}
+  \label{eq:background::BayesRule}
+  p(\giventhat{\vtheta}{\sD})
+  =
+  \frac{
+  p(\giventhat{\sD}{\vtheta}) p(\vtheta)
+  }{
+  p(\sD)
+  }\,
+\end{align}
+which corrects the prior with data observations. Such a posterior is useful to
+form probabilistic beliefs over predictions $\vy_{\star}$ for new inputs
+$\vx_{\star}$,
+\begin{align}
+  \label{eq:background::BayesianPrediction}
+  \begin{split}
+    p(\giventhat{\vy_{\star}}{\vx_{\star}, \sD})
+    &=
+      \int_{\sTheta} p(\giventhat{\vy_{\star}}{\vx_{\star}, \sD, \vtheta})
+      p(\giventhat{\vtheta}{\vx_{\star}, \sD})\,\diff \vtheta
+    \\
+    &=
+      \int_{\sTheta} p(\vy_{\star} | \vx_{\star}, \vtheta)
+      p(\giventhat{\vtheta}{\sD})\,\diff \vtheta\,.
+  \end{split}
+\end{align}
+However, this requires integration over the posterior, which itself is almost
+always intractable and thus needs to be approximated.
+
+The MAP principle approximates the posterior with a delta distribution around
+the posterior mode, \ie the point of maximum posterior density,
+\begin{align}
+  \label{eq:background::MAP}
+  p(\giventhat{\vtheta}{\sD})
+  \approx
+  \delta(\vtheta - \vtheta_{\text{MAP}})
+  \quad\text{where}\quad
+  \vtheta_{\text{MAP}}
+  =
+  \argmax_{\vtheta} p(\giventhat{\vtheta}{\sD})\,.
+\end{align}
+It is connected to empirical risk minimization with a regularization term that
+results from the prior $p(\vtheta)$. To see this, reformulate
+\Cref{eq:background::MAP} to minimize the negative log-posterior, expand Baye's
+rule (\Cref{eq:background::BayesRule}) and neglect the parameter-independent
+evidence term. Then, apply the same assumptions as for MLE\sidenote{%
+  Mathematically, they translate into
+  \begin{align*}
+    \begin{split}
+      &p(\giventhat{\sD}{\vtheta})
+      \\
+      &\quad =
+        \prod_{n}
+        p(\giventhat{\vx_{n}, \vy_{n}}{\vtheta})
+      \\
+      &\quad =
+        \prod_{n}
+        p(\giventhat{\vy_{n}}{\vx_{n}, \vtheta}) p(\giventhat{\vx_{n}}{\vtheta})
+      \\
+      &\quad =
+        \prod_{n}
+        p(\giventhat{\vy_{n}}{\vx_n, \vtheta}) p(\vx_{n})\,
+    \end{split}
+  \end{align*}
+  with slightly different notation for $\vtheta$ in comparison to the MLE
+  discussion, as it is now treated probabilistically. }, \ie \iid data and
+$\vtheta$ only parameterizing the likelihood $\giventhat{\vy}{\vx}$. This yields
+\begin{align}
+  \label{eq:background::MAPRelationToEmpiricalRiskMinimization}
+  \begin{split}
+    \vtheta_{\text{MAP}}
+    &= \argmin_{\vtheta} -\log p(\giventhat{\vtheta}{\sD})
+    \\
+    &= \argmin_{\vtheta} -\log p(\giventhat{\sD}{\vtheta}) - \log p(\vtheta)
+    \\
+    &= \argmin_{\vtheta} \sum_{(\vx_n,\vy_n) \in \sD}
+      -\log p(\giventhat{\vy_n}{\vx_n, \vtheta})
+      -\log p(\vtheta)
+    \\
+    &= \argmin_{\vtheta}
+      \frac{1}{|\sD|}
+      \sum_{(\vx_n,\vy_n) \in \sD}
+      -\log p(\giventhat{\vy_n}{\vx_n, \vtheta})
+      -\frac{\log p(\vtheta)}{|\sD|}\,.
+  \end{split}
+\end{align}
+In analogy to \Cref{eq:background::connectionsMLEandEmpiricalRiskMinimization},
+the first term is an empirical risk
+(\Cref{eq:background::mnimizeEmpiricalNegativeLogLikelihood}) with negative
+log-likelihood loss of a distribution $q$ for targets given model predictions,
+\begin{align}\label{eq:background::connectionsMAPandEmpiricalRiskMinimization}
+  p(\giventhat{\vy}{\vx,\vtheta})
+  = q(\giventhat{\vy}{f_{\vtheta}(\vx)})
+  \quad\text{and}\quad
+  \ell(\vf, \vy)
+  = - \log q(\giventhat{\vy}{\vf})\,.
+\end{align}
+However, this risk is extended by a regularization term from the prior,
+\begin{align}\label{eq:background::MAPLoss}
+  \vtheta_{\text{MAP}}
+  =
+  \argmin_{\vtheta}
+  \gL_\sD(\vtheta) + r(\vtheta)
+  \quad
+  \text{where}
+  \quad
+  r(\vtheta) = - \frac{\log p(\vtheta)}{|\sD|}\,.
+\end{align}
+\Cref{eq:background::MAPRelationToEmpiricalRiskMinimization,eq:background::MAPLoss,eq:background::BayesRule}
+connect the posterior with the loss via $ \log p(\giventhat{\sD}{\vtheta}) = -
+|\sD| \gL_{\sD}(\vtheta)$ and $\log p(\vtheta) = - |\sD| r(\vtheta)$,
+\begin{align}\label{eq:background::RelationPosteriorLossRegularization}
+  \begin{split}
+    p(\giventhat{\vtheta}{\sD})
+    &=
+      \frac{
+      \exp
+      \left[
+      \log p(\giventhat{\sD}{\vtheta})
+      + \log p(\vtheta)
+      \right]
+      }{
+      p(\sD)
+      }
+    \\
+    &=
+      \frac{
+      \exp\left\{
+      -|\sD| \left[
+      \gL_{\sD}(\vtheta) + r(\vtheta)
+      \right]
+      \right\}
+      }{p(\sD)}\,.
+  \end{split}
+\end{align}
+It underlines the aforementioned challenges to track the posterior. The
+exponent is non-linear in $\vtheta$, and $p(\sD)$ requires computing an
+integral.
+
+\Cref{eq:background::RelationPosteriorLossRegularization} gives rise to
+posterior approximations that go beyond a delta distribution. The Laplace
+approximation~\cite{laplace1774memoire}
+(\Cref{sec:background::LaplaceApproximation}) also starts with the MAP estimate,
+but uses a quadratic Taylor expansion of the log-posterior around
+$\vtheta_{\text{MAP}}$ to approximate the posterior by a Gaussian. This
+quadratic expansion requires higher-order information in form of second-order
+derivatives, presented in \Cref{chap:background::HigherOrder}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

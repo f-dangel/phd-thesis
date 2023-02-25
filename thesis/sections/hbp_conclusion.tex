@@ -1,0 +1,24 @@
+We have outlined a procedure to compute block-diagonal approximations of
+different curvature matrices for feedforward neural networks by a scheme that
+can be realized on top of gradient backpropagation. In contrast to other
+recently proposed methods, our implementation is aligned with the design of
+current machine learning frameworks and can flexibly compute Hessian sub-blocks
+to different levels of refinement. Its modular formulation facilitates
+closed-form analysis of Hessian diagonal blocks, and unifies previous approaches
+\citep{botev2017practical,wei2018bdapch}.
+
+Within our framework we presented two strategies: (i) obtaining exact curvature
+matrix-vector products that have not been accessible before by
+auto-differentiation (PCH), and (ii) backpropagation of further approximated
+matrix representations to save computations during training. As for gradient
+backpropagation, the Hessian backpropagation for different operations can be
+derived independently of the underlying graph. The extended modules can then be
+used as a drop-in replacement for existing modules to construct deep neural
+networks. Internally, backprop is extended by an additional Hessian backward
+pass through the graph to compute curvature information. It can be performed in
+parallel to, and reuse the quantities computed in, gradient backpropagation.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

@@ -1,0 +1,50 @@
+\subsubsection{Abstract}
+
+Automatic differentiation frameworks are optimized for exactly one thing:
+computing the average mini-batch gradient. Yet, other quantities such as the
+variance of the mini-batch gradients or many approximations to the Hessian can,
+\emph{in theory}, be computed efficiently, and at the same time as the gradient.
+While these quantities are of great interest to researchers and practitioners,
+current deep-learning software does not support their automatic calculation.
+Manually implementing them is burdensome, inefficient if done na\"ively, and the
+resulting code is rarely shared. This hampers progress in deep learning, and
+unnecessarily narrows research to focus on gradient descent and its variants; it
+also complicates replication studies and comparisons between newly developed
+methods that require those quantities, to the point of impossibility. To address
+this problem, we introduce \BackPACK, an efficient framework built on top of
+\PyTorch, that extends the backpropagation algorithm to extract additional
+information from first- and second-order derivatives. Its capabilities are
+illustrated by benchmark reports for computing additional quantities on deep
+neural networks, and an example application by testing several recent curvature
+approximations for optimization.
+
+\marginnote{%
+  \begin{center}
+    Code and experiments available at the Github repositories
+    \href{https://github.com/f-dangel/backpack}{\texttt{f-dangel/backpack}},
+    \href{https://github.com/f-dangel/backpack-experiments}{\texttt{f-dangel/backpack-experiments}}
+  \end{center}
+  \begin{center}
+    \includegraphics[height = 0.8\linewidth]{../repos/backpack-paper/tex/logo/backpack_logo_github.pdf}
+  \end{center}
+}%
+
+\section{Introduction}
+\input{sections/backpack_intro}
+
+\section{Theory \& Implementation}\label{backpack::sec:theory-and-implementation}
+\input{sections/backpack_backpack}
+
+\section{Evaluation \& Benchmarks}\label{backpack::sec:benchmark}
+\input{sections/backpack_benchmark}
+
+\section{Experiments}\label{backpack::sec:experiments}
+\input{sections/backpack_experiments}
+
+\section{Conclusion}
+\input{sections/backpack_conclusion}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

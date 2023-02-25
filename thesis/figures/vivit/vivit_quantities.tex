@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+% PDF Picture. Set the origin to the south west corner
+\node[inner sep=0pt] (pdf_plot) at (0,0){\includegraphics[width=\the\columnwidth]{fig/visual_abstract/vivit_quantities.pdf}};
+
+\coordinate (origin) at (pdf_plot.south west);
+
+% Text
+\node[anchor=south west, inner sep=0pt] at ($ (origin) + (22mm, 23mm) $)
+{$\footnotesize \vtheta_t$};
+
+\node[anchor=south west, inner sep=0pt] at ($ (origin) + (42mm, 23mm) $)
+{$\textcolor{oo_gelb}{\footnotesize \ve_k}$};
+
+\node[anchor=south west, inner sep=0pt] at ($ (origin) + (69mm, 47mm) $)
+{$\textcolor{oo_rot}{\footnotesize \gL}$};
+
+\node[anchor=south west, inner sep=0pt] at ($ (origin) + (69mm, 28mm) $)
+{$\textcolor{oo_blau}{\footnotesize m_{\vtheta_t}}$};
+
+\node[anchor=south west, inner sep=0pt] at ($ (origin) + (23mm, 50mm) $)
+{$\textcolor{oo_gelb}{\footnotesize \mathcal{E}}$};
+
+\node[anchor=south west, inner sep=0pt, rotate=21] at ($ (origin) + (55mm, 3mm) $)
+{\footnotesize $\textcolor{oo_blau}{\footnotesize \gamma_k} ,\textcolor{oo_blau}{\footnotesize \lambda_k}$};
+
+\node[anchor=south west, inner sep=0pt, rotate=30] at ($ (origin) + (66mm, -1mm) $)
+{\footnotesize $\textcolor{oo_gruen}{\footnotesize \gamma_{nk}} ,\textcolor{oo_gruen}{\footnotesize \lambda_{nk}}$};
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../thesis"
+%%% End:

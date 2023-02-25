@@ -1,0 +1,121 @@
+\subsection{Performance of Two-dimensional Histograms}\label{cockpit::app:histograms}
+
+Both one- and two-dimensional histograms require $|\sB| \times D$ elements be
+accessed, and hence perform similarly. However, we observed different behavior
+on GPU and decided to omit the two-dimensional histogram's run time in the main
+text. As explained here, this performance lack is not fundamental, but a
+shortcoming of the GPU implementation. \pytorch provides built-in functionality
+for computing one-dimensional histograms at the time of writing, but is not yet
+featuring multi-dimensional histograms. We experimented with three
+implementations:
+\begin{itemize}
+\item \textbf{\pytorch (third party):} A third party
+  implementation\footnote{Permission granted by the authors of
+    \href{cockpit::https://github.com/miranov25/RootInteractive/blob/7019e4c2b9f291551aeeb8677a969cfcfde690d1/RootInteractive/Tools/Histograms/histogramdd_pytorch.py}{\texttt{github.com/miranov25/.../histogramdd\_pytorch.py}}.}
+  under review for being integrated into \pytorch\footnote{See
+    \url{https://github.com/pytorch/pytorch/pull/44485}.}. It relies on
+  \texttt{torch.bincount}, which uses \inlinecode{atomicAdd}s that represent a
+  bottleneck for histograms where most counts are contained in one
+  bin.\footnote{See
+    \mbox{\url{https://discuss.pytorch.org/t/torch-bincount-1000x-slower-on-cuda/42654}}}
+  This occurs often for over-parameterized deep models, as most of the gradient
+  elements are zero.
+
+\item \textbf{\pytorch (\cockpittitle):} Our implementation uses a workaround,
+  computes bin indices and scatters the counts into their associated bins with
+  \inlinecode{torch.Tensor.put\_}. This circumvents \inlinecode{atomicAdd}s, but
+  has poor memory locality.
+
+\item \textbf{\numpy:} The single-threaded \inlinecode{numpy.histogram2d} serves
+  as baseline, but does not run on GPUs.
+\end{itemize}
+
+
+% pgfplots style "histogrambenchmarkdefault"
+\pgfkeys{/pgfplots/histogrambenchmarkdefault/.style={
+    enlarge x limits=-0.05,
+    width=1.0\linewidth,
+    height=0.7\linewidth,
+    every axis plot/.append style={line width = 1.5pt},
+    tick pos = left,
+    ylabel near ticks,
+    xlabel near ticks,
+    xtick align = inside,
+    ytick align = inside,
+    legend cell align = left,
+    legend columns = 1,
+    % legend pos = south east,
+    legend style = {
+      fill opacity = 0.7,
+      text opacity = 1,
+      font = \footnotesize,
+    },
+    xticklabel style = {font = \footnotesize, inner xsep = -5ex},
+    xlabel style = {font = \footnotesize},
+    axis line style = {black},
+    yticklabel style = {font = \footnotesize, inner ysep = -4ex},
+    ylabel style = {font = \footnotesize},
+    title style = {font = \footnotesize, inner ysep = -3ex},
+    grid = major,
+    grid style = {dashed}
+  }
+}
+
+\begin{figure*}
+  \begin{subfigure}[t]{0.49\linewidth}
+    \pgfkeys{/pgfplots/zmystyle/.style={histogrambenchmarkdefault,
+        xlabel={Histogram Balance $b$}
+      }}
+    \caption{GPU}
+    \tikzexternalenable
+    \input{../repos/cockpit-paper/tex/fig/11_histogram2d/cuda.tex}
+    \tikzexternaldisable
+    \label{cockpit::fig:app-histogram2d-benchmark-gpu}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\linewidth}
+    \pgfkeys{/pgfplots/zmystyle/.style={histogrambenchmarkdefault,
+        xlabel={Histogram Balance $b$}
+      }}
+    \caption{CPU}
+    \tikzexternalenable
+    \input{../repos/cockpit-paper/tex/fig/11_histogram2d/cpu.tex}
+    \tikzexternaldisable
+    \label{cockpit::fig:app-histogram2d-benchmark-cpu}
+  \end{subfigure}
+  \caption{\textbf{Performance of two-dimensional histogram GPU implementations
+      depends on the data.} (\subref{cockpit::fig:app-histogram2d-benchmark-gpu}) Run
+    time for two different GPU implementations with histograms of different
+    imbalance. \cockpit's implementation outperforms the third party solution by
+    more than one order of magnitude in the deep learning regime ($b \ll 1$).
+    (\subref{cockpit::fig:app-histogram2d-benchmark-cpu}) On CPU, performance is robust
+    to histogram balance. The run time difference between \numpy and \pytorch is
+    due to multi-threading. Data has the same size as \deepobs's \cifarten
+    \threecthreed problem ($D =895,210, |\sB| = 128$). Curves represent averages
+    over 10 independent runs. Error bars are omitted to improve legibility.}
+  \label{cockpit::fig:app-histogram2d-benchmark}
+\end{figure*}
+
+To demonstrate the strong performance dependence on the data, we generate data
+from a uniform distribution over $[0, b]\times[0, b]$, where $b \in (0, 1)$
+parametrizes the histogram's balance, and compute two-dimensional histograms on
+$[0,1]\times [0, 1]$. \Cref{cockpit::fig:app-histogram2d-benchmark-gpu} shows a
+clear increase in run time of both GPU implementations for more imbalanced
+histograms. Note that even though our implementation outperforms the third party
+by more than one order of magnitude in the deep neural network regime ($b \ll
+1$), it is still considerably slower than a one-dimensional histogram (see
+\Cref{cockpit::fig:app_benchmark_instruments_cuda} (c)), and even slower on GPU
+than on CPU (\Cref{cockpit::fig:app-histogram2d-benchmark} (b)). As expected,
+the CPU implementations do not significantly depend on the data
+(\Cref{cockpit::fig:app-histogram2d-benchmark-cpu}). The performance difference
+between \pytorch and \numpy is likely due to multi-threading versus
+single-threading.
+
+Although a carefully engineered histogram GPU implementation is currently not
+available, we think it will reduce the computational overhead to that of a
+one-dimensional histogram in future releases.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:

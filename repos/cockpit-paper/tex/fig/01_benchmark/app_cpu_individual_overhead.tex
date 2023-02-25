@@ -1,0 +1,124 @@
+\captionsetup[subfigure]{justification=justified,singlelinecheck=false}
+
+\begin{figure}[p]
+	\vfill
+	\begin{subfigure}[t]{0.99\textwidth}
+		\caption{\qquad Computational overhead for \mnist Log.\,Reg.\,(CPU)}
+		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_combined_mnist_logreg_cpu}
+		\label{fig:app_benchmark_instruments_cpu-mnist_logreg}
+		\vspace{0.5cm}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[t]{0.99\textwidth}
+		\caption{\qquad Computational overhead for \mnist \mlp\,(CPU)}
+		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_combined_mnist_mlp_cpu}
+		\label{fig:app_benchmark_instruments_cpu-mnist_mlp}
+		\vspace{0.5cm}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[t]{0.99\textwidth}
+		\caption{\qquad Computational overhead for \cifarten \threecthreed\,(CPU)}
+		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_combined_cifar10_3c3d_cpu}
+		\label{fig:app_benchmark_instruments_cpu-cifar10}
+		\vspace{0.5cm}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[t]{0.99\textwidth}
+		\caption{\qquad Computational overhead for \fmnist \twoctwod\,(CPU)}
+		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_combined_fmnist_2c2d_cpu}
+		\label{fig:app_benchmark_instruments_cpu-fmnist}
+		\vspace{0.5cm}
+	\end{subfigure}
+	\vfill
+	\caption{\textbf{Individual overhead of \cockpittitle's instruments on CPU for
+			four different problems.} All run times are shown as multiples of
+		the \emph{baseline} without tracking. Expensive quantities are displayed in
+		separate panels on the right. Experimental details in the text.}
+	\label{fig:app_benchmark_instruments_cpu}
+\end{figure}
+
+\captionsetup[subfigure]{justification=centering, singlelinecheck=true}
+
+
+%\begin{figure}[p]
+%	\centering
+%	
+%	\begin{flushleft}
+%		(a)
+%		\vspace{-1.\baselineskip}
+%		\begin{center}
+%			Computational overhead for \mnist Log.\,Reg.\,(CPU)
+%		\end{center}
+%	\end{flushleft}
+%	\begin{minipage}{0.65\textwidth}
+%		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_mnist_logreg_cpu_app}
+%	\end{minipage}
+%	\hfill
+%	\begin{minipage}{0.34\textwidth}
+%		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_expensive_mnist_logreg_cpu_app}
+%	\end{minipage}
+%	
+%	\vspace{0.5\baselineskip}
+%	
+%	\begin{flushleft}
+%		(b)
+%		\vspace{-1.\baselineskip}
+%		\begin{center}
+%			Computational overhead for \mnist \mlp (CPU)
+%		\end{center}
+%	\end{flushleft}
+%	\begin{minipage}{0.65\textwidth}
+%		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_mnist_mlp_cpu_app}
+%	\end{minipage}
+%	\hfill
+%	\begin{minipage}{0.34\textwidth}
+%		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_expensive_mnist_mlp_cpu_app}
+%	\end{minipage}
+%	
+%	\vspace{0.5\baselineskip}
+%	
+%	\begin{flushleft}
+%		(c)
+%		\vspace{-1.\baselineskip}
+%		\begin{center}
+%			Computational overhead for \cifarten \threecthreed (CPU)
+%		\end{center}
+%	\end{flushleft}
+%	\begin{minipage}{0.65\textwidth}
+%		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_cifar10_3c3d_cpu_app}
+%	\end{minipage}
+%	\hfill
+%	\begin{minipage}{0.34\textwidth}
+%		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_expensive_cifar10_3c3d_cpu_app}
+%	\end{minipage}
+%	
+%	\vspace{0.5\baselineskip}
+%	
+%	\begin{flushleft}
+%		(d)
+%		\vspace{-1.\baselineskip}
+%		\begin{center}
+%			Computational overhead for \fmnist \twoctwod (CPU)
+%		\end{center}
+%	\end{flushleft}
+%	\begin{minipage}{0.65\textwidth}
+%		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_fmnist_2c2d_cpu_app}
+%	\end{minipage}
+%	\hfill
+%	\begin{minipage}{0.34\textwidth}
+%		\includegraphics[width=\textwidth]{fig/01_benchmark/fig_individual/benchmark_expensive_fmnist_2c2d_cpu_app}
+%	\end{minipage}
+%	
+%	\vspace{\baselineskip}
+%	
+%	\caption{\textbf{Individual overhead of \cockpittitle's instruments on CPU for
+%			four different problems.} All run times are shown as multiples of
+%		the \emph{baseline} without tracking. Expensive quantities are displayed in
+%		separate panels on the right. Experimental details in the text.}
+%	\label{fig:app_benchmark_instruments_cpu}
+%\end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../cockpit_paper"
+%%% End:

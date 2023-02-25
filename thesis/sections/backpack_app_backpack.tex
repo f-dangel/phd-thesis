@@ -1,0 +1,622 @@
+This section provides technical details on \backpack's quantities.
+
+\subsubsection{Notation}
+
+Consider an arbitrary module $f^{(l)}_{\vtheta^{(l)}}$ of a network $l=1,\dots,
+L$, parameterized by $\vtheta^{(l)}$. It transforms the output of its parent
+layer for sample $n$, $\vz^{(l-1)}_n$, to its output $\vz^{(l)}_n$, \ie
+\begin{equation}
+  \vz^{(l)}_n = f^{(l)}_{\vtheta^{(l)}}(\vz^{(l-1)}_n)\equationPunctuation{,}\qquad n=1,\dots, N\equationPunctuation{,}
+\end{equation}
+where $N$ is the number of samples. In particular, $\vz^{(0)}_n = \vx_n$ and
+$\vz^{(L)}_n(\vtheta) = \vf_n$, where $f_{\vtheta}$ is the
+transformation of the whole network. The dimension of the hidden layer $l$'s
+output $\vz^{(l)}_n$ is written $h^{(l)}$ and $\vtheta^{(l)}$ is of dimension
+$d^{(l)}$. The dimension of the network output, the prediction $\vz^{(L)}$, is
+$h^{(L)} = C$. For classification, $C$ corresponds to the number of classes.
+
+All quantities are assumed to be vector-shaped. For image-processing
+transformations that usually act on tensor-shaped inputs, we can reduce to the
+vector scenario by vectorizing all quantities
+(\Cref{def:background::Flattening}); this discussion does not rely on a specific
+flattening scheme. However, for an efficient implementation, vectorization
+should match the layout of the memory of the underlying arrays.
+
+\subsubsection{Jacobian}
+
+The Jacobian (\Cref{def:background::JacobianVectorVector})
+$\jac_{\va}\vb$ of a vector $\vb \in \R^B$ \wrt another vector $\va
+\in \R^A$ is a $[B \times A]$ matrix of partial derivatives, $\left[\jac_\va
+  \vb\right]_{i,j} = \partial \left[\vb\right]_i / \partial \left[\va\right]_j$.
+
+\subsection{First-order Quantities}
+\label{backpack::app:first-order-extensions}
+The basis for the extraction of additional information about first-order
+derivatives is \Cref{backpack::eq:backprop_gradient}, which we state
+again for multiple samples,
+\begin{align*}
+  \begin{split}
+    \nabla_{\vtheta^{(l)}}\mathcal{L} (\vtheta)
+    =
+    \frac{1}{N} \sum_{n=1}^{N}
+    \nabla_{\vtheta^{(l)}}\ell_n(\vtheta)
+    =
+    \frac{1}{N} \sum_{n=1}^{N}
+    \left(\jac_{\vtheta^{(l)}} \vz^{(l)}_n\right)^\top
+    \left(\nabla_{\vz^{(l)}_n}\ell_n(\vtheta)\right)\equationPunctuation{.}
+  \end{split}
+\end{align*}
+During the backpropagation step of module $l$, we have access to
+$\nabla_{\vz^{(l)}_n}\ell(\vtheta)$, $n=1,\dots, N$. To extract more quantities
+involving the gradient, we use additional information about the transformation
+$f^{(l)}_{\vtheta^{(l)}}$ in our custom implementation of Jacobian
+$\jac_{\vtheta^{(l)}} \vz^{(l)}_n$ and transposed Jacobian
+$(\jac_{\vtheta^{(l)}} \vz^{(l)}_n)^\top$.
+
+\subsubsection{Individual Gradients}
+
+The contribution of each sample to the overall gradient, $\nicefrac{1}{N}
+\nabla_{\vtheta^{(l)}}\ell_n(\vtheta)$, is computed by application of the
+transposed Jacobian,
+\begin{align}
+  \frac{1}{N} \nabla_{\vtheta^{(l)}}\ell_n(\vtheta)
+  =
+  \frac{1}{N}
+  \left(\jac_{\vtheta^{(l)}} \vz^{(l)}_n\right)^\top
+  \left(\nabla_{\vz^{(l)}_n}\ell_n(\vtheta)\right)\equationPunctuation{,} \qquad n=1,\dots,N\equationPunctuation{.}
+  \label{backpack::equ:individual_gradients}
+\end{align}
+For each parameter $\vtheta^{(l)}$ the individual gradients are of size $[N \times d^{(l)}]$.
+
+\subsubsection{Individual Gradient $L_2$ Norm}
+
+The quantity $\lVert \nicefrac{1}{N}
+\nabla_{\vtheta^{(l)}}\ell_n(\vtheta)\rVert_2^2$, for $n=1, ..., N$, could be
+extracted from the individual gradients
+(\Cref{backpack::equ:individual_gradients}) as
+\begin{align*}
+  \begin{split}
+    &\left\lVert \frac{1}{N}  \nabla_{\vtheta^{(l)}}\ell_n(\vtheta) \right\rVert_2^2
+    \\
+    &\quad=
+      \left[\frac{1}{N} \left(\jac_{\vtheta^{(l)}} \vz^{(l)}_n\right)^\top
+      \left(\nabla_{\vz^{(l)}_n}\ell_n(\vtheta)\right)\right]^\top
+      \left[
+      \frac{1}{N} \left(\jac_{\vtheta^{(l)}} \vz^{(l)}_n\right)^\top
+      \left(\nabla_{\vz^{(l)}_n}\ell_n(\vtheta)\right)
+      \right]\equationPunctuation{,}
+  \end{split}
+\end{align*}
+which is an $N$-dimensional object per parameter $\vtheta^{(l)}$. However, this
+is memory inefficient as the individual gradients are $[N \times d^{(l)}]$.
+\BackPACK circumvents this by using the Jacobian's structure whenever possible.
+
+For a specific example, take a linear layer with parameters $\vtheta$ as an $[A
+\times B]$ matrix. The layer transforms the inputs $\{\vz^{(l-1)}_n\}_{n=1}^N$,
+an $[N \times A]$ matrix which we will now refer to as $\mA$. During the
+backward pass, it receives the gradient of the individual losses \wrt its
+output, $\{\nicefrac{1}{N} \nabla_{\vz^{(l)}_n} \ell_n\}_{n=1}^N$, as an $[N
+\times B]$ matrix which we will refer to as $\mB$. The overall gradient, an $[A
+\times B]$ matrix, can be computed as $\mA^\top \mB$, and the individual
+gradients are a set of $N$ $[A \times B]$ matrices, $\{[\mA]_{n,:}
+[\mB]_{n,:}^\top\}_{n=1}^{N}$. We want to avoid storing that information. To
+reduce the memory requirement, note that the individual gradient norm can be
+written as
+\[
+  \left\lVert\frac{1}{N}\nabla_\vtheta \ell_n\right\rVert^2 = \sum_i \sum_j
+  ([\mA]_{n,i} [\mB]_{n,j})^2\equationPunctuation{,}
+\]
+and that the summation can be done independently for each matrix, as $\sum_i
+\sum_j ([\mA]_{n,i} [\mB]_{n,j})^2 = (\sum_i [\mA]_{n,i})^2 (\sum_j [\mB]_{n,j}^2)$.
+Therefore, we can square each matrix (element-wise) and sum over non-batch
+dimensions. This yields vectors $\va, \vb$ of $N$ elements, where $[\va]_n =
+\sum_i [\mA]_{n,i}^2$. The individual gradients' $L_2$ norm is then given by $\va
+\odot \vb$.
+
+\subsubsection{Second moment}
+
+The gradient second moment (or more specifically, the diagonal of the second
+moment) is the sum of the squared elements of the individual gradients in a
+mini-batch, \ie
+\begin{align}
+  \frac{1}{N} \sum_{n=1}^{N}\left[\nabla_{\vtheta^{(l)}}\ell_n(\vtheta)\right]_j^2\equationPunctuation{,} \qquad j = 1,\dots,d^{(l)}\equationPunctuation{.}
+  \label{backpack::equ:second_moment}
+\end{align}
+It can be used to evaluate the variance of individual elements of the gradient
+(see below). The second moment is of dimension $d^{(l)}$, like the layer
+parameter $\vtheta^{(l)}$. Similarly to the $L_2$ norm, it can be computed from
+individual gradients, but is more efficiently computed implicitly.
+
+Revisiting the linear layer example from the individual $L_2$ norm computation,
+the second moment of the parameters $\vtheta[i,j]$ is given by $\sum_n
+([\mA]_{n,i}[\mB]_{n,j})^2$, which can be directly computed by taking the
+element-wise square of $\mA$ and $\mB$, $\mA^{\odot 2}, \mB^{\odot 2}$, and
+computing $(\mA^{\odot 2})^\top \mB^{\odot 2}$.
+
+\subsubsection{Variance}
+
+Gradient variances over a mini-batch (or more precisely, the covariance
+diagonal) are computed from the second moment and the gradient,
+\begin{align}
+  \frac{1}{N}\sum_{n=1}^{N}
+  \left[\nabla_{\vtheta^{(l)}}\ell_n(\vtheta)\right]_j^2 -
+  \left[\nabla_{\vtheta^{(l)}}\mathcal{L} (\vtheta) \right]_j^2\equationPunctuation{,} \qquad j = 1,\dots,d^{(l)}\equationPunctuation{.}
+  \label{backpack::equ:variance}
+\end{align}
+The element-wise gradient variance is of same dimension as the layer parameter
+$\vtheta^{(l)}$, \ie $d^{(l)}$.
+
+\subsection{Second-order Quantities Based on the \ggn}
+\label{backpack::app:second-order-extensions}
+
+\subsubsection{Backpropagation for the \ggn's Block Diagonal}
+
+The computation of quantities that originate from approximations of the
+Hessian require an additional backward pass (see \cite{dangel2020modular}). Most
+curvature approximations supported by \BackPACK rely on the generalized
+Gauss-Newton (\GGN) matrix \citep{schraudolph2002fast} from
+\Cref{eq:background::generalizedGaussNewton}
+\begin{align}
+  \mG(\vtheta) =
+  \dfrac{1}{N}\sum_{n=1}^N
+  \left(\jac_{\vtheta} \vf_n\right)^\top
+  \nabla_{\vf_n}^2 \ell(\vf_n, \vy_n)
+  \left(\jac_{\vtheta} \vf_n\right)\equationPunctuation{.}
+  \label{backpack::equ:generalized_gauss_newton}
+\end{align}
+One interpretation of the \GGN is that it corresponds to the empirical risk
+Hessian when the model is replaced with its first-order Taylor expansion, \ie by
+linearizing the network and ignoring second-order effects. Hence, the effect of
+module curvature in the recursive scheme of \Cref{backpack::eq:backprop_hessian}
+can be ignored to obtain the simpler expression
+\begin{align}
+  \begin{split}
+    \mG(\vtheta^{(l)})
+    &=
+      \dfrac{1}{N}\sum_{n=1}^N
+      \left(\jac_{\vtheta^{(l)}} \vf_n\right)^\top
+      \nabla_{\vf_n}^2 \ell(\vf_n, \vy_n)
+      \left(\jac_{\vtheta^{(l)}} \vf_n\right)
+    \\
+    &=
+      \dfrac{1}{N} \sum_{n=1}^N
+      \left(\jac_{\vtheta^{(l)}} \vz^{(l)}_n\right)^\top
+      \mG(\vz^{(l)}_n)
+      \left(\jac_{\vtheta^{(l)}} \vz^{(l)}_n\right)
+  \end{split}
+      \label{backpack::equ:block_gauss_newton}
+\end{align}
+for the exact block diagonal of the full \GGN. In analogy to
+$\mG({\vtheta^{(l)}})$ we have introduced the $[d^{(l)} \times
+d^{(l)}]$-dimensional quantity
+\[
+  \mG(\vz^{(l)}_n)
+  =
+  \left(\jac_{\vz^{(l)}_n} \vf_n\right)^\top
+  \nabla_{\vf_n}^2 \ell(\vf_n, \vy_n)
+  \left(\jac_{\vz^{(l)}_n} \vf_n\right)
+\]
+that needs to be backpropagated following \Cref{backpack::eq:backprop_hessian}
+as
+\begin{subequations}\label{backpack::equ:backprop_ggn}
+  \begin{alignat}{2}
+    \mG(\vz^{(l-1)}_n)
+    &=
+      \left(\jac_{\vz_n^{(l-1)}} \vz^{(l)}_n\right)^\top
+      \mG(\vz^{(l)}_n)
+      \left(\jac_{\vz^{(l-1)}_n} \vz^{(l)}_n\right)\equationPunctuation{,}
+      \qquad l = 1,\dots, L\equationPunctuation{,}
+      \intertext{initialized with the loss Hessian \wrt to the network prediction, \ie}
+      \mG(\vz^{(L)}_n)
+    &=
+      \nabla_{\vf_n}^2 \ell(\vf_n, \vy_n)\equationPunctuation{.}
+  \end{alignat}
+\end{subequations}
+Although this scheme is exact, it is computationally infeasible as it requires
+backpropagation of $N$ $[h^{(l)} \times h^{(l)}]$ matrices between layer $l+1$
+and $l$. Even for small $N$, this is impossible for nets with large
+convolutions.
+
+As an example, the first layer of the \ALLCNNC network outputs $29 \times 29$
+images with 96 channels, which already gives $h^{(l)} = $ 80,736, which leads to
+half a Gigabyte per sample. Moreover, storing all the $[d^{(l)} \times
+d^{(l)}]$-dimensional blocks $\mG(\vtheta^{(l)})$ is not possible. \BackPACK
+implements different approximation strategies, developed by
+\citet{martens2015optimizing} and \citet{botev2017practical} that address both
+of these complexity issues from different perspectives.
+
+\subsubsection{Symmetric Factorization Scheme}
+
+One way to improve the memory footprint of the backpropagated matrices in the
+case where the model prediction's dimension $C$ (the number of classes in an
+image classification task) is small compared to all hidden features $h^{(l)}$ is
+to propagate a symmetric factorization of the \GGN instead. It relies on the
+observation that if the loss function itself is convex, even though its
+composition with the network might not be, its Hessian \wrt the network output
+can be decomposed as (\eg \Cref{ex:backpack::symmetricDecompositionCE})
+\begin{align}
+  \nabla_{\vf_n}^2 \ell(\vf_n, \vy_n)
+  = \mS(\vz^{(L)}_n) \mS(\vz^{(L)}_n)^\top
+  \label{backpack::equ:loss_hessian_sqrt}
+\end{align}
+with the $[C\times C]$-dimensional matrix factorization of the loss Hessian,
+$\mS(\vz^{(L)}_n)$, for sample $n$. Consequently, the \GGN in
+\Cref{backpack::equ:generalized_gauss_newton} reduces to an outer product,
+\begin{align}
+  \mG(\vtheta)
+  =
+  \dfrac{1}{N}
+  \sum_{n=1}^N
+  \left[\left(\jac_{\vtheta} \vf_n\right)^\top \mS(\vz^{(L)}_n)\right]
+  \left[\left(\jac_{\vtheta} \vf_n\right)^\top \mS(\vz^{(L)}_n)\right]^\top\equationPunctuation{.}
+\end{align}
+The analogue for diagonal blocks follows from
+\Cref{backpack::equ:block_gauss_newton} and reads
+\begin{align}
+  \mG(\vtheta^{(l)})
+  =
+  \dfrac{1}{N}
+  \sum_{n=1}^N
+  \left[\left(\jac_{\vtheta^{(l)}} \vz^{(l)}_n\right)^\top \mS(\vz^{(l)}_n) \right]
+  \left[\left(\jac_{\vtheta^{(l)}} \vz^{(l)}_n\right)^\top \mS(\vz^{(l)}_n) \right]^\top\equationPunctuation{,}
+  \label{backpack::equ:block_gauss_newton_sqrt}
+\end{align}
+where we defined the $[h^{(l)}\times C]$-dimensional matrix square root
+$\mS(\vz^{(l)}_n) := (\jac_{\vz^{(l)}_n} \vf_n)^\top \mS(\vz^{(L)}_n) $. Instead
+of having layer $l$ backpropagate $N$ objects of shape $[h^{(l)} \times
+h^{(l)}]$ according to \Cref{backpack::equ:backprop_ggn}, we instead
+backpropagate the matrix square root via
+\begin{align}
+  \mS(\vz^{(l-1)}_n)
+  &=
+    \left(\jac_{\vz_n^{(l-1)}} \vz^{(l)}_n\right)^\top \mS(\vz^{(l)}_n) \equationPunctuation{,}
+    \qquad l = 1,\dots, L\equationPunctuation{,}
+    \label{backpack::equ:backprop_matrix_sqrt}
+\end{align}
+starting with \Cref{backpack::equ:loss_hessian_sqrt}. This reduces the backpropagated matrix of layer $l$ to $[h^{(l)} \times C]$ for each sample.
+
+\subsubsection{Diagonal Curvature Approximations}
+
+\paragraph{Diagonal of the \GGN (\DiagGGN):} The factorization trick for the
+loss Hessian reduces the size of the backpropagated quantities, but does not
+address the intractable size of the \GGN diagonal blocks $\mG(\vtheta^{(l)})$.
+In \BackPACK, we can extract $\diag(\mG(\vtheta^{(l)}))$ given the
+backpropagated quantities $\mS(\vz^{(l)}_n),\ l = 1, \dots, N$, without building
+up the matrix representation of \Cref{backpack::equ:block_gauss_newton_sqrt}. In
+particular, we compute
+\begin{align}
+  \begin{split}
+    &\diag\left[\mG(\vtheta^{(l)})\right]
+    \\
+    &\quad=
+      \dfrac{1}{N}
+      \sum_{n=1}^N
+      \diag \left\{
+      \left[
+      \left(\jac_{\vtheta^{(l)}} \vz^{(l)}_n\right)^\top \mS(\vz^{(l)}_n)
+      \right]
+      \left[
+      \left(\jac_{\vtheta^{(l)}} \vz^{(l)}_n\right)^\top \mS(\vz^{(l)}_n)
+      \right]^\top\right\}\equationPunctuation{.}
+  \end{split}\label{backpack::equ:block_diag_ggn}
+\end{align}
+
+\paragraph{Diagonal of the \GGN with \MC-sampled loss Hessian (\DiagGGNMC):}
+We use the same backpropagation strategy of
+\Cref{backpack::equ:backprop_matrix_sqrt}, replacing the symmetric factorization
+of \Cref{backpack::equ:loss_hessian_sqrt} with an approximation by a smaller
+matrix $\mStilde(\vz^{(L)}_n)$ of size $[C \times \tilde{C}]$ and $\tilde{C}<C$
+(\eg \Cref{ex:backpack::symmetricMCDecompositionCE}),
+\begin{align}
+  \nabla_{\vf_n}^2 \ell(\vf_n, \vy_n)
+  \approx
+  \mStilde(\vz^{(L)}_n)
+  \left(\mStilde(\vz^{(L)}_n)\right)^\top\equationPunctuation{.}
+  \label{backpack::equ:loss_hessian_mc_sqrt}
+\end{align}
+This further reduces the size of backpropagated curvature quantities.
+\citet{martens2015optimizing} introduced such a sampling scheme with \KFAC based
+on the connection between the \GGN and the Fisher. Most loss functions used in
+machine learning have a probabilistic interpretation as negative log-likelihood
+of a probabilistic model (see
+\Cref{sec:background::ProbabilisticInterpretation}). The squared error of
+regression is equivalent to a Gaussian noise assumption and the cross-entropy is
+linked to the categorical distribution. In this case, the loss Hessian \wrt the
+network output is equal, in expectation, to the outer products of gradients
+\emph{if the target is sampled according to a particular distribution},
+$q(\giventhat{\vy}{\vf})$, defined by the network output. Sampling targets
+$\vyhat \sim q(\giventhat{\vy}{\vf})$ for a datum $(\vx, \vy)$ with $\vf :=
+f_{\vtheta}(\vx)$, we have
+\begin{equation}
+  \mathbb{E}_{\vyhat \sim q(\giventhat{\cdot}{\vf})}
+  \left[
+    \left(
+      \nabla_\vf \ell(\vf, \hat{\vy})
+    \right)
+    \left(
+      \nabla_\vf \ell(\vf, \hat{\vy})
+    \right)^\top
+  \right]
+  = \nabla^2_\vf \ell(\vf, \vy)\equationPunctuation{.}
+\end{equation}
+Sampling one such gradient leads to a rank-1 \MC approximation of the loss
+Hessian. With the substitution $\mS \leftrightarrow \mStilde$, we compute an \MC
+approximation of the \GGN diagonal in \BackPACK as
+\begin{align}
+  \begin{split}
+    &\diag\left[\mG(\vtheta^{(l)})\right]
+    \\
+    &\quad\approx
+      \dfrac{1}{N}
+      \sum_{n=1}^N
+      \diag \left\{
+      \left[
+      \left(\jac_{\vtheta^{(l)}} \vz^{(l)}_n\right)^\top \mStilde(\vz^{(l)}_n)
+      \right]
+      \left[\left(\jac_{\vtheta^{(l)}} \vz^{(l)}_n\right)^\top \mStilde(\vz^{(l)}_n)
+      \right]^\top
+      \right\}\equationPunctuation{.}
+  \end{split}\label{backpack::equ:block_diag_ggn_mc}
+\end{align}
+
+\subsubsection{Kronecker-factored Curvature Approximations}
+A different approach to reduce memory complexity of the \GGN blocks
+$\mG(\vtheta^{(l)})$, apart from diagonal curvature approximations, is
+representing them as Kronecker products (\KFAC for linear
+\cite{martens2015optimizing} and convolutional layers \cite{grosse2016kronecker}
+\KFLR and \KFRA for linear layers by \cite{botev2017practical}),
+\begin{align}
+  \mG(\vtheta^{(l)}) \approx \mA^{(l)} \otimes \mB^{(l)}\equationPunctuation{.}
+\end{align}
+For both linear and convolutional layers, the first Kronecker factor $\mA^{(l)}$
+is obtained from the inputs $\vz_n^{(l-1)}$ to layer $l$. Instead of repeating
+the technical details of the aforementioned references, we will focus on how
+they differ in (i) the backpropagated quantities and (ii) the backpropagation
+strategy. As a result, we will be able to extend \KFLR and \KFRA to
+CNNs\sidenote{We keep the \PyTorch convention that
+  weights and bias are treated as separate parameters. For the bias terms, we
+  can store the full matrix representation of the \GGN. This factor reappears in
+  the Kronecker factorization of the \GGN \wrt the weights.}.
+
+\paragraph{\KFAC \& \KFLR:}
+\KFAC uses an \MC-sampled estimate of the loss Hessian with a square root
+factorization $\mStilde(\vz^{(L)}_n)$ like in
+\Cref{backpack::equ:loss_hessian_mc_sqrt}. The backpropagation is equivalent to
+the computation of the \GGN diagonal. For the weights of a linear
+layer $l$, the second Kronecker term is
+\begin{align*}
+  \mB^{(l)}_\text{KFAC}
+  =
+  \dfrac{1}{N}
+  \sum_{n=1}^N
+  \mStilde(\vz^{(l)}_n)
+  \left(\mStilde(\vz^{(l)}_n)\right)^\top\equationPunctuation{,}
+\end{align*}
+which at the same time corresponds to the \GGN of the layer's
+bias\sidenote{\label{backpack::remark:convolution}In the case of convolutions,
+  one has to sum over the spatial indices of a single channel of $\vz_n^{(l)}$
+  as the bias is added to an entire channel, see \cite{grosse2016kronecker} for
+  details.}.
+
+In contrast to \KFAC, \KFLR backpropagates the exact square root factorization
+$\mS(\vz^{(L)}_n)$, \ie for the weights of a linear
+layer$^{\ref{backpack::remark:convolution}}$ (details in
+\cite{botev2017practical})
+\begin{align*}
+  \mB^{(l)}_\text{\KFLR}
+  =
+  \dfrac{1}{N}
+  \sum_{n=1}^N
+  \mS(\vz^{(l)}_n)
+  \left(\mS(\vz^{(l)}_n)\right)^\top\equationPunctuation{.}
+\end{align*}
+
+\paragraph{\KFRA:} The backpropagation strategy for \KFRA eliminates the scaling
+of the backpropagated curvature quantities with the batch size $N$ in
+\Cref{backpack::equ:backprop_ggn}. Instead of layer $l$ receiving the $N$ exact
+$[h^{(l)} \times h^{(l)}]$ matrices $\mG(\vz_n^{(l)}),\ n=1,\dots, N$, only a
+single averaged object, denoted $\mGoverline^{(l)}$, is used as an
+approximation. In particular, the recursion changes to
+\begin{subequations}
+  \begin{alignat}{2}
+    \mGoverline^{(l-1)}
+    &=
+      \frac{1}{N}
+      \sum_{n=1}^{N}
+      \left(\jac_{\vz_n^{(l-1)}} \vz^{(l)}_n\right)^\top
+      \mGoverline^{(l)}
+      \left(\jac_{\vz^{(l-1)}_n} \vz^{(l)}_n\right)\equationPunctuation{,}
+      \qquad l = 1,\dots, L\equationPunctuation{,}
+      \intertext{and is initialized with the batch-averaged loss Hessian}
+      \mGoverline^{(L)}
+    &=
+      \frac{1}{N}
+      \sum_{n=1}^{N}
+      \nabla_{\vf_n}^2 \ell(\vf_n, \vy_n)\equationPunctuation{.}
+  \end{alignat}\label{backpack::equ:backprop_kfra}
+\end{subequations}
+For a linear layer, \KFRA uses$^{\ref{backpack::remark:convolution}}$ (see
+\cite{botev2017practical} for more details)
+\begin{align*}
+  \mB^{(l)}_\text{KFRA} = \mGoverline^{(l)}\,.
+\end{align*}
+
+\subsection{The Exact Hessian Diagonal}\label{backpack::app:diagonal-hessian}
+
+For neural networks consisting only of piecewise linear activation functions,
+computing the diagonal of the Hessian is equivalent to computing the \GGN
+diagonal. This is because for these activations the second term in the Hessian
+backpropagation recursion (\Cref{backpack::eq:backprop_hessian}) vanishes.
+
+However, for activation functions with non-vanishing second derivative, these
+residual terms have to be accounted for in the backpropagation. The Hessian
+backpropagation for module $l$ reads
+\begin{subequations}
+  \begin{alignat}{2}
+    \nabla_{\vtheta^{(l)}}^2\ell(\vtheta)
+    &=
+      \left(\jac_{\vtheta^{(l)}} \vz_n^{(l)}\right)^\top
+      \nabla_{\vz_n^{(l)}}^2\ell(\vtheta)
+      \left(\jac_{\vtheta^{(l)}} \vz_n^{(l)}\right)
+      +
+      \mR_n^{(l)}(\vtheta^{(l)})\equationPunctuation{,}
+    \\
+    \nabla_{\vz_n^{(l-1)}}^2\ell(\vtheta)
+    &=
+      \left(\jac_{\vz_n^{(l-1)}} \vz_n^{(l)}\right)^\top
+      \nabla_{\vz_n^{(l)}}^2\ell(\vtheta)
+      \left(\jac_{\vz_n^{(l-1)}} \vz_n^{(l)}\right)
+      +
+      \mR_n^{(l)}(\vz_n^{(l-1)})\equationPunctuation{,}
+  \end{alignat}
+\end{subequations}
+for $n=1,\dots,N$. Those $[h^{(l)} \times h^{(l)}]$ residuals are
+\begin{align*}
+  \mR_n^{(l)}(\vtheta^{(l)})
+  &=
+    \sum_j
+    \left(\nabla_{\vtheta^{(l)}}^2 [\vz_n^{(l)}]_j\right)
+    \left[\nabla_{\vz_n^{(l)}}\ell(\vtheta) \right]_j\equationPunctuation{,}
+  \\
+  \mR_n^{(l)}(\vz_n^{(l-1)})
+  &=
+    \sum_j
+    \left(\nabla_{\vz_n^{(l-1)}}^2 [\vz_n^{(l)}]_j\right)
+    \left[ \nabla_{\vz_n^{(l)}}\ell(\vtheta) \right]_j\equationPunctuation{.}
+\end{align*}
+Common parameterized layers (linear and convolution) have
+$\mR_n^{(l)}(\vtheta^{(l)}) = \vzero$. For elementwise activations,
+$\mR_n^{(l)}(\vz_n^{(l-1)})$ are diagonal matrices.
+
+Storing these quantities becomes very memory-intensive for high-dimensional
+nonlinear activation layers. In \BackPACK, this complexity is reduced by
+application of the aforementioned matrix square root factorization trick. To do
+so, we divide the symmetric factorization of $\mR_n^{(l)}(\vz_n^{(l-1)})$ into
+the positive- and negative-definite terms
+\begin{align}
+  \begin{split}
+    &\mR_n^{(l)}(\vz_n^{(l-1)})
+    \\
+    &\quad=
+      \mP_n^{(l)}(\vz_n^{(l-1)})
+      \left(\mP_n^{(l)}(\vz_n^{(l-1)})\right)^\top
+      -
+      \mN_n^{(l)}(\vz_n^{(l-1)})
+      \left(\mN_n^{(l)}(\vz_n^{(l-1)})\right)^\top\equationPunctuation{.}
+  \end{split}
+\end{align}
+$\mP_n^{(l)}(\vz_n^{(l-1)}), \mN_n^{(l)}(\vz_n^{(l-1)})$ represent the
+matrix square root of $\mR_n^{(l)}(\vz_n^{(l-1)})$ projected on its positive and
+negative eigenspace, respectively.
+
+This composition allows for the extension of the \GGN backpropagation: in
+addition to $\mS(\vz^{(l)}_n)$, the residual decompositions
+$\mP_n^{(l)}(\vz_n^{(l-1)}), \mN_n^{(l)}(\vz_n^{(l-1)})$ also have to be
+backpropagated according to \Cref{backpack::equ:backprop_matrix_sqrt}. All
+diagonals are extracted from the backpropagated matrix square roots (see
+\Cref{backpack::equ:block_diag_ggn}). Diagonals from decompositions in the
+negative residual eigenspace have to be weighted by a factor of $-1$ before
+summation.
+
+In terms of complexity, one backpropagation for $\mR_n^{(l)}(\vz^{(l-1)})$
+changes the dimensionality as follows
+\begin{align*}
+  \mR_n^{(l)}(\vz^{(l-1)}):
+  &\quad
+    [h^{(l)} \times h^{(l)}]
+    \to
+    [h^{(l-1)} \times h^{(l-1)}]
+    \to
+    [h^{(l-2)} \times h^{(l-2)}]
+    \to \dots\equationPunctuation{.}
+    \intertext{With the square root factorization, one instead obtains}
+    \mP_n^{(l)}(\vz_n^{(l-1)}):
+  &\quad
+    [h^{(l)}\times h^{(l)}]
+    \to
+    [h^{(l-1)}\times h^{(l)}]
+    \to
+    [h^{(l-2)}\times h^{(l)}] \to \dots\equationPunctuation{,}
+  \\
+  \mN_n^{(l)}(\vz_n^{(l-1)}):
+  &\quad
+    [h^{(l)} \times h^{(l)}]
+    \to
+    [h^{(l-1)}\times h^{(l)}]
+    \to
+    [h^{(l-2)}\times h^{(l)}] \to \dots\equationPunctuation{.}
+\end{align*}
+Roughly speaking, this is more efficient if the hidden dimension of a nonlinear
+activation layer deceeds the net's largest hidden dimension.
+
+\subsubsection{Algorithm}
+
+Consider one backpropagation step of module $l$. Assume
+$\mR_n^{(l)}(\vtheta^{(l)}) = \vzero$, \ie a linear, convolution, or
+non-parameterized layer. Then the following computations are performed in the
+protocol for the diagonal Hessian:
+\begin{itemize}
+\item Receive the following from the child module $l+1$ (for
+  $n=1,\dots, N$):
+  \begin{align*}
+    \begin{split}
+      \sPhi =\Big\{\,
+      & \mS(\vz^{(l)}_n)\equationPunctuation{,}
+      \\
+      &\mP_n^{(l+1)}(\vz_n^{(l)})\equationPunctuation{,}
+      \\
+      &\mN_n^{(l+1)}(\vz_n^{(l)})\equationPunctuation{,}
+      \\
+      &(\jac_{\vz_n^{(l)}} \vz_n^{(l+1)})^\top
+        \mP_n^{(l+2)}(\vz_n^{(l+1)})\equationPunctuation{,}
+      \\
+      &(\jac_{\vz_n^{(l)}}
+        \vz_n^{(l+1)})^\top\mN_n^{(l+2)}(\vz_n^{(l+1)})\equationPunctuation{,}
+      \\
+      & \dots
+      \\
+      &(\jac_{\vz_n^{(l)}} \vz_n^{(l+1)})^\top (\jac_{\vz_n^{(l+1)}}
+        \vz_n^{(l+2)})^\top \dots (\jac_{\vz_n^{(L-3)}} \vz_n^{(L-2)})^\top
+        \mP_n^{(L-1)}(\vz_n^{(L-2)})\equationPunctuation{,}
+      \\
+      &(\jac_{\vz_n^{(l)}} \vz_n^{(l+1)})^\top (\jac_{\vz_n^{(l+1)}}
+        \vz_n^{(l+2)})^\top \dots (\jac_{\vz_n^{(L-3)}} \vz_n^{(L-2)})^\top
+        \mN_n^{(L-1)}(\vz_n^{(L-2)})\ \Big\}
+    \end{split}\label{backpack::equ:received_quantities_diagH}
+  \end{align*}
+\item Extract the parameter Hessian diagonal $\diag (
+    \nabla_{\vtheta^{(l)}}^2\mathcal{L}(\vtheta) )$
+  \begin{itemize}
+  \item For each quantity $\mA \in \sPhi$ extract the diagonal from the square
+    root factorization and sum over the samples, \ie compute
+    \begin{align*}
+      \dfrac{1}{N}
+      \sum_{n=1}^N
+      \diag \left\{
+      \left[
+      \left(\jac_{\vtheta^{(l)}}\vz_n^{(l)}\right)^\top\mA_n
+      \right]
+      \left[
+      \left(\jac_{\vtheta^{(l)}}\vz_n^{(l)}\right)^\top\mA_n
+      \right]^\top
+      \right\}\equationPunctuation{.}
+    \end{align*}
+    Multiply the expression by $-1$ if $\mA$ stems from backpropagation of a
+    residual's negative eigenspace's factorization.
+  \item Sum all expressions to obtain the block Hessian's diagonal
+    $\diag (\nabla_{\vtheta^{(l)}}^2\mathcal{L}(\vtheta))$
+  \end{itemize}
+
+\item Backpropagate the received quantities to the parent module $l-1$
+  \begin{itemize}
+  \item For each quantity $\mA_n \in \sPhi$, apply
+    $(\jac_{\vz_n^{(l-1)}}\vz_n^{(l)})^\top \mA_n$
+  \item Append $\mP_n^{(l+1)}(\vz_n^{(l)})$ and $\mN_n^{(l+1)}(\vz_n^{(l)})$ to
+    $\sPhi$
+  \end{itemize}
+\end{itemize}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End:
