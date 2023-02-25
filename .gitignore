@@ -286,6 +286,8 @@ TSWLatexianTemp*
 # pdf
 **.pdf
 !repos/hbp-paper/doc/aistats_talk/logo/hbp_logo.pdf
+!repos/backpack-paper/tex/logo/backpack_logo_github.pdf
+!repos/vivit/docs/rtd/assets/vivit_logo.pdf
 
 # Python IDE files
 .idea
