@@ -285,6 +285,7 @@ TSWLatexianTemp*
 
 # pdf
 **.pdf
+!repos/hbp-paper/doc/aistats_talk/logo/hbp_logo.pdf
 
 # Python IDE files
 .idea
