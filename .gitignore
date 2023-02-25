@@ -288,9 +288,11 @@ TSWLatexianTemp*
 !repos/hbp-paper/doc/aistats_talk/logo/hbp_logo.pdf
 !repos/hbp-paper/doc/aistats_talk/logo/hbp_logo_splitting.pdf
 !repos/backpack-paper/tex/logo/backpack_logo_github.pdf
-!repos/vivit/docs/rtd/assets/vivit_logo.pdf
 !repos/backpack-paper/code/animations/differential-privacy/dp_frame_0.pdf
 !repos/backpack-paper/code/animations/differential-privacy/dp_frame_4.pdf
+!repos/vivit/docs/rtd/assets/vivit_logo.pdf
+!repos/vivit-paper/tex/paper/fig/exp13_plots/gammas_lambdas/cifar100_allcnnc_sgd_gammas.pdf
+!repos/vivit-paper/tex/paper/fig/exp13_plots/gammas_lambdas/cifar100_allcnnc_adam_gammas.pdf
 
 # Python IDE files
 .idea
